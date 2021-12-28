@@ -1,0 +1,25 @@
+{
+    "id": "E7503167",
+    "path": "~/shiny_apps/premier league table/ui.r",
+    "project_path": "premier league table/ui.r",
+    "type": "r_source",
+    "hash": "0",
+    "contents": "",
+    "dirty": false,
+    "created": 1640377899662.0,
+    "source_on_save": false,
+    "relative_order": 2,
+    "properties": {
+        "tempName": "Untitled2",
+        "source_window_id": "",
+        "Source": "Source"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1640377905,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1640377905702,
+    "read_only": false,
+    "read_only_alternatives": []
+}

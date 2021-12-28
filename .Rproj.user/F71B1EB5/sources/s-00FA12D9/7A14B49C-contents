@@ -1,0 +1,318 @@
+---
+title: "top creators in the premier league (via worldfootballR)"
+author: "Joseph Kroymann"
+date: "12/17/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, include=FALSE}
+# necessary packages
+devtools::install_github("JaseZiv/worldfootballR")
+
+require(devtools)
+require(ggplot2)
+require(tidyverse)
+require(worldfootballR)
+require(showtext)
+```
+
+```{r, echo=FALSE}
+# function for pulling comp data
+get_comp_data <- function(shoot_data, pass_data, comp, num_players) {
+  non_pk <- shoot_data %>%
+  rename(count = Gls_Standard) %>%
+  mutate(Type = "Goals", count = count - PK_Standard) %>%
+  filter(Comp == comp) %>%
+  select(Squad, Player, Type, count)
+  
+  pk <- shoot_data %>%
+    rename(count = PK_Standard) %>%
+    mutate(Type = "PK") %>%
+    filter(Comp == comp) %>%
+    select(Squad, Player, Type, count)
+  
+  passing <- pass_data %>%
+    rename(count = Ast) %>% 
+    mutate(Type = "Assists") %>%
+    filter(Comp == comp) %>%
+    select(Squad, Player, Type, count)
+  
+  non_pk <- non_pk %>%
+    mutate(g_and_a = passing["count"] + pk["count"] + count)
+  
+  pk <- pk %>%
+    mutate(g_and_a = passing["count"] + non_pk["count"] + count)
+  
+  passing <- passing %>%
+    mutate(g_and_a = non_pk["count"] + pk["count"] + count)
+  
+  topContribs <- rbind(non_pk, pk, passing) %>%
+    arrange(desc(g_and_a, Player)) %>%
+    slice(1:num_players)
+  
+  return(topContribs)
+}
+```
+
+```{r, echo=FALSE}
+# plot
+top_contribs_viz <- function(data, comp, comp_year, matchday, end_date) {
+  
+  font_add_google("Roboto Mono", "Roboto")
+  showtext_auto()
+  
+  data$Type <- factor(data$Type, levels = c("Assists", "PK", "Goals"))
+  
+  plot_title <- paste0("Top Goal Contributors - ", comp, " (", comp_year, ")")
+  plot_subtitle <- paste0("Post Matchday ", matchday, ", ", end_date)
+  tag_ <- "(@biglake402) - data: fbref.com"
+  
+  ggplot(data = data, aes(x = reorder(Player, +count), y = count, fill = Type)) +
+  geom_bar(position = "stack", stat = "identity", colour = "white", width = .8) +
+    
+  ylab("Goals + Assists") +
+    
+  coord_flip() +
+    
+  scale_y_continuous(expand = c(0,0), limits = c(0, 27.5), breaks = c(5, 10, 15, 20, 25)) +
+  scale_fill_manual(values = c("#009782", "#003C33", "#5E1208"), breaks = c("Goals", "PK", "Assists"),
+                    labels = c("Non-Penalty Goals", "Penalty Goals", "Assists")) +
+    
+  labs(title = plot_title, subtitle = plot_subtitle, tag = tag_) +
+    
+  theme(text = element_text(family = "Roboto", size = 20, face = "bold", colour = "white"),
+        axis.title.y = element_blank(),
+        axis.title.x = element_text(hjust = 0.56, vjust = -.1, colour = "white"),
+        axis.line = element_line(colour = "white", size = .5, linetype = "solid"),
+        axis.ticks.x = element_line(colour = "white", linetype = "longdash"),
+        axis.ticks.y = element_blank(),
+        axis.text.y = element_text(colour = "white", face = "bold", size = 18),
+        axis.text.x = element_text(colour = "white", face = "bold", size = 18),
+        
+        plot.background = element_rect(fill = "black"),
+        plot.tag.position = c(0.15, 0.005),
+        plot.tag = element_text(size = 16, face = "bold", color = "white"),
+        
+        panel.background = element_rect(fill = "black"),
+        panel.grid = element_blank(),
+        
+        legend.background = element_rect(fill = "black", colour = "white", line = "dashed", size = 0.5),
+        legend.position = c(0.75, 0.25),
+        legend.key = element_rect(colour = "black", size = .5),
+        legend.title = element_text(hjust = 0.5, size = 18),
+        legend.text = element_text(size = 18),
+        
+        plot.title.position = "plot",
+        plot.title = element_text(hjust = 0.5, vjust = 2),
+        plot.subtitle = element_text(hjust = 0.5, vjust = 2),
+        plot.margin = unit(c(.5,.5,.25,0), "cm"))
+}
+```
+
+```{r, echo=FALSE}
+# function for adding logo to plot
+add_logo <- function(plot_path, logo_path, logo_position, logo_scale = 10){
+    
+    # Useful error message for logo position
+    if (!logo_position %in% c("top right", "top left", "bottom right", "bottom left")) {
+        stop("Error Message: Uh oh! Logo Position not recognized\n  Try: logo_positon = 'top left',
+             'top right', 'bottom left', or 'bottom right'")
+    }
+  
+    # read in raw images
+    plot <- magick::image_read(plot_path)
+    logo_raw <- magick::image_read(logo_path)
+    
+    # get dimensions of plot for scaling
+    plot_height <- magick::image_info(plot)$height
+    plot_width <- magick::image_info(plot)$width
+    
+    # default scale to 1/10th width of plot
+    # Can change with logo_scale
+    logo <- magick::image_scale(logo_raw, as.character(plot_width/logo_scale))
+    
+    # Get width of logo
+    logo_width <- magick::image_info(logo)$width
+    logo_height <- magick::image_info(logo)$height
+    
+    # Set position of logo
+    # Position starts at 0,0 at top left
+    # Using 0.01 for 1% - aesthetic padding
+    if (logo_position == "top right") {
+        x_pos = plot_width - logo_width - 0.01 * plot_width
+        y_pos = 0.01 * plot_height
+    } else if (logo_position == "top left") {
+        x_pos = 0.01 * plot_width
+        y_pos = 0.01 * plot_height
+    } else if (logo_position == "bottom right") {
+        x_pos = plot_width - logo_width - 0.01 * plot_width
+        y_pos = plot_height - logo_height - 0.001 * plot_height
+    } else if (logo_position == "bottom left") {
+        x_pos = 0.01 * plot_width
+        y_pos = plot_height - logo_height - 0.01 * plot_height
+    }
+    
+    # Compose the actual overlay
+    magick::image_composite(plot, logo, offset = paste0("+", x_pos, "+", y_pos))
+}
+```
+
+```{r, echo=FALSE}
+# function for saving plots
+save_plots <- function(plots, leagues, md, date) { 
+  
+  setwd("C:/Users/jrkro/Documents/r_footy/projects/big5_topGoalContributors/plots/")
+               
+  if (file.exists(date)) {
+    cat("the folder already exists\n")
+  }
+  else {
+    dir.create(date)
+  }
+  
+  setwd(paste0("C:/Users/jrkro/Documents/r_footy/projects/big5_topGoalContributors/plots/", date))
+  
+  for (i in 1:5) {
+    file_name <- paste0(leagues[i], "_topContribs_md", md[i], ".png")
+    
+    ggsave(plot = plots[[i]],
+           filename = file_name,
+           height = 4,
+           width = 5)
+    
+    cat(paste0("saved: ", leagues[i], "\n"))
+  }
+  
+  setwd("C:/Users/jrkro/Documents/r_footy")
+}
+```
+
+```{r, echo=FALSE}
+# function for adding competition logo's and saving final plots
+addLogo_and_returnList <- function(leagues, md, date) {
+  
+  plots <- list()
+  
+  for (i in 1:5) {
+    plot_path <- paste0("C:/Users/jrkro/Documents/r_footy/projects/big5_topGoalContributors/plots/",
+                        date, "/", leagues[i], "_topContribs_md", md[i], ".png")
+    logo_path <- paste0("C:/Users/jrkro/Documents/r_footy/images/competition logo's/", leagues[i], "_logo.png")
+    
+    temp_plot <- add_logo(
+      plot_path = plot_path,
+      logo_path = logo_path,
+      logo_position = "top right",
+      logo_scale = 7
+    )
+    
+    plots[[i]] <- temp_plot
+  }
+
+  return(plots)
+}
+```
+
+```{r, echo=FALSE}
+# saving final images
+saving_final <- function(plots, leagues, md, date) {
+  setwd("C:/Users/jrkro/Documents/r_footy/projects/big5_topGoalContributors/plots_with_logos")
+  
+  if (file.exists(date)) {
+    cat("the folder already exists\n")
+  }
+  else {
+    dir.create(date)
+  }
+  
+  setwd(paste0("C:/Users/jrkro/Documents/r_footy/projects/big5_topGoalContributors/plots_with_logos/", date))
+  
+  for (i in 1:5) {
+    
+    magick::image_write(
+      image = plots[[i]],
+      path = here::here(paste0("projects/big5_topGoalContributors/plots_with_logos/", date, "/",
+                               leagues[i], "_topContribs_md", md[i], "_logo.png"))
+    )
+  }
+}
+```
+
+```{r, echo=FALSE}
+# main function
+
+# setting values for later
+leagues <- c("bundesliga", "laLiga", "ligue1", "pl", "serieA")
+md <- c(17, 18, 18, 18, 18)
+
+# shooting data for big 5 leagues (all players)
+big5_shooting <- fb_big5_advanced_season_stats(season_end_year = 2022, 
+                                               stat_type = "shooting",
+                                               team_or_player = "player")
+
+big5_passing <- fb_big5_advanced_season_stats(season_end_year = 2022,
+                                              stat_type = "passing",
+                                              team_or_player = "player")
+
+# pulling big 5 data
+bundesliga <- get_comp_data(shoot_data = big5_shooting,
+                            pass_data = big5_passing,
+                            comp = "Bundesliga", 51)
+laLiga <- get_comp_data(shoot_data = big5_shooting,
+                        pass_data = big5_passing,
+                        comp = "La Liga", 60)
+premierLeague <- get_comp_data(shoot_data = big5_shooting,
+                               pass_data = big5_passing,
+                               comp = "Premier League", 51)
+serieA <- get_comp_data(shoot_data = big5_shooting,
+                        pass_data = big5_passing,
+                        comp = "Serie A", 48)
+ligue1 <- get_comp_data(shoot_data = big5_shooting,
+                        pass_data = big5_passing,
+                        comp = "Ligue 1", 45)
+
+# creating visualizations
+bundesliga_topContribs <- top_contribs_viz(bundesliga, 
+                                           "Bundesliga",
+                                           "2021/2022",
+                                           17, 
+                                           "21/12/2021")
+laLiga_topContribs <- top_contribs_viz(laLiga,
+                                       "La Liga",
+                                       "2021/2022",
+                                       18,
+                                       "21/12/2021")
+pl_topContribs <- top_contribs_viz(premierLeague, 
+                                   "Premier League", 
+                                   "2021/2022", 
+                                   "18*", 
+                                   "21/12/2021")
+serieA_topContribs <- top_contribs_viz(serieA, 
+                                       "Serie A", 
+                                       "2021/2022", 
+                                       18, 
+                                       "21/12/2021")
+ligue1_topContribs <- top_contribs_viz(ligue1, 
+                                       "Ligue 1", 
+                                       "2021/2022", 
+                                       "18*", 
+                                       "21/12/2021")
+
+# prepping plots to be saved
+plots <- list()
+
+plots[[1]] <- bundesliga_topContribs
+plots[[2]] <- laLiga_topContribs
+plots[[3]] <- ligue1_topContribs
+plots[[4]] <- pl_topContribs
+plots[[5]] <- serieA_topContribs
+
+save_plots(plots, leagues, md, "22_12_2021")
+
+plots_w_logos <- addLogo_and_returnList(leagues, md, "22_12_2021")
+
+saving_final(plots_w_logos, leagues, md, "22_12_2021")
+```

@@ -1,0 +1,27 @@
+{
+    "id": "208EEBB8",
+    "path": "~/shiny_apps/premier league table/app.r",
+    "project_path": "premier league table/app.r",
+    "type": "r_source",
+    "hash": "1847351497",
+    "contents": "",
+    "dirty": false,
+    "created": 1640377885101.0,
+    "source_on_save": false,
+    "relative_order": 1,
+    "properties": {
+        "tempName": "Untitled1",
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "9,34",
+        "scrollLine": "0"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1640377951,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1640377951533,
+    "read_only": false,
+    "read_only_alternatives": []
+}

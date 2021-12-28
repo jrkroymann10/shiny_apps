@@ -1,0 +1,28 @@
+{
+    "id": "6B1BDDF1",
+    "path": "~/shiny_apps/premier league table/bumpPlot_code.R",
+    "project_path": "premier league table/bumpPlot_code.R",
+    "type": "r_source",
+    "hash": "0",
+    "contents": "",
+    "dirty": false,
+    "created": 1640640184842.0,
+    "source_on_save": false,
+    "relative_order": 4,
+    "properties": {
+        "tempName": "Untitled1",
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "73,60",
+        "scrollLine": "59",
+        "disableDependencyDiscovery": "1"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1640717207,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1640717207248,
+    "read_only": false,
+    "read_only_alternatives": []
+}
