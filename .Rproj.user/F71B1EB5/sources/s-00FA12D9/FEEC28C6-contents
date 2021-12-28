@@ -1,0 +1,149 @@
+---
+title: "messi_1112_shotMap"
+author: "Joseph Kroymann"
+date: "12/12/2021"
+output: html_document
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, include=FALSE}
+# loading in necessary packages
+require(tidyverse)
+require(StatsBombR)
+require(magick)
+require(here)
+```
+
+```{r, include=FALSE}
+# pulling barca event data from 2011-12 season
+barca_1112 <- FreeCompetitions() %>%
+  filter(competition_id == 11, season_name == "2011/2012")
+
+barca_1112_matches <- FreeMatches(barca_1112) 
+
+barca_1112_data <- StatsBombFreeEvents(MatchesDF = barca_1112_matches, Parallel = T)
+```
+
+```{r, include=FALSE}
+# pulling all of messi's shots from 2011-12 season + cleaning up data
+messi_1112_shots <- allclean(barca_1112_data %>%
+  filter(type.name == "Shot" & (shot.type.name!="Penalty" | is.na(shot.type.name)) & player.name == "Lionel Andrés Messi Cuccittini"))
+
+messi_1112_shots <- messi_1112_shots %>%
+  mutate(goal = shot.outcome.name == "Goal")
+
+messi_1112_shots <- messi_1112_shots[ , c("location.x", "location.y", "shot.statsbomb_xg", "shot.body_part.name", "goal")]
+```
+
+```{r, include=FALSE}
+# function for transparent colors
+t_col <- function(color, percent, name = NULL) {
+  rgb(color[1], color[2], color[3], 
+      max = 255,
+      alpha = (100 - percent) * 255/100,
+      names = name)
+}
+
+barca_lighterBlue <- t_col(c(0,77,152), 75)
+```
+
+```{r, include=FALSE}
+# function for adding statsbomb logo to plot
+add_logo <- function(plot_path, logo_path, logo_position, logo_scale = 10){
+    
+    # Useful error message for logo position
+    if (!logo_position %in% c("top right", "top left", "bottom right", "bottom left")) {
+        stop("Error Message: Uh oh! Logo Position not recognized\n  Try: logo_positon = 'top left',
+             'top right', 'bottom left', or 'bottom right'")
+    }
+  
+    # read in raw images
+    plot <- magick::image_read(plot_path)
+    logo_raw <- magick::image_read(logo_path)
+    
+    # get dimensions of plot for scaling
+    plot_height <- magick::image_info(plot)$height
+    plot_width <- magick::image_info(plot)$width
+    
+    # default scale to 1/10th width of plot
+    # Can change with logo_scale
+    logo <- magick::image_scale(logo_raw, as.character(plot_width/logo_scale))
+    
+    # Get width of logo
+    logo_width <- magick::image_info(logo)$width
+    logo_height <- magick::image_info(logo)$height
+    
+    # Set position of logo
+    # Position starts at 0,0 at top left
+    # Using 0.01 for 1% - aesthetic padding
+    if (logo_position == "top right") {
+        x_pos = plot_width - logo_width - 0.01 * plot_width
+        y_pos = 0.01 * plot_height
+    } else if (logo_position == "top left") {
+        x_pos = 0.01 * plot_width
+        y_pos = 0.01 * plot_height
+    } else if (logo_position == "bottom right") {
+        x_pos = plot_width - logo_width - 0.01 * plot_width
+        y_pos = plot_height - logo_height - 0.001 * plot_height
+    } else if (logo_position == "bottom left") {
+        x_pos = 0.01 * plot_width
+        y_pos = plot_height - logo_height - 0.01 * plot_height
+    }
+    
+    # Compose the actual overlay
+    magick::image_composite(plot, logo, offset = paste0("+", x_pos, "+", y_pos))
+}
+```
+
+```{r, echo=FALSE}
+# loading in ggplot
+require(ggplot2)
+
+# setting gradient colors
+shotmapxgcolors <- c("#192780", "#2a5d9f", "#40a7d0", "#87cdcf", "#e7f8e6", "#f4ef95", "#FDE960", 
+                       "#FCDC5F", "#F5B94D", "#F0983E", "#ED8A37", "#E66424", "#D54F1B", "#DC2608", 
+                       "#BF0000", "#7F0000", "#5F0000")
+
+# plotting messi's shots (creating shotMap)
+messi_1112_shotMap <- statsBomb_halfPitch("#ffffff", "#A9A9A9", "#ffffff", "#000000") +
+  theme(legend.position = "none") +
+  geom_point(data = messi_1112_shots, aes(x = location.y, y = location.x, colour = goal,
+                                          size = shot.statsbomb_xg * 1.5)) +
+  scale_color_manual(values = c(barca_lighterBlue, "#004d98")) +
+  # scale_shape_manual(values = c("Head" = 21, "Right Foot" = 23, "Left Foot" = 24), name ="")
+  
+  geom_text(aes(x = 2,
+                y=72,
+                label = "Lionel Messi (La Liga 2011-2012)"), 
+            hjust = 0, vjust = 0.5, size = 6, colour = "#a50044") +
+  geom_text(aes(x = 2,
+                y=69,
+                label = paste0("Non-Penalty Expected Goals (npxG): ",round(sum(messi_1112_shots$shot.statsbomb_xg),2))),  
+            hjust = 0, vjust = 0.5, size = 4.5) + 
+  geom_text(aes(x = 2, 
+                y=66,
+                label = paste0("Actual Non-Penalty Goals: ",round(sum(as.numeric(messi_1112_shots$goal)),0))), 
+            hjust = 0, vjust = 0.5, size = 4.5) +
+  geom_text(aes(x = 2,
+                y = 63,
+                label = paste0("npxG Difference: ", 40 - 31.06)),
+            hjust = 0, vjust = 0.5, size = 4.5)
+  
+#ggsave(plot = messi_1112_shotMap, filename = "messi_1112_shotMap.png", height = 6, width = 7)
+```
+
+```{r, echo=FALSE}
+# adding statsbomb logo to plot
+messi_1112_shotMap_logo <- add_logo(plot_path = 'C:/Users/jrkro/Documents/R/messi_1112_shotMap.png',
+                                    logo_path = 'C:/Users/jrkro/Documents/R/statsbomb_logo.png',
+                                    logo_position = "bottom right",
+                                    logo_scale = 4)
+
+magick::image_write(
+  image = messi_1112_shotMap_logo,
+  path = here::here("R/messi_1112_shotMap_logo.png"))
+```
+
+
