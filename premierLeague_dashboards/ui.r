@@ -1,5 +1,6 @@
 # load libraries, data -----------------------------------------------------------------
-load("data/pl_teams_2122.Rdata")
+library(readr)
+match_data <- read_csv("data/pl_matchdata.csv")
 
 # page 1 - introduction ----------------------------------------------------------------
 intro_panel <- tabPanel(
@@ -9,7 +10,7 @@ intro_panel <- tabPanel(
 )
 
 # page 2 - table bump plot -------------------------------------------------------------
-select_values <- unique(teams)
+select_values <- unique(match_data$Home)
 
 bump_sidebar <- sidebarPanel(
   selectInput(

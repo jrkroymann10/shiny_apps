@@ -2,8 +2,10 @@
 library(worldfootballR)
 library(tidyverse)
 library(ggbump)
+library(readr)
 
-match_data <- readRDS("data/prem2021.rds")
+match_data <- read_csv("data/pl_matchdata.csv")
+
 
 transform_matchResults <- function(fbref_mr) {
   fbref_mr %>%
@@ -104,6 +106,8 @@ get_bumpPlot <- function(df, teams) {
       axis.text.y = element_blank()
     )
 }
+
+# ----------------------------------------------------------------------------------
 
 server <- function(input, output) {
   output$plot <- renderPlot({
