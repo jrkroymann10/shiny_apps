@@ -114,42 +114,73 @@ shorten_teamnames <- function(df) {
 }
 
 # bump plot
-get_bumpPlot <- function(df, teams) {
-  df %>%
-    ggplot(aes(Matchday, Rank, group = Team, colour = Team)) +
-    geom_bump(smooth = 5, size = 2, lineend = "round") + 
-    geom_point(size = 3) +
-    scale_colour_manual(
-      breaks = teams,                             
-      values = c( #FDB913    #630F33    #670E36    #6CABDD    #9C824A
-        "#FDB913", "#630F33", "#670E36", "#6CABDD", "#9C824A",
+get_bumpPlot <- function(df, teams, h_team) {
+  if (h_team == "All") {
+    df %>%
+      ggplot(aes(Matchday, Rank, group = Team, colour = Team)) +
+      geom_bump(smooth = 5, size = 2, lineend = "round") + 
+      geom_point(size = 3) +
+      scale_colour_manual(
+        breaks = teams,                             
+        values = c("#FDB913", "#630F33", "#670E36", "#6CABDD", "#9C824A",
+                   "#D71920", "#241F20", "#A7A5A6", "#00A650", "#AC944D",
+                   "#0053A0", "#ffffff", "#fbee23", "#132257", "#e30613", 
+                   "#274488", "#7A263A", "#034694", "#D01317", "#B80102")
+      ) +
+      geom_text(data = df %>% 
+                  filter(Matchday == 1),
+                aes(label = Team, x = 0), hjust = 0.5, fontface = "bold", size = 4.5) +
+      geom_text(data = df %>% 
+                  filter(Matchday == max(Matchday)),
+                aes(label = Team, x = max(Matchday) + 1), hjust = 0.5, fontface = "bold", size = 4.5) +
+      theme_minimal() +
+      theme(
+        legend.position = "none",
         
-        #D71920    #241F20    #1B458F    #00A650    #AC944D
-        "#D71920", "#241F20", "#A7A5A6", "#00A650", "#AC944D",
+        panel.grid = element_blank(),
+        panel.background = element_rect("#D3D3D3"),
         
-        #0053A0    #005DAA    #fbee23    #132257    #e30613
-        "#0053A0", "#ffffff", "#fbee23", "#132257", "#e30613", 
+        axis.title.y = element_blank(),
+        axis.text.y = element_blank(),
+        axis.title.x = element_blank(),
+        axis.text.x = element_blank()
+      )
+  }
+  
+  else {
+    df %>%
+      ggplot(aes(Matchday, Rank, group = Team, colour = Team)) +
+      geom_bump(smooth = 5, size = 2, lineend = "round") + 
+      geom_point(size = 3) +
+      scale_colour_manual(
+        breaks = teams,                             
+        values = c("#FDB913", "#630F33", "#670E36", "#6CABDD", "#9C824A",
+                   "#D71920", "#241F20", "#A7A5A6", "#00A650", "#AC944D",
+                   "#0053A0", "#ffffff", "#fbee23", "#132257", "#e30613", 
+                   "#274488", "#7A263A", "#034694", "#D01317", "#B80102")
+      ) +
+      geom_text(data = df %>% 
+                  filter(Matchday == 1),
+                aes(label = Team, x = 0), hjust = 0.5, fontface = "bold", size = 4.5) +
+      geom_text(data = df %>% 
+                  filter(Matchday == max(Matchday)),
+                aes(label = Team, x = max(Matchday) + 1), hjust = 0.5, fontface = "bold", size = 4.5) +
+      gghighlight(Team == h_team,
+                  use_direct_label = FALSE,
+                  unhighlighted_params = list(colour = NULL, alpha = 0.1)) +
+      theme_minimal() +
+      theme(
+        legend.position = "none",
         
-        #274488    #7A263A    #034694    #D01317    #B80102
-        "#274488", "#7A263A", "#034694", "#D01317", "#B80102")) +
-    geom_text(data = df %>% 
-                filter(Matchday == 1),
-              aes(label = Team, x = 0), hjust = 0.5, fontface = "bold", size = 4.5) +
-    geom_text(data = df %>% 
-                filter(Matchday == max(Matchday)),
-              aes(label = Team, x = max(Matchday) + 1), hjust = 0.5, fontface = "bold", size = 4.5) +
-    theme_minimal() +
-    theme(
-      legend.position = "none",
-      
-      panel.grid = element_blank(),
-      panel.background = element_rect("#D3D3D3"),
-      
-      axis.title.y = element_blank(),
-      axis.text.y = element_blank(),
-      axis.title.x = element_blank(),
-      axis.text.x = element_blank()
-    )
+        panel.grid = element_blank(),
+        panel.background = element_rect("#D3D3D3"),
+        
+        axis.title.y = element_blank(),
+        axis.text.y = element_blank(),
+        axis.title.x = element_blank(),
+        axis.text.x = element_blank()
+      )
+  }
 }
 
 # ----------------------------------------------------------------------------------
@@ -173,7 +204,6 @@ server <- function(input, output) {
     bump_df <- shorten_teamnames(bump_df)
     
     teams <- unique(bump_df$Team)
-    get_bumpPlot(bump_df, teams)
-    
+    get_bumpPlot(bump_df, teams, input$Team)
   })
 }

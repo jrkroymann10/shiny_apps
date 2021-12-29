@@ -2,6 +2,10 @@
 library(readr)
 match_data <- read_csv("data/pl_matchdata.csv")
 
+select_values <- c("All", "ARS", "AVL", "BRE", "BRI", "BUR", "CHE", "CRY", 
+                   "EVE", "LEE", "LEI", "LFC", "MCI", "MUN", "NEW", "NOR",
+                   "SOU", "TOT", "WAT", "WHU", "WOL")
+
 # page 1 - introduction ----------------------------------------------------------------
 intro_panel <- tabPanel(
   "Introduction",
@@ -10,15 +14,15 @@ intro_panel <- tabPanel(
 )
 
 # page 2 - table bump plot -------------------------------------------------------------
-select_values <- unique(match_data$Home)
-
 bump_sidebar <- sidebarPanel(
   selectInput(
     "Team",
     label = "Teams",
     choices = select_values,
-    selected = "Liverpool"
-  )
+    selected = "All"
+  ),
+  
+  width = 2
 )
 
 bump_content <- mainPanel(
