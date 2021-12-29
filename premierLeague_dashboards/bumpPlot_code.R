@@ -71,8 +71,36 @@ fill_pointsAndGd <- function(df, teams) {
 add_rank <- function(df) {
   df <- df %>%
     group_by(Matchday) %>%
-    mutate(rank = rank(-Total_Points, ties.method = "random")) %>%
+    arrange(Total_Points, Total_GD, .by_group = TRUE) %>%
+    mutate(Rank = row_number(Matchday)) %>%
     ungroup()
+  
+  return(df)
+}
+
+# shortening team names to 3 letter codes
+shorten_teamnames <- function(df) {
+  df <- df %>%
+    mutate(Team = replace(Team, Team == "Arsenal", "ARS"),
+           Team = replace(Team, Team == "Aston Villa", "AVL"),
+           Team = replace(Team, Team == "Brentford", "BRE"),
+           Team = replace(Team, Team == "Brighton", "BRI"),
+           Team = replace(Team, Team == "Burnley", "BUR"),
+           Team = replace(Team, Team == "Chelsea", "CHE"),
+           Team = replace(Team, Team == "Crystal Palace", "CRY"),
+           Team = replace(Team, Team == "Everton", "EVE"),
+           Team = replace(Team, Team == "Leeds United", "LEE"),
+           Team = replace(Team, Team == "Leicester City", "LEI"),
+           Team = replace(Team, Team == "Liverpool", "LFC"),
+           Team = replace(Team, Team == "Manchester City", "MCI"),
+           Team = replace(Team, Team == "Manchester Utd", "MUN"),
+           Team = replace(Team, Team == "Newcastle Utd", "NEW"),
+           Team = replace(Team, Team == "Norwich City", "NOR"),
+           Team = replace(Team, Team == "Southampton", "SOU"),
+           Team = replace(Team, Team == "Tottenham", "TOT"),
+           Team = replace(Team, Team == "Watford", "WAT"),
+           Team = replace(Team, Team == "West Ham", "WHU"),
+           Team = replace(Team, Team == "Wolves", "WOL"))
   
   return(df)
 }
@@ -80,24 +108,39 @@ add_rank <- function(df) {
 # bump plot
 get_bumpPlot <- function(df, teams) {
   df %>%
-    ggplot(aes(Matchday, rank, group = Team, colour = Team)) +
-    geom_bump(smooth = 5, size = 1.5, lineend = "round") + 
-    geom_point(size = 2.5) +
-    scale_y_reverse() + 
+    ggplot(aes(Matchday, Rank, group = Team, colour = Team)) +
+    geom_bump(smooth = 5, size = 2, lineend = "round") + 
+    geom_point(size = 3) +
     scale_colour_manual(
-      breaks = rev(teams),
-      values = c("#6CABDD", "#132257", "#7A263A", "#241F20", "#D01317",
-                 "#00A650", "#D71920", "#274488", "#1B458F", "#034694", 
-                 "#670E36", "#fbee23", "#005DAA", "#630F33", "#FDB913", 
-                 "#0053A0", "#AC944D", "#B80102", "#9C824A", "#e30613")) +
+      breaks = teams,                             
+      values = c( #FDB913    #630F33    #670E36    #6CABDD    #9C824A
+                 "#FDB913", "#630F33", "#670E36", "#6CABDD", "#9C824A",
+                 
+                  #D71920    #241F20    #1B458F    #00A650    #AC944D
+                 "#D71920", "#241F20", "#A7A5A6", "#00A650", "#AC944D",
+                 
+                  #0053A0    #005DAA    #fbee23    #132257    #e30613
+                 "#0053A0", "#ffffff", "#fbee23", "#132257", "#e30613", 
+                 
+                  #274488    #7A263A    #034694    #D01317    #B80102
+                 "#274488", "#7A263A", "#034694", "#D01317", "#B80102")) +
+    geom_text(data = df %>% 
+                filter(Matchday == 1),
+              aes(label = Team, x = 0), hjust = 0.5, fontface = "bold", size = 4.5) +
+    geom_text(data = df %>% 
+                filter(Matchday == max(Matchday)),
+              aes(label = Team, x = max(Matchday) + 1), hjust = 0.5, fontface = "bold", size = 4.5) +
     theme_minimal() +
     theme(
       legend.position = "none",
       
       panel.grid = element_blank(),
+      panel.background = element_rect("#D3D3D3"),
       
       axis.title.y = element_blank(),
-      axis.text.y = element_blank()
+      axis.text.y = element_blank(),
+      axis.title.x = element_blank(),
+      axis.text.x = element_blank()
     )
 }
 
@@ -115,4 +158,7 @@ td$GD <- as.numeric(td$GD)
 teams <- unique(td$Team)
 td <- fill_pointsAndGd(td, teams)
 td <- add_rank(td)
+td <- shorten_teamnames(td)
+
+teams <- unique(td$Team)
 get_bumpPlot(td, teams)
