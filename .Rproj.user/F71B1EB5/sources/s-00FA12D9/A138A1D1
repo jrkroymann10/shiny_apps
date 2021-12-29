@@ -1,0 +1,26 @@
+{
+    "id": "A138A1D1",
+    "path": "~/shiny_apps/premierLeague_dashboards/bumpPlot_code.R",
+    "project_path": "premierLeague_dashboards/bumpPlot_code.R",
+    "type": "r_source",
+    "hash": "0",
+    "contents": "",
+    "dirty": false,
+    "created": 1640733449846.0,
+    "source_on_save": false,
+    "relative_order": 5,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "112,26",
+        "scrollLine": "99"
+    },
+    "folds": "6|46|11|0|\n13|31|20|0|\n22|25|26|0|\n28|41|57|0|\n60|41|67|0|\n70|26|77|0|\n",
+    "lastKnownWriteTime": 1640735902,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1640735902397,
+    "read_only": false,
+    "read_only_alternatives": []
+}

@@ -1,5 +1,5 @@
 # load libraries, data -----------------------------------------------------------------
-load("~/shiny_apps/premier league table/data/pl21-22_teams.Rdata")
+load("data/pl_teams_2122.Rdata")
 
 # page 1 - introduction ----------------------------------------------------------------
 intro_panel <- tabPanel(

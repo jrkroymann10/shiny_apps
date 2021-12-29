@@ -1,25 +1,24 @@
 {
-    "id": "E7503167",
-    "path": "~/shiny_apps/premier league table/ui.r",
-    "project_path": "premier league table/ui.r",
+    "id": "8FF9C4D8",
+    "path": "~/shiny_apps/shiny_tutorial/server.r",
+    "project_path": "shiny_tutorial/server.r",
     "type": "r_source",
-    "hash": "0",
+    "hash": "962399889",
     "contents": "",
     "dirty": false,
-    "created": 1640377899662.0,
+    "created": 1640731467248.0,
     "source_on_save": false,
-    "relative_order": 2,
+    "relative_order": 4,
     "properties": {
-        "tempName": "Untitled2",
         "source_window_id": "",
         "Source": "Source"
     },
     "folds": "",
-    "lastKnownWriteTime": 1640377905,
+    "lastKnownWriteTime": 1640369266,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1640377905702,
+    "last_content_update": 1640369266,
     "read_only": false,
     "read_only_alternatives": []
 }

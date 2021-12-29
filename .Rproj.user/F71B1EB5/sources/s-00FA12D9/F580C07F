@@ -1,0 +1,26 @@
+{
+    "id": "F580C07F",
+    "path": "~/shiny_apps/premierLeague_dashboards/server.r",
+    "project_path": "premierLeague_dashboards/server.r",
+    "type": "r_source",
+    "hash": "2804845421",
+    "contents": "",
+    "dirty": false,
+    "created": 1640733755136.0,
+    "source_on_save": false,
+    "relative_order": 6,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "120,33",
+        "scrollLine": "112"
+    },
+    "folds": "7|46|12|0|\n15|31|22|0|\n25|25|29|0|\n32|41|61|0|\n64|41|71|0|\n74|26|81|0|\n84|37|105|0|\n",
+    "lastKnownWriteTime": 1640736598,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1640736598080,
+    "read_only": false,
+    "read_only_alternatives": []
+}
