@@ -2,9 +2,11 @@
 library(readr)
 match_data <- read_csv("data/pl_matchdata.csv")
 
-select_values <- c("All", "ARS", "AVL", "BRE", "BRI", "BUR", "CHE", "CRY", 
-                   "EVE", "LEE", "LEI", "LFC", "MCI", "MUN", "NEW", "NOR",
-                   "SOU", "TOT", "WAT", "WHU", "WOL")
+team_values <- c("ALL", "ARS", "AVL", "BRE", "BRI", "BUR", "CHE", "CRY", 
+                 "EVE", "LEE", "LEI", "LFC", "MCI", "MUN", "NEW", "NOR",
+                 "SOU", "TOT", "WAT", "WHU", "WOL")
+
+md_values <- 1:tail(match_data[!is.na(match_data$Home_xG),]$Wk, 1)
 
 # page 1 - introduction ----------------------------------------------------------------
 intro_panel <- tabPanel(
@@ -18,8 +20,22 @@ bump_sidebar <- sidebarPanel(
   selectInput(
     "Team",
     label = "Teams",
-    choices = select_values,
-    selected = "All"
+    choices = team_values,
+    selected = "ALL"
+  ),
+  
+  selectInput(
+    "Start_MD",
+    label = "Starting Matchday",
+    choices = md_values,
+    selected = 1
+  ),
+  
+  selectInput(
+    "End_MD",
+    label = "Ending Matchday",
+    choices = md_values,
+    selected = max(md_values)
   ),
   
   width = 2

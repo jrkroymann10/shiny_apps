@@ -81,6 +81,7 @@ add_rank <- function(df) {
     group_by(Matchday) %>%
     arrange(Total_Points, Total_GD, .by_group = TRUE) %>%
     mutate(Rank = row_number(Matchday)) %>%
+    mutate(Rank = -(Rank - 21)) %>%
     ungroup()
   
   return(df)
@@ -115,7 +116,7 @@ shorten_teamnames <- function(df) {
 
 # bump plot
 get_bumpPlot <- function(df, teams, h_team) {
-  if (h_team == "All") {
+  if (h_team == "ALL") {
     df %>%
       ggplot(aes(Matchday, Rank, group = Team, colour = Team)) +
       geom_bump(smooth = 5, size = 2, lineend = "round") + 
@@ -124,9 +125,9 @@ get_bumpPlot <- function(df, teams, h_team) {
         breaks = teams,                             
         values = c("#FDB913", "#630F33", "#670E36", "#6CABDD", "#9C824A",
                    "#D71920", "#241F20", "#A7A5A6", "#00A650", "#AC944D",
-                   "#0053A0", "#ffffff", "#fbee23", "#132257", "#e30613", 
-                   "#274488", "#7A263A", "#034694", "#D01317", "#B80102")
-      ) +
+                   "#ffffff", "#58d8d3", "#fbee23", "#132257", "#e30613", 
+                   "#274488", "#7A263A", "#034694", "#D01317", "#B80102")) +
+      scale_y_reverse() +
       geom_text(data = df %>% 
                   filter(Matchday == 1),
                 aes(label = Team, x = 0), hjust = 0.5, fontface = "bold", size = 4.5) +
@@ -156,9 +157,9 @@ get_bumpPlot <- function(df, teams, h_team) {
         breaks = teams,                             
         values = c("#FDB913", "#630F33", "#670E36", "#6CABDD", "#9C824A",
                    "#D71920", "#241F20", "#A7A5A6", "#00A650", "#AC944D",
-                   "#0053A0", "#ffffff", "#fbee23", "#132257", "#e30613", 
-                   "#274488", "#7A263A", "#034694", "#D01317", "#B80102")
-      ) +
+                   "#ffffff", "#58d8d3", "#fbee23", "#132257", "#e30613", 
+                   "#274488", "#7A263A", "#034694", "#D01317", "#B80102")) +
+      scale_y_reverse() +
       geom_text(data = df %>% 
                   filter(Matchday == 1),
                 aes(label = Team, x = 0), hjust = 0.5, fontface = "bold", size = 4.5) +
@@ -166,8 +167,8 @@ get_bumpPlot <- function(df, teams, h_team) {
                   filter(Matchday == max(Matchday)),
                 aes(label = Team, x = max(Matchday) + 1), hjust = 0.5, fontface = "bold", size = 4.5) +
       gghighlight(Team == h_team,
-                  use_direct_label = FALSE,
-                  unhighlighted_params = list(colour = NULL, alpha = 0.1)) +
+                  unhighlighted_params = list(colour = NULL, alpha = 0.1),
+                  use_direct_label = FALSE) +
       theme_minimal() +
       theme(
         legend.position = "none",
