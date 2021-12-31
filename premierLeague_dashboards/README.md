@@ -6,4 +6,4 @@
 ## Skill Highlights
 - Unique, Informative, and Aesthically Pleasing Visualizations using [{ggplot2}](https://ggplot2.tidyverse.org/), [{ggbump}](https://github.com/davidsjoberg/ggbump), [{gghighlight}](https://github.com/yutannihilation/gghighlight), and more!
 - Data Manipulation with [{dplyr}](https://dplyr.tidyverse.org/)
-- Interactive Content (Dashboards, Visualizations) through {[rshiny]}(https://shiny.rstudio.com/)
+- Interactive Content (Dashboards, Visualizations) through [{shiny}](https://shiny.rstudio.com/)
