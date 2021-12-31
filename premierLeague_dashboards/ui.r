@@ -42,11 +42,10 @@ bump_sidebar <- sidebarPanel(
 )
 
 bump_content <- mainPanel(
-  plotOutput("plot"),
-  
-  width = 10,
-  height = 10
-)
+  plotOutput("plot", 
+             height = 475,
+             width = 950)
+  )
 
 bump_panel <- tabPanel(
   "Table Bump Plot",
