@@ -2,9 +2,9 @@
 library(readr)
 match_data <- read_csv("data/pl_matchdata.csv")
 
-team_values <- c("ALL", "ARS", "AVL", "BRE", "BRI", "BUR", "CHE", "CRY", 
-                 "EVE", "LEE", "LEI", "LFC", "MCI", "MUN", "NEW", "NOR",
-                 "SOU", "TOT", "WAT", "WHU", "WOL")
+team_values <- c("All", "Arsenal", "Aston Villa", "Brentford", "Brighton", "Burnley", "Chelsea",
+                 "Palace", "Everton", "Leeds", "Leicester", "Liverpool", "Man City", "Man Utd",
+                 "Newcastle", "Norwich", "Southampton", "Tottenham", "Watford", "West Ham", "Wolves")
 
 md_values <- 1:tail(match_data[!is.na(match_data$Home_xG),]$Wk, 1)
 
@@ -42,7 +42,9 @@ bump_sidebar <- sidebarPanel(
 )
 
 bump_content <- mainPanel(
-  plotOutput("plot")
+  plotOutput("plot"),
+  
+  width = 10
 )
 
 bump_panel <- tabPanel(

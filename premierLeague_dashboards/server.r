@@ -87,29 +87,29 @@ add_rank <- function(df) {
   return(df)
 }
 
-# shortening team names to 3 letter codes
+# shortening team names
 shorten_teamnames <- function(df) {
   df <- df %>%
-    mutate(Team = replace(Team, Team == "Arsenal", "ARS"),
-           Team = replace(Team, Team == "Aston Villa", "AVL"),
-           Team = replace(Team, Team == "Brentford", "BRE"),
-           Team = replace(Team, Team == "Brighton", "BRI"),
-           Team = replace(Team, Team == "Burnley", "BUR"),
-           Team = replace(Team, Team == "Chelsea", "CHE"),
-           Team = replace(Team, Team == "Crystal Palace", "CRY"),
-           Team = replace(Team, Team == "Everton", "EVE"),
-           Team = replace(Team, Team == "Leeds United", "LEE"),
-           Team = replace(Team, Team == "Leicester City", "LEI"),
-           Team = replace(Team, Team == "Liverpool", "LFC"),
-           Team = replace(Team, Team == "Manchester City", "MCI"),
-           Team = replace(Team, Team == "Manchester Utd", "MUN"),
-           Team = replace(Team, Team == "Newcastle Utd", "NEW"),
-           Team = replace(Team, Team == "Norwich City", "NOR"),
-           Team = replace(Team, Team == "Southampton", "SOU"),
-           Team = replace(Team, Team == "Tottenham", "TOT"),
-           Team = replace(Team, Team == "Watford", "WAT"),
-           Team = replace(Team, Team == "West Ham", "WHU"),
-           Team = replace(Team, Team == "Wolves", "WOL"))
+    mutate(Team = replace(Team, Team == "Arsenal", "Arsenal"),
+           Team = replace(Team, Team == "Aston Villa", "Aston Villa"),
+           Team = replace(Team, Team == "Brentford", "Brentford"),
+           Team = replace(Team, Team == "Brighton", "Brighton"),
+           Team = replace(Team, Team == "Burnley", "Burnley"),
+           Team = replace(Team, Team == "Chelsea", "Chelsea"),
+           Team = replace(Team, Team == "Crystal Palace", "Palace"),
+           Team = replace(Team, Team == "Everton", "Everton"),
+           Team = replace(Team, Team == "Leeds United", "Leeds"),
+           Team = replace(Team, Team == "Leicester City", "Leicester"),
+           Team = replace(Team, Team == "Liverpool", "Liverpool"),
+           Team = replace(Team, Team == "Manchester City", "Man City"),
+           Team = replace(Team, Team == "Manchester Utd", "Man Utd"),
+           Team = replace(Team, Team == "Newcastle Utd", "Newcastle"),
+           Team = replace(Team, Team == "Norwich City", "Norwich"),
+           Team = replace(Team, Team == "Southampton", "Southampton"),
+           Team = replace(Team, Team == "Tottenham", "Tottenham"),
+           Team = replace(Team, Team == "Watford", "Watford"),
+           Team = replace(Team, Team == "West Ham", "West Ham"),
+           Team = replace(Team, Team == "Wolves", "Wolves"))
   
   return(df)
 }
@@ -117,12 +117,12 @@ shorten_teamnames <- function(df) {
 # bump plot
 get_bumpPlot <- function(df, teams, h_team, start_md, end_md) {
   start_md <- as.numeric(start_md)
-  end_md <- as.numeric(end_md)
+  end_md <- as.numeric(end_md) 
   
   df <- df %>%
     filter(Matchday <= end_md & Matchday >= start_md)
   
-  if (h_team == "ALL") {
+  if (h_team == "All") {
     df %>%
       ggplot(aes(Matchday, Rank, group = Team, colour = Team)) +
       geom_bump(smooth = 5, size = 2, lineend = "round") + 
@@ -131,15 +131,15 @@ get_bumpPlot <- function(df, teams, h_team, start_md, end_md) {
         breaks = teams,                             
         values = c("#FDB913", "#630F33", "#670E36", "#6CABDD", "#9C824A",
                    "#D71920", "#241F20", "#A7A5A6", "#00A650", "#AC944D",
-                   "#ffffff", "#58d8d3", "#fbee23", "#132257", "#e30613", 
+                   "#0053A0", "#ffffff", "#fbee23", "#132257", "#e30613", 
                    "#274488", "#7A263A", "#034694", "#D01317", "#B80102")) +
-      scale_y_reverse() +
       geom_text(data = df %>% 
                   filter(Matchday == start_md),
                 aes(label = Team, x = start_md - 1), hjust = 0.5, fontface = "bold", size = 4.5) +
       geom_text(data = df %>% 
                   filter(Matchday == end_md),
                 aes(label = Team, x = end_md + 1), hjust = 0.5, fontface = "bold", size = 4.5) +
+      scale_y_reverse() +
       theme_minimal() +
       theme(
         legend.position = "none",
@@ -150,9 +150,10 @@ get_bumpPlot <- function(df, teams, h_team, start_md, end_md) {
         axis.title.y = element_blank(),
         axis.text.y = element_blank(),
         axis.title.x = element_blank(),
-        axis.text.x = element_blank()
+        axis.ticks.x = element_line(colour = "black")
       )
   }
+  
   
   else {
     df %>%
@@ -163,18 +164,19 @@ get_bumpPlot <- function(df, teams, h_team, start_md, end_md) {
         breaks = teams,                             
         values = c("#FDB913", "#630F33", "#670E36", "#6CABDD", "#9C824A",
                    "#D71920", "#241F20", "#A7A5A6", "#00A650", "#AC944D",
-                   "#ffffff", "#58d8d3", "#fbee23", "#132257", "#e30613", 
-                   "#274488", "#7A263A", "#034694", "#D01317", "#B80102")) +
-      scale_y_reverse() +
+                   "#0053A0", "#ffffff", "#fbee23", "#132257", "#e30613", 
+                   "#274488", "#7A263A", "#034694", "#D01317", "#B80102")
+      ) +
       geom_text(data = df %>% 
                   filter(Matchday == start_md),
-                aes(label = Team, x = start_md - 1), hjust = 0.5, fontface = "bold", size = 4.5) +
+                aes(label = Team, start_md - 1), hjust = 0.5, fontface = "bold", size = 4.5) +
       geom_text(data = df %>% 
                   filter(Matchday == end_md),
                 aes(label = Team, x = end_md + 1), hjust = 0.5, fontface = "bold", size = 4.5) +
       gghighlight(Team == h_team,
-                  unhighlighted_params = list(colour = NULL, alpha = 0.1),
-                  use_direct_label = FALSE) +
+                  use_direct_label = FALSE,
+                  unhighlighted_params = list(colour = NULL, alpha = 0.25)) +
+      scale_y_reverse() +
       theme_minimal() +
       theme(
         legend.position = "none",
