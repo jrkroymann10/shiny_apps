@@ -115,7 +115,13 @@ shorten_teamnames <- function(df) {
 }
 
 # bump plot
-get_bumpPlot <- function(df, teams, h_team) {
+get_bumpPlot <- function(df, teams, h_team, start_md, end_md) {
+  start_md <- as.numeric(start_md)
+  end_md <- as.numeric(end_md)
+  
+  df <- df %>%
+    filter(Matchday <= end_md & Matchday >= start_md)
+  
   if (h_team == "ALL") {
     df %>%
       ggplot(aes(Matchday, Rank, group = Team, colour = Team)) +
@@ -129,11 +135,11 @@ get_bumpPlot <- function(df, teams, h_team) {
                    "#274488", "#7A263A", "#034694", "#D01317", "#B80102")) +
       scale_y_reverse() +
       geom_text(data = df %>% 
-                  filter(Matchday == 1),
-                aes(label = Team, x = 0), hjust = 0.5, fontface = "bold", size = 4.5) +
+                  filter(Matchday == start_md),
+                aes(label = Team, x = start_md - 1), hjust = 0.5, fontface = "bold", size = 4.5) +
       geom_text(data = df %>% 
-                  filter(Matchday == max(Matchday)),
-                aes(label = Team, x = max(Matchday) + 1), hjust = 0.5, fontface = "bold", size = 4.5) +
+                  filter(Matchday == end_md),
+                aes(label = Team, x = end_md + 1), hjust = 0.5, fontface = "bold", size = 4.5) +
       theme_minimal() +
       theme(
         legend.position = "none",
@@ -161,11 +167,11 @@ get_bumpPlot <- function(df, teams, h_team) {
                    "#274488", "#7A263A", "#034694", "#D01317", "#B80102")) +
       scale_y_reverse() +
       geom_text(data = df %>% 
-                  filter(Matchday == 1),
-                aes(label = Team, x = 0), hjust = 0.5, fontface = "bold", size = 4.5) +
+                  filter(Matchday == start_md),
+                aes(label = Team, x = start_md - 1), hjust = 0.5, fontface = "bold", size = 4.5) +
       geom_text(data = df %>% 
-                  filter(Matchday == max(Matchday)),
-                aes(label = Team, x = max(Matchday) + 1), hjust = 0.5, fontface = "bold", size = 4.5) +
+                  filter(Matchday == end_md),
+                aes(label = Team, x = end_md + 1), hjust = 0.5, fontface = "bold", size = 4.5) +
       gghighlight(Team == h_team,
                   unhighlighted_params = list(colour = NULL, alpha = 0.1),
                   use_direct_label = FALSE) +
@@ -205,6 +211,6 @@ server <- function(input, output) {
     bump_df <- shorten_teamnames(bump_df)
     
     teams <- unique(bump_df$Team)
-    get_bumpPlot(bump_df, teams, input$Team)
+    get_bumpPlot(bump_df, teams, input$Team, input$Start_MD, input$End_MD)
   })
 }
