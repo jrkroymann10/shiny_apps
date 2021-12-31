@@ -1,0 +1,13 @@
+name: premierLeague_dashboards
+title: premierLeague_dashboards
+username:
+account: jrkroymann10
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 5383582
+bundleId: 5423641
+url: https://jrkroymann10.shinyapps.io/premierleague_dashboards/
+when: 1640987681.02052
+lastSyncTime: 1640987681.02052
+asMultiple: FALSE
+asStatic: FALSE

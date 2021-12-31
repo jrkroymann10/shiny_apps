@@ -175,7 +175,7 @@ get_bumpPlot <- function(df, teams, h_team, start_md, end_md) {
                 aes(label = Team, x = end_md + 1), hjust = 0.5, fontface = "bold", size = 4.5) +
       gghighlight(Team == h_team,
                   use_direct_label = FALSE,
-                  unhighlighted_params = list(colour = NULL, alpha = 0.25)) +
+                  unhighlighted_params = list(colour = NULL, alpha = 0.1)) +
       scale_y_reverse() +
       theme_minimal() +
       theme(
