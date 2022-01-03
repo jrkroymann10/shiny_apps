@@ -6,7 +6,7 @@ library(readr)
 library(gghighlight)
 library(ggplot2)
 
-match_data <- read_csv("data/pl_matchdata.csv")
+match_data <- get_match_results(country = "ENG", gender = "M", season_end_year = "2022", tier = "1st")
 
 
 transform_matchResults <- function(fbref_mr) {
@@ -126,7 +126,7 @@ get_bumpPlot <- function(df, teams, h_team, start_md, end_md) {
     df %>%
       ggplot(aes(Matchday, Rank, group = Team, colour = Team)) +
       geom_bump(smooth = 5, size = 2, lineend = "round") + 
-      geom_point(size = 3) +
+      geom_point(size = 3.75) +
       scale_colour_manual(
         breaks = teams,                             
         values = c("#FDB913", "#630F33", "#670E36", "#6CABDD", "#9C824A",
@@ -135,10 +135,10 @@ get_bumpPlot <- function(df, teams, h_team, start_md, end_md) {
                    "#274488", "#7A263A", "#034694", "#D01317", "#B80102")) +
       geom_text(data = df %>% 
                   filter(Matchday == start_md),
-                aes(label = Team, x = start_md - 1), hjust = 0.5, fontface = "bold", size = 4.5) +
+                aes(label = Team, x = start_md - 1), hjust = 0.5, fontface = "bold", size = 5) +
       geom_text(data = df %>% 
                   filter(Matchday == end_md),
-                aes(label = Team, x = end_md + 1), hjust = 0.5, fontface = "bold", size = 4.5) +
+                aes(label = Team, x = end_md + 1), hjust = 0.5, fontface = "bold", size = 5) +
       scale_y_reverse() +
       theme_minimal() +
       theme(
@@ -150,7 +150,7 @@ get_bumpPlot <- function(df, teams, h_team, start_md, end_md) {
         axis.title.y = element_blank(),
         axis.text.y = element_blank(),
         axis.title.x = element_blank(),
-        axis.ticks.x = element_line(colour = "black")
+        axis.text.x = element_blank()
       )
   }
   
@@ -169,10 +169,10 @@ get_bumpPlot <- function(df, teams, h_team, start_md, end_md) {
       ) +
       geom_text(data = df %>% 
                   filter(Matchday == start_md),
-                aes(label = Team, start_md - 1), hjust = 0.5, fontface = "bold", size = 4.5) +
+                aes(label = Team, start_md - 1), fontface = "bold", size = 4.5) +
       geom_text(data = df %>% 
                   filter(Matchday == end_md),
-                aes(label = Team, x = end_md + 1), hjust = 0.5, fontface = "bold", size = 4.5) +
+                aes(label = Team, x = end_md + 1), fontface = "bold", size = 4.5) +
       gghighlight(Team == h_team,
                   use_direct_label = FALSE,
                   unhighlighted_params = list(colour = NULL, alpha = 0.1)) +
@@ -214,5 +214,8 @@ server <- function(input, output) {
     
     teams <- unique(bump_df$Team)
     get_bumpPlot(bump_df, teams, input$Team, input$Start_MD, input$End_MD)
-  })
+  },
+  
+  width = 1250,
+  height = 450)
 }

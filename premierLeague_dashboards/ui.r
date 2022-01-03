@@ -1,6 +1,6 @@
 # load libraries, data -----------------------------------------------------------------
 library(readr)
-match_data <- read_csv("data/pl_matchdata.csv")
+match_data <- get_match_results(country = "ENG", gender = "M", season_end_year = "2022", tier = "1st")
 
 team_values <- c("All", "Arsenal", "Aston Villa", "Brentford", "Brighton", "Burnley", "Chelsea",
                  "Palace", "Everton", "Leeds", "Leicester", "Liverpool", "Man City", "Man Utd",
@@ -42,10 +42,8 @@ bump_sidebar <- sidebarPanel(
 )
 
 bump_content <- mainPanel(
-  plotOutput("plot", 
-             height = 475,
-             width = 950)
-  )
+  plotOutput("plot")
+)
 
 bump_panel <- tabPanel(
   "Table Bump Plot",
