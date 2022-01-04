@@ -1,0 +1,87 @@
+---
+title:  
+output: html_document
+runtime: shiny
+---
+
+
+<body style = "background-color:black;">
+
+<style>
+    body { background-color: black; }
+</style>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, echo=FALSE, include=FALSE}
+# loading libraries, data
+library(reactable)
+library(tidyverse)
+library(worldfootballR)
+library(kit)
+
+pl_table <- get_season_team_stats(country = "ENG", season_end_year = "2022",
+                                  gender = "M", tier = "1st", stat_type = "league_table")
+
+pl_table <- pl_table %>%
+  select(Squad, MP, W, D, L, GD, Pts, Rk)
+```
+
+```{r, echo=FALSE}
+# creating table
+reactable(pl_table,
+          
+          defaultColDef = colDef(align = "center"),
+          
+          columns = list(
+            Squad = colDef(name = "Squad"),
+            MP = colDef(name = "Matches Played"),
+            W = colDef(name = "Wins"),
+            D = colDef(name = "Draws"),
+            L = colDef(name = "Losses"),
+            GD = colDef(name = "Goal Difference"),
+            Pts = colDef(name = "Points",
+              style = function(value) {
+                if (value >= pl_table[topn(pl_table$Rk, decreasing = FALSE, 4)[4], ]$Pts) {
+                  background <- "#6db89a" # champions league
+                }
+                
+                else if (value == pl_table[topn(pl_table$Rk, decreasing = FALSE, 5)[5], ]$Pts) {
+                  background <- "#fec164" # europa league
+                }
+                
+                else if (value <= pl_table[topn(pl_table$Rk, decreasing = TRUE, 3)[3], ]$Pts) {
+                  background <- "#e75529" # relegation
+                }
+                
+                else {
+                  background <- "#Black"
+                }
+                
+                list(background = background, outline = "white")
+              }),
+            Rk = colDef(show = FALSE)),
+          
+          
+          
+          defaultSortOrder = "asc",
+          defaultSorted = "Rk",
+          showSortIcon = FALSE,
+          
+          defaultPageSize = 20,
+          
+          bordered = TRUE,
+          outlined = TRUE,
+          
+          theme = reactableTheme(
+            color = "White",
+            backgroundColor = "Black",
+            borderColor = "White"
+            
+            
+          )
+         )
+          
+```
