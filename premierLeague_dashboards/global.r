@@ -14,57 +14,8 @@ team_values <- c("All", "Arsenal", "Aston Villa", "Brentford", "Brighton", "Burn
                  "Norwich", "Palace", "Southampton", "Tottenham", "Watford", "West Ham", "Wolves")
 
 md_values <- 1:tail(match_data[!is.na(match_data$Home_xG),]$Wk, 1)
-# UI Stuff -----------------------------------------------------------------------------------------------------------------
-# page 1 - introduction
-intro_panel <- tabPanel(
-  "Introduction",
-  
-  titlePanel("Welcome to Joe's Premier League Dashboards!")
-)
 
-# page 2 - table bump plot
-bump_sidebar <- sidebarPanel(
-  selectInput(
-    "Team",
-    label = "Teams",
-    choices = team_values,
-    selected = "ALL"
-  ),
-  
-  selectInput(
-    "Start_MD",
-    label = "Starting Matchday",
-    choices = md_values,
-    selected = 1
-  ),
-  
-  selectInput(
-    "End_MD",
-    label = "Ending Matchday",
-    choices = md_values,
-    selected = max(md_values)
-  ),
-  
-  width = 2
-)
-
-bump_content <- mainPanel(
-  plotOutput("plot")
-)
-
-bump_panel <- tabPanel(
-  "Table Bump Plot",
-  
-  titlePanel("View your Team's Journey Up and Down the Table!"),
-  
-  p("use the selector input below to choose a team to focus on"),
-  
-  sidebarLayout(
-    bump_sidebar, bump_content
-  )
-)
-
-# Server Functions ---------------------------------------------------------------------------------------------------------
+# [Server] Bump Plot Functions ------------------------------------------------------------------------------------------------------
 transform_matchResults <- function(fbref_mr) {
   fbref_mr %>%
     mutate(HomePoints = ifelse(HomeGoals > AwayGoals, 3, ifelse(HomeGoals < AwayGoals, 0, 1)),
@@ -170,6 +121,25 @@ shorten_teamnames <- function(df) {
   return(df)
 }
 
+# one big guy that gets the df we need for the bump plot :)
+get_bumpData <- function(match_data) {
+  pl_data <- transform_matchResults(match_data)
+  last_week <- find_lastWeek(pl_data)
+  bump_df <- fill_df(pl_data, last_week)
+  
+  # setting data type of multiple columns to numeric
+  bump_df$Games_Played <- as.numeric(bump_df$Games_Played)
+  bump_df$Points <- as.numeric(bump_df$Points)
+  bump_df$Total_Points <- as.numeric(bump_df$Total_Points)
+  bump_df$Matchday <- as.numeric(bump_df$Matchday)
+  bump_df$GD <- as.numeric(bump_df$GD)
+  
+  teams <- unique(bump_df$Team)
+  bump_df <- fill_pointsAndGd(bump_df, teams)
+  bump_df <- add_rank(bump_df)
+  bump_df <- shorten_teamnames(bump_df)
+}
+
 # bump plot
 get_bumpPlot <- function(df, teams, h_team, start_md, end_md) {
   start_md <- as.numeric(start_md)
@@ -247,4 +217,3 @@ get_bumpPlot <- function(df, teams, h_team, start_md, end_md) {
       )
   }
 }
-# -------------------------------------------------------------------------------------------

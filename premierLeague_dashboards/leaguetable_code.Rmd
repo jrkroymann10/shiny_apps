@@ -62,9 +62,7 @@ reactable(pl_table,
                 
                 list(background = background, outline = "white")
               }),
-            Rk = colDef(show = FALSE)),
-          
-          
+          Rk = colDef(show = FALSE)),
           
           defaultSortOrder = "asc",
           defaultSorted = "Rk",
@@ -79,8 +77,6 @@ reactable(pl_table,
             color = "White",
             backgroundColor = "Black",
             borderColor = "White"
-            
-            
           )
          )
           
