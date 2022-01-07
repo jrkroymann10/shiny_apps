@@ -18,6 +18,8 @@ shinyUI(
         ),
         tabPanel(
           "Interactive Bump Plot",
+          titlePanel("View your team's journey up and down the table!"),
+          br(),
           fluidRow(
             column(2,
                    selectInput(
@@ -28,20 +30,30 @@ shinyUI(
           
             column(5,
                    sliderInput(inputId = "md_range", 
-                   label = "Select a Matchday Range to focus on!",
+                   label = "Matchday Range",
                    value = c(1, max(md_values)),
                    min = 1,
                    max = max(md_values),
                    round = TRUE,
                    step = 1))
           ),
-          
+          br(),
           plotOutput(outputId = "bumpPlot")
         )
       ),
       # GK Zone Tab ----
       tabPanel(
-        "GK Zone"
+        "GK Zone",
+        
+        titlePanel("Pick the Visualization you'd like to view (Or the one the makes you feel best about your team's keeper)"),
+        br(),
+        selectInput(inputId = "gk_viz",
+                    label = "Select a Viz",
+                    choices = c("Who's beating the model?")
+                    ),
+        br(),
+        plotlyOutput("gkPlot"),
+        br()
       )
     )
   )

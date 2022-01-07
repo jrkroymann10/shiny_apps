@@ -5,10 +5,10 @@ account: jrkroymann10
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 5383582
-bundleId: 5437535
+bundleId: 5441958
 url: https://jrkroymann10.shinyapps.io/premierleague_dashboards/
-when: 1641407151.9587
-lastSyncTime: 1641407151.9587
+when: 1641509294.6188
+lastSyncTime: 1641509294.6188
 asMultiple: FALSE
 asStatic: FALSE
-ignoredFiles: bumpplot_code.R|data/pl_matchdata.csv|leaguetable_code.Rmd|README.md
+ignoredFiles: data/pl_matchdata.csv|gkZone_code.rmd|leaguetable_code.Rmd|README.md

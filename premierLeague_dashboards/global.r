@@ -6,14 +6,51 @@ library(ggbump)
 library(readr)
 library(gghighlight)
 library(ggplot2)
+library(plotly)
 
 match_data <- get_match_results(country = "ENG", gender = "M", season_end_year = "2022", tier = "1st")
+
+gk_data <- fb_big5_advanced_season_stats(season_end_year = 2022,
+                                         stat_type = "keepers",
+                                         team_or_player = "player")
+
+gk_data_adv <- fb_big5_advanced_season_stats(season_end_year = 2022,
+                                             stat_type = "keepers_adv",
+                                             team_or_player = "player")
 
 team_values <- c("All", "Arsenal", "Aston Villa", "Brentford", "Brighton", "Burnley", "Chelsea",
                  "Everton", "Leeds", "Leicester", "Liverpool", "Man City", "Man Utd", "Newcastle",
                  "Norwich", "Palace", "Southampton", "Tottenham", "Watford", "West Ham", "Wolves")
 
 md_values <- 1:tail(match_data[!is.na(match_data$Home_xG),]$Wk, 1)
+
+# [Server] GK Viz Functions ----
+get_plKeeper_adv <- function(gk_data, gk_data_adv) {
+  pl_keepers <- gk_data %>%
+    filter(Comp == "Premier League", Min_Playing > 900)
+  
+  pl_keepers_adv <- merge(pl_keepers, gk_data_adv, no.dups = TRUE)
+  colnames(pl_keepers_adv)[colnames(pl_keepers_adv) == "_per_90_Expected"] <- "per_90"
+  
+  return(pl_keepers_adv)
+}
+
+gk_model_plot <- function(data) {
+  ggplotly(ggplot(data = pl_keepers_adv, aes(x = SoTA, y = per_90, colour = Save_percent,
+                                             text = paste(Player, " (", Squad, ")", sep = ""))) +
+             xlim(40, 100) +
+             ylim(-0.4, 0.4) +
+             geom_vline(xintercept = 70) +
+             geom_hline(yintercept = 0) +
+             geom_point(aes(size = GA)) + 
+             labs(title = "Who's Beating the Model? (And Does it Matter?)",
+                  subtitle = "PSxG - Goals Allowed per 90 by Shots on Target for PL Goalkeepers with > 900 minutes played") +
+             theme_minimal(),
+           
+           tooltip = "text"
+  )
+}
+
 
 # [Server] Bump Plot Functions ------------------------------------------------------------------------------------------------------
 transform_matchResults <- function(fbref_mr) {
