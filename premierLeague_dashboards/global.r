@@ -29,26 +29,66 @@ get_plKeeper_adv <- function(gk_data, gk_data_adv) {
   pl_keepers <- gk_data %>%
     filter(Comp == "Premier League", Min_Playing > 900)
   
-  pl_keepers_adv <- merge(pl_keepers, gk_data_adv, no.dups = TRUE)
+  pl_keepers_adv <- merge(gk_data_adv, pl_keepers)
+  colnames(pl_keepers_adv)[colnames(pl_keepers_adv) == "#OPA_Sweeper"] <- "OPA_Sweeper"
+  colnames(pl_keepers_adv)[colnames(pl_keepers_adv) == "#OPA_per_90_Sweeper"] <- "OPA_Sweeper_per_90"
   colnames(pl_keepers_adv)[colnames(pl_keepers_adv) == "_per_90_Expected"] <- "per_90"
   
   return(pl_keepers_adv)
 }
 
 gk_model_plot <- function(data) {
-  ggplotly(ggplot(data = pl_keepers_adv, aes(x = SoTA, y = per_90, colour = Save_percent,
-                                             text = paste(Player, " (", Squad, ")", sep = ""))) +
+  ggplotly(ggplot(data = data, aes(x = SoTA, y = per_90, colour = Save_percent,
+                                             text = paste(Player, " (", Squad, ")", "\n",
+                                                          "PSxG - GA per 90: ", per_90, "\n",
+                                                          "Shots on Target Against: ", SoTA, "\n",
+                                                          "Goals Allowed: ", GA, "\n",
+                                                          sep = ""))) +
              xlim(40, 100) +
              ylim(-0.4, 0.4) +
              geom_vline(xintercept = 70) +
              geom_hline(yintercept = 0) +
              geom_point(aes(size = GA)) + 
+             ylab("Post-Shot Expected Goals - Goals Allowed per 90") +
+             xlab("Shots on Target Against") +
              labs(title = "Who's Beating the Model? (And Does it Matter?)",
                   subtitle = "PSxG - Goals Allowed per 90 by Shots on Target for PL Goalkeepers with > 900 minutes played") +
-             theme_minimal(),
+             theme_minimal() +
+             theme(title = element_text(size = 14),
+                   axis.title = element_text(size = 10)),
            
            tooltip = "text"
   )
+}
+
+gk_sweeper_plot <- function(data) {
+  ggplotly(ggplot(data = data, aes(x = OPA_Sweeper_per_90, y = AvgDist_Sweeper,
+                                   text = paste(Player, " (", Squad,")",
+                                                          sep = ""))) +
+             geom_point(colour = "#1DB954", size = 3) +
+             scale_size_identity() +
+             
+             scale_x_continuous(expand = c(0,0), limits = c(0, 1.55)) +
+             scale_y_continuous(expand = c(0,0), limits = c(11.25, 18.1)) + 
+             
+             labs(title = "Sweeper or Nah?",
+                  subtitle = "Distance of Defensive Actions from Goal by Activity Outside of the Penalty Area") +
+             
+             theme(
+               legend.position = "none",
+               
+               panel.grid = element_blank(),
+               panel.background = element_rect(fill = "black"),
+               text = element_text(colour = "white"),
+               
+               plot.background = element_rect(fill = "black"),
+               
+               axis.line = element_line(colour = "white"),
+               axis.text = element_text(colour = "white"),
+               axis.title = element_text(colour = "white"),
+               axis.ticks = element_line(colour = "white")
+             ),
+           tooltip = "text")
 }
 
 

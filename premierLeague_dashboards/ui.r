@@ -49,7 +49,8 @@ shinyUI(
         br(),
         selectInput(inputId = "gk_viz",
                     label = "Select a Viz",
-                    choices = c("Who's beating the model?")
+                    choices = c("Who's Beating the Model?", "Getting Out of the Box"),
+                    selected = "Who's Beating the Model?"
                     ),
         br(),
         plotlyOutput("gkPlot"),
