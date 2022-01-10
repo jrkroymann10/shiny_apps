@@ -47,13 +47,18 @@ shinyUI(
         
         titlePanel("Pick the Visualization you'd like to view (Or the one the makes you feel best about your team's keeper)"),
         br(),
-        selectInput(inputId = "gk_viz",
-                    label = "Select a Viz",
-                    choices = c("Who's Beating the Model?", "Getting Out of the Box"),
-                    selected = "Who's Beating the Model?"
-                    ),
-        br(),
-        plotlyOutput("gkPlot"),
+        fluidRow(
+          column(3,
+                 selectInput(inputId = "gk_viz",
+                             label = "Select a Viz",
+                             choices = c("Who's Beating the Model?", "Getting Out of the Box"),
+                             selected = "Who's Beating the Model?"
+                             )
+                 ),
+          column(9,
+                 girafeOutput("gkPlot")
+                 ),
+          ),
         br()
       )
     )

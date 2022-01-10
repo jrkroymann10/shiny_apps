@@ -6,7 +6,7 @@ library(ggbump)
 library(readr)
 library(gghighlight)
 library(ggplot2)
-library(plotly)
+library(ggiraph)
 
 match_data <- get_match_results(country = "ENG", gender = "M", season_end_year = "2022", tier = "1st")
 
@@ -33,33 +33,59 @@ get_plKeeper_adv <- function(gk_data, gk_data_adv) {
   colnames(pl_keepers_adv)[colnames(pl_keepers_adv) == "#OPA_Sweeper"] <- "OPA_Sweeper"
   colnames(pl_keepers_adv)[colnames(pl_keepers_adv) == "#OPA_per_90_Sweeper"] <- "OPA_Sweeper_per_90"
   colnames(pl_keepers_adv)[colnames(pl_keepers_adv) == "_per_90_Expected"] <- "per_90"
+  colnames(pl_keepers_adv)[colnames(pl_keepers_adv) == "PSxG+_per__minus__Expected"] <- "PSxG_minus_GA"
   
   return(pl_keepers_adv)
 }
 
 gk_model_plot <- function(data) {
-  ggplotly(ggplot(data = data, aes(x = SoTA, y = per_90, colour = Save_percent,
-                                             text = paste(Player, " (", Squad, ")", "\n",
-                                                          "PSxG - GA per 90: ", per_90, "\n",
-                                                          "Shots on Target Against: ", SoTA, "\n",
-                                                          "Goals Allowed: ", GA, "\n",
-                                                          sep = ""))) +
-             xlim(40, 100) +
-             ylim(-0.4, 0.4) +
-             geom_vline(xintercept = 70) +
-             geom_hline(yintercept = 0) +
-             geom_point(aes(size = GA)) + 
-             ylab("Post-Shot Expected Goals - Goals Allowed per 90") +
-             xlab("Shots on Target Against") +
-             labs(title = "Who's Beating the Model? (And Does it Matter?)",
-                  subtitle = "PSxG - Goals Allowed per 90 by Shots on Target for PL Goalkeepers with > 900 minutes played") +
-             theme_minimal() +
-             theme(title = element_text(size = 14),
-                   axis.title = element_text(size = 10)),
-           
-           tooltip = "text"
-  )
-}
+  ggplot(data = data, aes(x = SoTA, y = PSxG_minus_GA, colour = Save_percent)) +
+    xlim(40, 100) +
+    geom_vline(xintercept = 70, colour = "white", linetype = "dashed") +
+    geom_hline(yintercept = 0, colour = "white", linetype = "dashed") +
+    geom_point_interactive(aes(size = 3, tooltip = paste(Player, " - ", Squad, "\n",
+                                                         "PSxG - GA: ", PSxG_minus_GA, "\n",
+                                                         "SoTA: ", SoTA, "\n",
+                                                         "GA: ", GA,
+                                                         sep = ),
+                               data_id = Player)) + 
+    scale_colour_gradientn(colours = met.brewer("OKeeffe2", n = 5)) +
+    scale_y_continuous(limits = c(-8, 8),
+                       breaks = c(-8, -6, -4, -2, 0, 2, 4, 6, 8)) +
+    labs(title = "Who's Beating the Model? (And Does it Matter?)",
+         subtitle = "Shot Stopping Ability by Shots on Target for PL GK's (> 900 minutes played)") +
+    xlab("Shots on Target Against") +
+    ylab("Post-Shot Expected Goals - Goals Allowed per 90") +
+    guides(size = FALSE,
+           colour = guide_colourbar(label.position = "bottom",
+                                    title.position = "top",
+                                    title = "Save %",
+           )
+    ) +
+    theme(
+      text = element_text(colour = "white"),
+      title = element_text(size = 12),
+      
+      plot.background = element_rect(fill = "black"),
+      
+      axis.title = element_text(colour = "white", size = 10),
+      axis.title.y = element_text(margin = margin(0, 7.5, 0, 5)),
+      axis.title.x = element_text(margin = margin(2.5, 0, 5, 0)),
+      axis.text = element_text(colour = "white"),
+      axis.ticks = element_line(colour = "white", linetype = "longdash"),
+      axis.line = element_line(colour = "white"),
+      
+      panel.background = element_rect(colour = "black", fill = "black"),
+      panel.grid = element_blank(),
+      
+      legend.position = c(0.175, 0.8),
+      legend.direction = "horizontal",
+      legend.background = element_rect(colour = "white", fill = "black", linetype = "dashed"),
+      legend.text = element_text(colour = "white"),
+      legend.title = element_text(colour = "white"),
+      legend.title.align = 0.5,
+      legend.key.size = unit(0.75, "cm")
+    )}
 
 gk_sweeper_plot <- function(data) {
   ggplotly(ggplot(data = data, aes(x = OPA_Sweeper_per_90, y = AvgDist_Sweeper,
