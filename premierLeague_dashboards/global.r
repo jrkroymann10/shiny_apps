@@ -7,6 +7,7 @@ library(readr)
 library(gghighlight)
 library(ggplot2)
 library(ggiraph)
+library(MetBrewer)
 
 match_data <- get_match_results(country = "ENG", gender = "M", season_end_year = "2022", tier = "1st")
 
@@ -53,7 +54,7 @@ gk_model_plot <- function(data) {
     scale_y_continuous(limits = c(-8, 8),
                        breaks = c(-8, -6, -4, -2, 0, 2, 4, 6, 8)) +
     labs(title = "Who's Beating the Model? (And Does it Matter?)",
-         subtitle = "Shot Stopping Ability by Shots on Target for PL GK's (> 900 minutes played)") +
+         subtitle = "Shot Stopping Ability by Shots on Target for Premier League GK's (> 900 minutes played)") +
     xlab("Shots on Target Against") +
     ylab("Post-Shot Expected Goals - Goals Allowed per 90") +
     guides(size = FALSE,
@@ -64,13 +65,13 @@ gk_model_plot <- function(data) {
     ) +
     theme(
       text = element_text(colour = "white"),
-      title = element_text(size = 12),
+      title = element_text(size = 14, margin = margin(2.5, 0, 0, 0)),
       
       plot.background = element_rect(fill = "black"),
       
-      axis.title = element_text(colour = "white", size = 10),
-      axis.title.y = element_text(margin = margin(0, 7.5, 0, 5)),
-      axis.title.x = element_text(margin = margin(2.5, 0, 5, 0)),
+      axis.title = element_text(colour = "white", size = 12),
+      axis.title.y = element_text(margin = margin(0, 8, 0, 6)),
+      axis.title.x = element_text(margin = margin(3, 0, 6, 0)),
       axis.text = element_text(colour = "white"),
       axis.ticks = element_line(colour = "white", linetype = "longdash"),
       axis.line = element_line(colour = "white"),
@@ -88,33 +89,42 @@ gk_model_plot <- function(data) {
     )}
 
 gk_sweeper_plot <- function(data) {
-  ggplotly(ggplot(data = data, aes(x = OPA_Sweeper_per_90, y = AvgDist_Sweeper,
-                                   text = paste(Player, " (", Squad,")",
-                                                          sep = ""))) +
-             geom_point(colour = "#1DB954", size = 3) +
-             scale_size_identity() +
-             
-             scale_x_continuous(expand = c(0,0), limits = c(0, 1.55)) +
-             scale_y_continuous(expand = c(0,0), limits = c(11.25, 18.1)) + 
-             
-             labs(title = "Sweeper or Nah?",
-                  subtitle = "Distance of Defensive Actions from Goal by Activity Outside of the Penalty Area") +
-             
-             theme(
-               legend.position = "none",
-               
-               panel.grid = element_blank(),
-               panel.background = element_rect(fill = "black"),
-               text = element_text(colour = "white"),
-               
-               plot.background = element_rect(fill = "black"),
-               
-               axis.line = element_line(colour = "white"),
-               axis.text = element_text(colour = "white"),
-               axis.title = element_text(colour = "white"),
-               axis.ticks = element_line(colour = "white")
-             ),
-           tooltip = "text")
+  ggplot(data = pl_keepers_adv, aes(x = OPA_Sweeper_per_90, y = AvgDist_Sweeper)) +
+    geom_text(aes(x = 0.25, y = 18, label = "Outside of Box", vjust = 1.5), size = 4, colour = "white") +
+    geom_text(aes(x = 1.41, y = 12, label = "Penalty Spot", vjust = -1), size = 4, colour = "white") +
+    geom_hline(yintercept = 12, colour = "white", linetype = "dashed") +
+    geom_hline(yintercept = 18, colour = "white", linetype = "dashed") +
+    
+    geom_point_interactive(size = 4, colour = met.brewer("Lakota", n = 1), 
+                           aes(tooltip = paste(Player, " - ", Squad, "\n",
+                                               "Avg Distance: ", AvgDist_Sweeper, "\n",
+                                               "Def Actions per 90: ", OPA_Sweeper_per_90, "\n",
+                                               sep = ""),
+                               data_id = Player)) +
+    scale_x_continuous(expand = c(0,0), limits = c(0, 1.6), breaks = c(.5, 1, 1.5)) +
+    scale_y_continuous(expand = c(0,0), limits = c(11.5, 18.5)) +
+    labs(title = "Sweeper or Nah?",
+         subtitle = "Distance of Defensive Actions from Goal by Activity Outside of the Penalty Area") +
+    
+    xlab("Defensive Actions Outside of Penalty Area per 90") +
+    ylab("Average Distance from Goal of All Defensive Actions (Yards)") +
+    
+    theme(
+      panel.grid = element_blank(),
+      panel.background = element_rect(fill = "black"),
+      text = element_text(colour = "white"),
+      
+      plot.background = element_rect(fill = "black"),
+      
+      axis.line = element_line(colour = "white"),
+      axis.text = element_text(colour = "white"),
+      axis.title = element_text(colour = "white", size = 12),
+      axis.ticks = element_line(colour = "white"),
+      axis.title.y = element_text(margin = margin(0, 7.5, 0, 5)),
+      axis.title.x = element_text(margin = margin(4, 0, 5, 0)),
+      
+      title = element_text(size = 14, margin = margin(5, 0, 0, 0))
+    )
 }
 
 

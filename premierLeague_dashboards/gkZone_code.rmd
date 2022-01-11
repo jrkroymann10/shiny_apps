@@ -103,21 +103,26 @@ girafe(ggobj = gk_model,
 ```
 
 ```{r, echo=FALSE}
-ggplotly(ggplot(data = pl_keepers_adv, aes(x = OPA_Sweeper_per_90, y = AvgDist_Sweeper,
-                                           text = paste(Player, " (", Squad,")",
-                                                        sep = ""))) +
-  geom_point(colour = "#1DB954", size = 3) +
-  scale_size_identity() +
+gk_sweeper <- function(data) {
+  ggplot(data = pl_keepers_adv, aes(x = OPA_Sweeper_per_90, y = AvgDist_Sweeper)) +
+    geom_text(aes(x = 0.25, y = 18, label = "Outside of Box", vjust = 1.5), colour = "white") +
+    geom_text(aes(x = 1.41, y = 12, label = "Penalty Spot", vjust = -1), colour = "white") +
+    geom_hline(yintercept = 12, colour = "white", linetype = "dashed") +
+    geom_hline(yintercept = 18, colour = "white", linetype = "dashed") +
+    
+    geom_point_interactive(size = 3, colour = met.brewer("Lakota", n = 1), 
+                         aes(tooltip = paste(Player, " - ", Squad, "\n",
+                                             "Avg Distance: ", AvgDist_Sweeper, "\n",
+                                             "Def Actions per 90: ", OPA_Sweeper_per_90, "\n",
+                                             sep = ""),
+                             data_id = Player)) +
+    labs(title = "Sweeper or Nah?",
+        subtitle = "Distance of Defensive Actions from Goal by Activity Outside of the Penalty Area") +
   
-  scale_x_continuous(expand = c(0,0), limits = c(0, 1.55)) +
-  scale_y_continuous(expand = c(0,0), limits = c(11.25, 18.1)) + 
-  
-  labs(title = "Sweeper or Nah?",
-       subtitle = "Distance of Defensive Actions from Goal by Activity Outside of the Penalty Area") +
+  xlab("Defensive Actions Outside of Penalty Area per 90") +
+  ylab("Average Distance from Goal of All Defensive Actions (Yards)") +
   
   theme(
-    legend.position = "none",
-    
     panel.grid = element_blank(),
     panel.background = element_rect(fill = "black"),
     text = element_text(colour = "white"),
@@ -126,9 +131,19 @@ ggplotly(ggplot(data = pl_keepers_adv, aes(x = OPA_Sweeper_per_90, y = AvgDist_S
     
     axis.line = element_line(colour = "white"),
     axis.text = element_text(colour = "white"),
-    axis.title = element_text(colour = "white"),
-    axis.ticks = element_line(colour = "white")
-    ),
-  tooltip = "text")
+    axis.title = element_text(colour = "white", size = 10),
+    axis.ticks = element_line(colour = "white"),
+    axis.title.y = element_text(margin = margin(0, 7.5, 0, 5)),
+    axis.title.x = element_text(margin = margin(4, 0, 5, 0)),
+    
+    title = element_text(size = 14, margin = margin(5, 0, 0, 0))
+    )
+}
+
+girafe(
+  ggobj = gk_sweeper(pl_keepers_adv)
+)
+
+
 ```
 

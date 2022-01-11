@@ -11,10 +11,22 @@ shinyServer(function(input, output, session) {
     if (input$gk_viz == "Who's Beating the Model?") {
       girafe(
         ggobj = gk_model_plot(gk_data),
-        width_svg = 8, height_svg = 5
-      )
-    } else if (input$gk_viz == "Getting Out of the Box") {
-      gk_sweeper_plot(gk_data)
+        width_svg = 9, height_svg = 5.5,
+        options = list(
+          opts_tooltip(use_fill = TRUE),
+          opts_hover_inv(css = "opacity:0.5;")
+          )
+        )
+    }
+      else if (input$gk_viz == "Getting Out of the Box") {
+        girafe(
+          ggobj = gk_sweeper_plot(gk_data),
+          width_svg = 9, height_svg = 5.5,
+          options = list(
+            opts_tooltip(use_fill = TRUE),
+            opts_hover_inv(css = "opacity:0.5;")
+          )
+        )
     }
     
     })
