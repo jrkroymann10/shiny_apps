@@ -17,8 +17,7 @@ shinyServer(function(input, output, session) {
           opts_hover_inv(css = "opacity:0.5;")
           )
         )
-    }
-      else if (input$gk_viz == "Getting Out of the Box") {
+    } else if (input$gk_viz == "Getting Out of the Box") {
         girafe(
           ggobj = gk_sweeper_plot(gk_data),
           width_svg = 9, height_svg = 5.5,
@@ -27,7 +26,18 @@ shinyServer(function(input, output, session) {
             opts_hover_inv(css = "opacity:0.5;")
           )
         )
-    }
+    } else if (input$gk_viz == "Are Crosses Scary?") {
+        girafe(
+          ggobj = gk_cross_plot(gk_data),
+          width_svg = 9, height_svg = 5.5,
+          options = list(
+            opts_tooltip(use_fill = TRUE),
+            opts_hover_inv(css = "opacity:0.5;")
+          )
+        )
+      }
+    
+    
     
     })
 })

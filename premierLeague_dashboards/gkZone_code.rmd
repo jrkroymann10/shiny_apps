@@ -15,6 +15,7 @@ library(tidyverse)
 library(ggplot2)
 library(ggiraph)
 library(MetBrewer)
+library(grDevices)
 ```
 
 ```{r, echo=FALSE}
@@ -104,11 +105,11 @@ girafe(ggobj = gk_model,
 
 ```{r, echo=FALSE}
 gk_sweeper <- function(data) {
-  ggplot(data = pl_keepers_adv, aes(x = OPA_Sweeper_per_90, y = AvgDist_Sweeper)) +
-    geom_text(aes(x = 0.25, y = 18, label = "Outside of Box", vjust = 1.5), colour = "white") +
-    geom_text(aes(x = 1.41, y = 12, label = "Penalty Spot", vjust = -1), colour = "white") +
-    geom_hline(yintercept = 12, colour = "white", linetype = "dashed") +
-    geom_hline(yintercept = 18, colour = "white", linetype = "dashed") +
+  ggplot(data = data, aes(x = AvgDist_Sweeper, y = OPA_Sweeper_per_90)) +
+    geom_text(aes(x = 18, y = 0.25, label = "Outside of Box", hjust = 1.25), colour = "white") +
+    geom_text(aes(x = 12, y = 1.41, label = "Penalty Spot", hjust = -.25), colour = "white") +
+    geom_vline(xintercept = 12, colour = "white", linetype = "dashed") +
+    geom_vline(xintercept = 18, colour = "white", linetype = "dashed") +
     
     geom_point_interactive(size = 3, colour = met.brewer("Lakota", n = 1), 
                          aes(tooltip = paste(Player, " - ", Squad, "\n",
@@ -119,8 +120,8 @@ gk_sweeper <- function(data) {
     labs(title = "Sweeper or Nah?",
         subtitle = "Distance of Defensive Actions from Goal by Activity Outside of the Penalty Area") +
   
-  xlab("Defensive Actions Outside of Penalty Area per 90") +
-  ylab("Average Distance from Goal of All Defensive Actions (Yards)") +
+  ylab("Defensive Actions Outside of Penalty Area per 90") +
+  xlab("Average Distance from Goal of All Defensive Actions (Yards)") +
   
   theme(
     panel.grid = element_blank(),
@@ -140,10 +141,57 @@ gk_sweeper <- function(data) {
     )
 }
 
-girafe(
-  ggobj = gk_sweeper(pl_keepers_adv)
-)
+gk_sweeper(pl_keepers_adv)
 
+```
+
+```{r, echo=FALSE}
+gk_cross_plot <- function(data) {
+  fill_gradient <- colorRampPalette(c("#6ca3a0", "#002a3a"))
+  
+  ggplot(data = data, aes(x = reorder(Player, +Stp_percent_Crosses), y = Stp_percent_Crosses, fill = CK_Goals,)) +
+    geom_bar_interactive(stat = "identity", width = .8, 
+                         aes(tooltip = paste0(Player, " - ", Squad, "\n",
+                                              "# of Attempted Crosses: ", Opp_Crosses, "\n",
+                                              "# of Stopped Crosses: ", Stp_Crosses, "\n",
+                                              "% of Crosses Stopped: ", Stp_percent_Crosses, "\n",
+                                              "Goals from Corners: ", CK_Goals, 
+                                              sep = ""),
+                             data_id = Player)) +
+    coord_flip() +
+    scale_y_continuous(expand = c(0,0), limits = c(0, 15.5), breaks = c(5, 10, 15)) +
+    scale_fill_gradientn(colours = fill_gradient(10)) +
+    
+    ylab("Percentage of Penalty Area Crosses Successfully Stopped") +
+    guides(fill = guide_colorbar(label.position = "bottom",
+                                 title.position = "top",
+                                 title = "Goals from Corners")) +
+    
+    labs(title = "Controlling the Box - Cross Stopping Ability of Premier League GK's (> 900 Minutes Played)") +
+    
+    theme(
+      title = element_text(colour = "white", hjust = 1),
+      
+      axis.title.y = element_blank(),
+      axis.title.x = element_text(colour = "white"),
+      axis.text = element_text(colour = "white"),
+      axis.line = element_line(colour = "white"),
+      axis.ticks = element_line(colour = "white"),
+      
+      panel.grid = element_blank(),
+      panel.background = element_rect(fill = "black"),
+      
+      plot.background = element_rect(fill = "black"),
+      
+      legend.direction = "horizontal",
+      legend.background = element_rect(fill = "black", colour = "white", linetype = "dashed"),
+      legend.title.align = 0.5,
+      legend.text = element_text(colour = "white"),
+      legend.title = element_text(colour = "white"),
+      legend.key.width = unit(20, "pt"),
+      legend.position = c(0.8, 0.25)
+    )
+}
 
 ```
 
