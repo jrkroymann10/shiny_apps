@@ -1,8 +1,16 @@
 shinyServer(function(input, output, session) {
-  output$bumpPlot <- renderPlot({
+  output$bumpPlot <- renderGirafe({
     bump_df <- get_bumpData(match_data)
     teams <- unique(bump_df$Team)
-    get_bumpPlot(bump_df, teams, input$Team, input$md_range[1], input$md_range[2])
+    
+    girafe(
+      ggobj = get_bumpPlot(bump_df, teams, input$Team, input$md_range[1], input$md_range[2], input$bumpRank),
+      width_svg = 15, height_svg = 10,
+      options = list(
+        opts_hover_inv(css = "opacity:0.1;"),
+        opts_hover(css = "stroke-width:2;")
+      )
+    )
     })
   
   output$gkPlot <- renderGirafe({
@@ -40,4 +48,8 @@ shinyServer(function(input, output, session) {
     
     
     })
+  
+  output$gk_text <- renderText(
+    gk_model_text
+  )
 })

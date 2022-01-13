@@ -35,10 +35,15 @@ shinyUI(
                    min = 1,
                    max = max(md_values),
                    round = TRUE,
-                   step = 1))
+                   step = 1)),
+            column(2,
+                   checkboxInput(inputId = "bumpRank",
+                                label = "See Selected Team's Rank",
+                                value = FALSE)
+                   )
           ),
           br(),
-          plotOutput(outputId = "bumpPlot")
+          girafeOutput(outputId = "bumpPlot")
         )
       ),
       # GK Zone Tab ----
@@ -53,11 +58,16 @@ shinyUI(
                              label = "Select a Viz",
                              choices = c("Who's Beating the Model?", "Getting Out of the Box", "Are Crosses Scary?"),
                              selected = "Who's Beating the Model?"
-                             )
+                             ),
+                 selectInput(inputId = "gk_highlight",
+                             label = "Highlight a Goalkeeper",
+                             choices = pl_gks$Player,
+                             selected = NULL),
+                 textOutput("gk_text"),
                  ),
           column(9,
                  girafeOutput("gkPlot")
-                 ),
+                 )
           ),
         br()
       )
