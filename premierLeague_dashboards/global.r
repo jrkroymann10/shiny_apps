@@ -19,9 +19,9 @@ gk_data_adv <- fb_big5_advanced_season_stats(season_end_year = 2022,
                                              stat_type = "keepers_adv",
                                              team_or_player = "player")
 
-team_values <- c("All", "Arsenal", "Aston Villa", "Brentford", "Brighton", "Burnley", "Chelsea",
+team_values <- c("Arsenal", "Aston Villa", "Brentford", "Brighton", "Burnley", "Chelsea",
                  "Everton", "Leeds", "Leicester", "Liverpool", "Man City", "Man Utd", "Newcastle",
-                 "Norwich", "Palace", "Southampton", "Tottenham", "Watford", "West Ham", "Wolves")
+                 "Norwich", "Palace", "Sthampton", "Tottenham", "Watford", "West Ham", "Wolves")
 
 md_values <- 1:tail(match_data[!is.na(match_data$Home_xG),]$Wk, 1)
 
@@ -279,7 +279,7 @@ shorten_teamnames <- function(df) {
            Team = replace(Team, Team == "Manchester Utd", "Man Utd"),
            Team = replace(Team, Team == "Newcastle Utd", "Newcastle"),
            Team = replace(Team, Team == "Norwich City", "Norwich"),
-           Team = replace(Team, Team == "Southampton", "Southampton"),
+           Team = replace(Team, Team == "Southampton", "Sthampton"),
            Team = replace(Team, Team == "Tottenham", "Tottenham"),
            Team = replace(Team, Team == "Watford", "Watford"),
            Team = replace(Team, Team == "West Ham", "West Ham"),
@@ -308,48 +308,14 @@ get_bumpData <- function(match_data) {
 }
 
 # bump plot
-get_bumpPlot <- function(df, teams, h_team, start_md, end_md, rank_option) {
+get_bumpPlot <- function(df, teams, h_team, start_md, end_md, rank_option, back_color) {
   start_md <- as.numeric(start_md)
   end_md <- as.numeric(end_md) 
   
   df <- df %>%
     filter(Matchday <= end_md & Matchday >= start_md)
-  
-  if (h_team == "All") {
-    df %>%
-      ggplot(aes(Matchday, Rank, group = Team, colour = Team, data_id = Team)) +
-      geom_path_interactive(size = 3, lineend = "round") + 
-      geom_point_interactive(size = 5) + 
-      scale_colour_manual(
-        breaks = teams,                             
-        values = c("#FDB913", "#630F33", "#670E36", "#6CABDD", "#9C824A",
-                   "#D71920", "#241F20", "#A7A5A6", "#00A650", "#AC944D",
-                   "#0053A0", "#ffffff", "#fbee23", "#132257", "#e30613",
-                   "#274488", "#7A263A", "#034694", "#D01317", "#B80102")) +
-      geom_text_interactive(data = df %>% 
-                              filter(Matchday == start_md),
-                            aes(label = Team, start_md - 1.2), fontface = "bold", size = 10) +
-      geom_text_interactive(data = df %>% 
-                              filter(Matchday == end_md),
-                            aes(label = Team, x = end_md + 1.2), hjust = 0.5, fontface = "bold", size = 10) +
-      scale_y_reverse(breaks = unique(df$Rank)) +
-      expand_limits(x = 1, y = 1) +
-      theme_minimal() +
-      theme(
-        legend.position = "none",
-        
-        panel.grid = element_blank(),
-        panel.background = element_rect("#D3D3D3"),
-        
-        axis.title.y = element_blank(),
-        axis.title.x = element_blank(),
-        axis.text.x = element_blank(),
-        axis.text.y = element_blank()
-      )
-  }
-  
-  
-  else {
+
+  if (any(df$Team == h_team)) {
     df %>%
       ggplot(aes(Matchday, Rank, group = Team, colour = Team)) +
       geom_bump(smooth = 5, size = 3, lineend = "round") + 
@@ -363,14 +329,14 @@ get_bumpPlot <- function(df, teams, h_team, start_md, end_md, rank_option) {
       ) +
       geom_text(data = df %>% 
                   filter(Matchday == start_md),
-                aes(label = Team, start_md - 1), fontface = "bold", size = 10) +
+                aes(label = Team, start_md - 1), fontface = "bold", size = 11) +
       geom_text(data = df %>% 
                   filter(Matchday == end_md),
-                aes(label = Team, x = end_md + 1), fontface = "bold", size = 10) +
-      gghighlight(Team == h_team,
+                aes(label = Team, x = end_md + 1), fontface = "bold", size = 11) +
+      gghighlight(any(Team == h_team),
                   use_direct_label = rank_option,
                   label_key = Rank,
-                  label_params = list(size = 10),
+                  label_params = list(colour = "black", size = 10),
                   unhighlighted_params = list(colour = NULL, alpha = 0.1)) +
       scale_y_reverse() +
       theme_minimal() +
@@ -378,12 +344,46 @@ get_bumpPlot <- function(df, teams, h_team, start_md, end_md, rank_option) {
         legend.position = "none",
         
         panel.grid = element_blank(),
-        panel.background = element_rect("#D3D3D3"),
+        panel.background = element_rect(back_color),
         
         axis.title.y = element_blank(),
         axis.text.y = element_blank(),
         axis.title.x = element_blank(),
         axis.text.x = element_blank()
+      )
+  }
+  
+  
+  else {
+    df %>%
+      ggplot(aes(Matchday, Rank, group = Team, colour = Team, data_id = Team)) +
+      geom_path_interactive(size = 3, lineend = "round") + 
+      geom_point_interactive(size = 5) + 
+      scale_colour_manual(
+        breaks = teams,                             
+        values = c("#FDB913", "#630F33", "#670E36", "#6CABDD", "#9C824A",
+                   "#D71920", "#241F20", "#A7A5A6", "#00A650", "#AC944D",
+                   "#0053A0", "#ffffff", "#fbee23", "#132257", "#e30613",
+                   "#274488", "#7A263A", "#034694", "#D01317", "#B80102")) +
+      geom_text_interactive(data = df %>% 
+                              filter(Matchday == start_md),
+                            aes(label = Team, start_md - 1.2), fontface = "bold", size = 11) +
+      geom_text_interactive(data = df %>% 
+                              filter(Matchday == end_md),
+                            aes(label = Team, x = end_md + 1.2), hjust = 0.5, fontface = "bold", size = 11) +
+      scale_y_reverse(breaks = unique(df$Rank)) +
+      expand_limits(x = 1, y = 1) +
+      theme_minimal() +
+      theme(
+        legend.position = "none",
+        
+        panel.grid = element_blank(),
+        panel.background = element_rect(back_color),
+        
+        axis.title.y = element_blank(),
+        axis.title.x = element_blank(),
+        axis.text.x = element_blank(),
+        axis.text.y = element_blank()
       )
   }
 }

@@ -33,16 +33,41 @@ shinyUI(
                 round = TRUE,
                 step = 1,
                 width = 300),
-              selectInput(
-                inputId = "Team",
-                label = "Teams",
+              selectizeInput(
+                "Teams",
+                "Teams",
                 choices = team_values,
-                selected = "All",
+                multiple = TRUE,
+                options = list(
+                  placeholder = 'Select team(s) below',
+                  onInitialize = I('function() { this.setValue(""); }')
+                ),
+                width = 300),
+              selectizeInput(
+                "back_color",
+                "Plot Background Color",
+                choices = c("#D3D3D3 (Gray)",
+                            "#000000 (Black)"),
+                options = list(
+                  placeholder = 'Select a Background Color',
+                  onInitialize = I('function() { this.setValue("#D3D3D3 (Gray)"); }')
+                ),
                 width = 300),
               checkboxInput(
                 inputId = "bumpRank",
-                label = "See Selected Team's Weekly Rank",
+                label = "See Weekly Ranks of Selected Team(s)",
                 value = FALSE),
+              fluidRow(
+                column(
+                  width = 6,
+                  align = "center",
+                  actionButton(inputId = "resetBumpTeams", "Reset Team Input(s)", width = 150)),
+                column(
+                  width = 6,
+                  align = "center",
+                  actionButton(inputId = "resetBumpRange", "Reset Range", width = 150))
+              ),
+              
               width = 3),
             mainPanel(girafeOutput(outputId = "bumpPlot"))
             ),
