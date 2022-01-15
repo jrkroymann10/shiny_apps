@@ -19,31 +19,34 @@ shinyUI(
         tabPanel(
           "Interactive Bump Plot",
           titlePanel("View your team's journey up and down the table!"),
-          br(),
-          fluidRow(
-            column(2,
-                   selectInput(
-                   inputId = "Team",
-                   label = "Teams",
-                   choices = team_values,
-                   selected = "All")),
           
-            column(5,
-                   sliderInput(inputId = "md_range", 
-                   label = "Matchday Range",
-                   value = c(1, max(md_values)),
-                   min = 1,
-                   max = max(md_values),
-                   round = TRUE,
-                   step = 1)),
-            column(2,
-                   checkboxInput(inputId = "bumpRank",
-                                label = "See Selected Team's Rank",
-                                value = FALSE)
-                   )
-          ),
-          br(),
-          girafeOutput(outputId = "bumpPlot")
+          p("Hover over a team's name to view their path, or select a team in the sidebar for a smoother, detailed view"),
+          
+          sidebarLayout(
+            sidebarPanel( 
+              sliderInput(
+                inputId = "md_range", 
+                label = "Matchday Range",
+                value = c(1, max(md_values)),
+                min = 1,
+                max = max(md_values),
+                round = TRUE,
+                step = 1,
+                width = 300),
+              selectInput(
+                inputId = "Team",
+                label = "Teams",
+                choices = team_values,
+                selected = "All",
+                width = 300),
+              checkboxInput(
+                inputId = "bumpRank",
+                label = "See Selected Team's Weekly Rank",
+                value = FALSE),
+              width = 3),
+            mainPanel(girafeOutput(outputId = "bumpPlot"))
+            ),
+          br()
         )
       ),
       # GK Zone Tab ----

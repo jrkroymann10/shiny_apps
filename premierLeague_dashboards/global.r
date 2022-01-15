@@ -318,8 +318,8 @@ get_bumpPlot <- function(df, teams, h_team, start_md, end_md, rank_option) {
   if (h_team == "All") {
     df %>%
       ggplot(aes(Matchday, Rank, group = Team, colour = Team, data_id = Team)) +
-      geom_path_interactive(size = 2, lineend = "round") + 
-      geom_point_interactive(size = 3.75) + 
+      geom_path_interactive(size = 3, lineend = "round") + 
+      geom_point_interactive(size = 5) + 
       scale_colour_manual(
         breaks = teams,                             
         values = c("#FDB913", "#630F33", "#670E36", "#6CABDD", "#9C824A",
@@ -328,10 +328,10 @@ get_bumpPlot <- function(df, teams, h_team, start_md, end_md, rank_option) {
                    "#274488", "#7A263A", "#034694", "#D01317", "#B80102")) +
       geom_text_interactive(data = df %>% 
                               filter(Matchday == start_md),
-                            aes(label = Team, start_md - 1), fontface = "bold", size = 4.5) +
+                            aes(label = Team, start_md - 1.2), fontface = "bold", size = 10) +
       geom_text_interactive(data = df %>% 
                               filter(Matchday == end_md),
-                            aes(label = Team, x = end_md + 1), hjust = 0.5, fontface = "bold", size = 5) +
+                            aes(label = Team, x = end_md + 1.2), hjust = 0.5, fontface = "bold", size = 10) +
       scale_y_reverse(breaks = unique(df$Rank)) +
       expand_limits(x = 1, y = 1) +
       theme_minimal() +
@@ -344,7 +344,7 @@ get_bumpPlot <- function(df, teams, h_team, start_md, end_md, rank_option) {
         axis.title.y = element_blank(),
         axis.title.x = element_blank(),
         axis.text.x = element_blank(),
-        axis.text.y = element_text(size = 15)
+        axis.text.y = element_blank()
       )
   }
   
@@ -352,8 +352,8 @@ get_bumpPlot <- function(df, teams, h_team, start_md, end_md, rank_option) {
   else {
     df %>%
       ggplot(aes(Matchday, Rank, group = Team, colour = Team)) +
-      geom_bump(smooth = 5, size = 2, lineend = "round") + 
-      geom_point(size = 3) +
+      geom_bump(smooth = 5, size = 3, lineend = "round") + 
+      geom_point(size = 5) +
       scale_colour_manual(
         breaks = teams,                             
         values = c("#FDB913", "#630F33", "#670E36", "#6CABDD", "#9C824A",
@@ -363,13 +363,14 @@ get_bumpPlot <- function(df, teams, h_team, start_md, end_md, rank_option) {
       ) +
       geom_text(data = df %>% 
                   filter(Matchday == start_md),
-                aes(label = Team, start_md - 1), fontface = "bold", size = 4.5) +
+                aes(label = Team, start_md - 1), fontface = "bold", size = 10) +
       geom_text(data = df %>% 
                   filter(Matchday == end_md),
-                aes(label = Team, x = end_md + 1), fontface = "bold", size = 4.5) +
+                aes(label = Team, x = end_md + 1), fontface = "bold", size = 10) +
       gghighlight(Team == h_team,
                   use_direct_label = rank_option,
                   label_key = Rank,
+                  label_params = list(size = 10),
                   unhighlighted_params = list(colour = NULL, alpha = 0.1)) +
       scale_y_reverse() +
       theme_minimal() +
