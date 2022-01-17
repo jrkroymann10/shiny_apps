@@ -329,22 +329,26 @@ get_bumpPlot <- function(df, teams, h_team, start_md, end_md, rank_option, back_
       ) +
       geom_text(data = df %>% 
                   filter(Matchday == start_md),
-                aes(label = Team, start_md - 1), fontface = "bold", size = 11) +
+                aes(label = Team, start_md - 1), fontface = "bold", hjust = 0.5, size = 11) +
       geom_text(data = df %>% 
                   filter(Matchday == end_md),
-                aes(label = Team, x = end_md + 1), fontface = "bold", size = 11) +
+                aes(label = Team, x = end_md + 1), fontface = "bold", hjust = 0.5, size = 11) +
       gghighlight(any(Team == h_team),
                   use_direct_label = rank_option,
                   label_key = Rank,
                   label_params = list(colour = "black", size = 10),
                   unhighlighted_params = list(colour = NULL, alpha = 0.1)) +
       scale_y_reverse() +
+      labs(title = paste("Premier League Table Progression (Matchday ", start_md, " - ", end_md, ")",
+                         sep = "")) +
       theme_minimal() +
       theme(
         legend.position = "none",
         
         panel.grid = element_blank(),
         panel.background = element_rect(back_color),
+        
+        plot.title = element_text(size = 45, face = "bold", hjust = 0.5),
         
         axis.title.y = element_blank(),
         axis.text.y = element_blank(),
@@ -367,18 +371,22 @@ get_bumpPlot <- function(df, teams, h_team, start_md, end_md, rank_option, back_
                    "#274488", "#7A263A", "#034694", "#D01317", "#B80102")) +
       geom_text_interactive(data = df %>% 
                               filter(Matchday == start_md),
-                            aes(label = Team, start_md - 1.2), fontface = "bold", size = 11) +
+                            aes(label = Team, start_md - 1.2), hjust = 0.5, fontface = "bold", size = 11) +
       geom_text_interactive(data = df %>% 
                               filter(Matchday == end_md),
                             aes(label = Team, x = end_md + 1.2), hjust = 0.5, fontface = "bold", size = 11) +
       scale_y_reverse(breaks = unique(df$Rank)) +
       expand_limits(x = 1, y = 1) +
+      labs(title = paste("Premier League Table Progression (Matchday ", start_md, " - ", end_md, ")",
+                         sep = "")) +
       theme_minimal() +
       theme(
         legend.position = "none",
         
         panel.grid = element_blank(),
         panel.background = element_rect(back_color),
+        
+        plot.title = element_text(size = 45, face = "bold", hjust = 0.5),
         
         axis.title.y = element_blank(),
         axis.title.x = element_blank(),
