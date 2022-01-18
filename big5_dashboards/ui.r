@@ -1,7 +1,7 @@
 shinyUI(
   fluidPage(
     navbarPage(
-      "PL Dashboards by Joe",
+      "Big 5 Dashboards by Joe",
       
       # Intro Tab -----
       tabPanel(

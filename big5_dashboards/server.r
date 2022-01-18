@@ -1,4 +1,21 @@
 shinyServer(function(input, output, session) {
+  # [Bump Plot] - Plot Output ----
+  output$bumpPlot <- renderGirafe({
+    match_data <- get_leagueSpecfic(big5_match_data, input$Competition)
+    bump_df <- get_bumpData(match_data)
+    teams <- unique(bump_df$Team)
+    
+    girafe(
+      ggobj = get_bumpPlot(bump_df, teams, input$Teams, input$md_range[1], input$md_range[2], input$bumpRank,
+                           substr(input$back_color, 1, 7), get_leaguePalette(input$Competition)),
+      width_svg = 35, height_svg = 16,
+      options = list(
+        opts_hover_inv(css = "opacity:0.1;"),
+        opts_hover(css = "stroke-width:2;"),
+        opts_selection(type = "none")
+      )
+    )
+  })
   
   # [Bump Plot] - Updating Team Input Options based off Competition Input ----
   observe({
@@ -51,23 +68,6 @@ shinyServer(function(input, output, session) {
     )
   )
 
-  # [Bump Plot] - Plot Output ----
-  output$bumpPlot <- renderGirafe({
-    match_data <- get_leagueSpecfic(big5_match_data, input$Competition)
-    bump_df <- get_bumpData(match_data)
-    teams <- unique(bump_df$Team)
-    
-    girafe(
-      ggobj = get_bumpPlot(bump_df, teams, input$Teams, input$md_range[1], input$md_range[2], input$bumpRank,
-                           substr(input$back_color, 1, 7), get_leaguePalette(input$Competition)),
-      width_svg = 35, height_svg = 16,
-      options = list(
-        opts_hover_inv(css = "opacity:0.1;"),
-        opts_hover(css = "stroke-width:2;"),
-        opts_selection(type = "none")
-      )
-    )
-  })
   
   # ------------------------------------------------------------------------
 

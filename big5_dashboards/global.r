@@ -1,4 +1,4 @@
-# load libraries, data -----------------------------------------------------------------
+# [loading] - Libraries -----------------------------------------------------------------
 library(readr)
 library(worldfootballR)
 library(tidyverse)
@@ -9,10 +9,12 @@ library(ggplot2)
 library(ggiraph)
 library(MetBrewer)
 
+# [Loading] - Data ----
 big5_match_data <- get_match_results(country = c("ENG", "ESP", "ITA", "GER", "FRA"), gender = "M", season_end_year = "2022", tier = "1st") %>%
   mutate(Competition_Name = ifelse(Competition_Name == "FuÃŸball-Bundesliga", "Bundesliga", Competition_Name),
          Home = ifelse(Home == "M'Gladbach", "Gladbach", Home),
          Away = ifelse(Away == "M'Gladbach", "Gladbach", Away))
+
 
 gk_data <- fb_big5_advanced_season_stats(season_end_year = 2022,
                                          stat_type = "keepers",
@@ -26,29 +28,31 @@ pl_gks <- gk_data %>%
   filter(Comp == "Premier League", Min_Playing >= 900) %>%
   select(Player)
 
-# {Bump Plot UI + Server] - Values ----
-bund_teams <- c("Arminia", "Augsburg", "Bayern Munich", "Bochum", "Dortmund", "Eint Frankfurt",
-                "Freiburg", "Gladbach", "Greuther Fürth", "Hertha BSC", "Hoffenheim", "Köln", 
+
+# ----------------------------------------------------------------
+# {Bump Plot] - Teams ----
+bund_teams <- c("Arminia", "Augsburg", "Bayern", "Bochum", "Dortmund", "Frankfurt",
+                "Freiburg", "Gladbach", "Fürth", "Hertha BSC", "Hoffenheim", "Köln", 
                 "Leverkusen", "Mainz 05", "RB Leipzig", "Stuttgart", "Union Berlin", "Wolfsburg")
 
-laLiga_teams <- c("Alavés", "Athletic Club", "Atlético Madrid", "Barcelona", "Betis",
+laLiga_teams <- c("Alavés", "Athletic Club", "Atlético", "Barcelona", "Betis",
                   "Cádiz", "Celta Vigo", "Elche", "Espanyol", "Getafe",
-                  "Granada", "Levante", "Mallorca", "Osasuna", "Rayo Vallecano",
-                  "Real Madrid", "Real Sociedad", "Sevilla", "Valencia", "Villarreal")
+                  "Granada", "Levante", "Mallorca", "Osasuna", "Rayo",
+                  "Real Madrid", "Sociedad", "Sevilla", "Valencia", "Villarreal")
 
-ligue1_teams <- c("Angers", "Bordeaux", "Brest", "Clermont Foot", "Lens", "Lille",
+ligue1_teams <- c("Angers", "Bordeaux", "Brest", "Clermont", "Lens", "Lille",
                   "Lorient", "Lyon", "Marseille", "Metz", "Monaco", "Montpellier",
-                  "Nantes", "Nice", "Paris S-G", "Reims", "Rennes", "Saint-Étienne",
+                  "Nantes", "Nice", "Paris S-G", "Reims", "Rennes", "Étienne",
                   "Strasbourg", "Troyes")
 
 pl_teams <- c("Arsenal", "Aston Villa", "Brentford", "Brighton", "Burnley", "Chelsea",
               "Everton", "Leeds", "Leicester", "Liverpool", "Man City", "Man Utd", "Newcastle",
               "Norwich", "Palace", "Sthampton", "Tottenham", "Watford", "West Ham", "Wolves")
 
-serieA_teams <- c("Atalanta", "Bologna", "Cagliari", "Empoli", "Fiorentina", "Genoa",
-                  "Hellas Verona", "Inter", "Juventus", "Lazio", "Milan", "Napoli",
-                  "Roma", "Salernitana", "Sampdoria", "Sassuolo", "Spezia", "Torino",
-                  "Udinese", "Venezia")
+serieA_teams <- c("Atalanta", "Bologna", "Cagliari", "Empoli", "Fiorentina", 
+                  "Genoa", "Inter", "Juventus", "Lazio", "Milan", 
+                  "Napoli", "Roma", "Salernitana", "Sampdoria", "Sassuolo", 
+                  "Spezia", "Torino", "Udinese", "Venezia", "Verona")
 
 get_team_choices <- function(comp) {
   if (comp == "Bundesliga") {
@@ -65,21 +69,30 @@ get_team_choices <- function(comp) {
 }
 
 
-# [Bump Plot Server] - Team Hex Codes ----
+# [Bump Plot] - Team Hex Codes ----
 bund_hex <- c("#005CA9", "#DE023F", "#005CA9", "#E1000F", "#46714d", "#009932", 
               "#FFFFFF", "#DC052D", "#FDDC02", "#E32221", "#004E95", "#000000",
               "#65B32E", "#918F90", "#ED1C24", "#FDE100", "#1C63B7", "#E32219")
 
-laLiga_hex <- c()
+laLiga_hex <- c("#004fa3", "#8AC3EE", "#0067B1", "#0761AF", "#e53027",
+                "#E20613", "#0BB363", "#fde607", "#B4053F", "#AD8F1F",
+                "#007FC8", "#FFE667", "#A61B2B", "#05642c", "black",
+                "#D18816", "#CB3524", "#A50044", "#ffffff", "#F43333")
 
-ligue1_hex <- c()
+ligue1_hex <- c("#006eb2", "#d87043", "#009fe3", "#001b50", "#e51b22",
+                "#fcd405", "#ffffff", "#ed1c24", "#000000", "#fff200",
+                "#008d3f", "#f58113", "#b59a54", "#ee2223", "#6e0f12",
+                "#24216a", "#004170", "#2faee0", "#000000", "#c50c46")
 
 pl_hex <- c("#FDB913", "#630F33", "#670E36", "#6CABDD", "#9C824A",
             "#D71920", "#241F20", "#A7A5A6", "#00A650", "#AC944D",
             "#0053A0", "#ffffff", "#fbee23", "#132257", "#e30613", 
             "#274488", "#7A263A", "#034694", "#D01317", "#B80102")
 
-serieA_hex <- c()
+serieA_hex <- c("#005395", "#8A1E03", "#742038", "#1B5497", "#00579C",
+                "#fd9b00", "#482E92", "#AD1919", "#000000", "#FFFFFF",
+                "#002350", "#99834a", "#00A752", "#1E71B8", "#A21C26",
+                "#FB090B", "#87D8F7", "#12A0D7", "#8E1F2F", "#010E80")
 
 get_leaguePalette <- function(comp) {
   if (comp == "Bundesliga") {
@@ -94,7 +107,7 @@ get_leaguePalette <- function(comp) {
     return(serieA_hex)
   }
 }
-# [Bump Plot Server] Data Transformation Functions ----
+# [Bump Plot] - Data Transformation Functions ----
 get_leagueSpecfic <- function(df, comp) {
   if (comp == "Premier League") {
     return(
@@ -203,33 +216,6 @@ add_rank <- function(df, team_count) {
   return(df)
 }
 
-# shortening team names
-shorten_teamnames <- function(df) {
-  df <- df %>%
-    mutate(Team = replace(Team, Team == "Arsenal", "Arsenal"),
-           Team = replace(Team, Team == "Aston Villa", "Aston Villa"),
-           Team = replace(Team, Team == "Brentford", "Brentford"),
-           Team = replace(Team, Team == "Brighton", "Brighton"),
-           Team = replace(Team, Team == "Burnley", "Burnley"),
-           Team = replace(Team, Team == "Chelsea", "Chelsea"),
-           Team = replace(Team, Team == "Crystal Palace", "Palace"),
-           Team = replace(Team, Team == "Everton", "Everton"),
-           Team = replace(Team, Team == "Leeds United", "Leeds"),
-           Team = replace(Team, Team == "Leicester City", "Leicester"),
-           Team = replace(Team, Team == "Liverpool", "Liverpool"),
-           Team = replace(Team, Team == "Manchester City", "Man City"),
-           Team = replace(Team, Team == "Manchester Utd", "Man Utd"),
-           Team = replace(Team, Team == "Newcastle Utd", "Newcastle"),
-           Team = replace(Team, Team == "Norwich City", "Norwich"),
-           Team = replace(Team, Team == "Southampton", "Sthampton"),
-           Team = replace(Team, Team == "Tottenham", "Tottenham"),
-           Team = replace(Team, Team == "Watford", "Watford"),
-           Team = replace(Team, Team == "West Ham", "West Ham"),
-           Team = replace(Team, Team == "Wolves", "Wolves"))
-  
-  return(df)
-}
-
 # one big guy that gets the df we need for the bump plot :)
 get_bumpData <- function(match_data) {
   match_data <- transform_matchResults(match_data)
@@ -246,17 +232,16 @@ get_bumpData <- function(match_data) {
   teams <- unique(bump_df$Team)
   bump_df <- fill_pointsAndGd(bump_df, teams)
   bump_df <- add_rank(bump_df, length(unique(bump_df$Team)))
-  bump_df <- shorten_teamnames(bump_df)
 }
 
-# bump plot
+# [Bump Plot] - Plot Output ----
 get_bumpPlot <- function(df, teams, h_team, start_md, end_md, rank_option, back_color, palette) {
   start_md <- as.numeric(start_md)
   end_md <- as.numeric(end_md) 
   
   df <- df %>%
     filter(Matchday <= end_md & Matchday >= start_md)
-
+  
   if (any(df$Team == h_team)) {
     df %>%
       ggplot(aes(Matchday, Rank, group = Team, colour = Team)) +
@@ -278,8 +263,8 @@ get_bumpPlot <- function(df, teams, h_team, start_md, end_md, rank_option, back_
                   label_params = list(colour = "black", size = 10),
                   unhighlighted_params = list(colour = NULL, alpha = 0.1)) +
       scale_y_reverse() +
-      labs(title = paste("Premier League Table Progression (Matchday ", start_md, " - ", end_md, ")",
-                         sep = "")) +
+      # labs(title = paste("Premier League Table Progression (Matchday ", start_md, " - ", end_md, ")",
+      #                    sep = "")) +
       theme_minimal() +
       theme(
         legend.position = "none",
@@ -288,7 +273,7 @@ get_bumpPlot <- function(df, teams, h_team, start_md, end_md, rank_option, back_
         panel.background = element_rect(back_color),
         
         plot.title = element_text(size = 45, face = "bold", hjust = 0.5),
-
+        
         axis.title.y = element_blank(),
         axis.text.y = element_blank(),
         axis.title.x = element_blank(),
@@ -303,9 +288,9 @@ get_bumpPlot <- function(df, teams, h_team, start_md, end_md, rank_option, back_
       geom_path_interactive(size = 3, lineend = "round") + 
       geom_point_interactive(size = 5) + 
       scale_colour_manual(
-       breaks = teams,
-       values = palette
-         ) +
+        breaks = teams,
+        values = palette
+      ) +
       geom_text_interactive(data = df %>% 
                               filter(Matchday == start_md),
                             aes(label = Team, start_md - 1.2), hjust = 0.5, fontface = "bold", size = 11) +
@@ -314,8 +299,8 @@ get_bumpPlot <- function(df, teams, h_team, start_md, end_md, rank_option, back_
                             aes(label = Team, x = end_md + 1.2), hjust = 0.5, fontface = "bold", size = 11) +
       scale_y_reverse(breaks = unique(df$Rank)) +
       expand_limits(x = 1, y = 1) +
-      labs(title = paste("Premier League Table Progression (Matchday ", start_md, " - ", end_md, ")",
-                         sep = "")) +
+      # labs(title = paste("Premier League Table Progression (Matchday ", start_md, " - ", end_md, ")",
+      #                    sep = "")) +
       theme_minimal() +
       theme(
         legend.position = "none",
@@ -340,7 +325,6 @@ bund_match_data <- get_leagueSpecfic(big5_match_data, "Bundesliga")
 bund_match_data_transformed <- transform_matchResults(bund_match_data)
 bund_last_week <- find_lastWeek(bund_match_data_transformed)
 
-bund_bump_data_empty <- create_df()
 bund_bump_data_filled <- fill_df(bund_match_data_transformed, bund_last_week)
 
 bund_bump_data_filled$Games_Played <- as.numeric(bund_bump_data_filled$Games_Played)
@@ -350,16 +334,18 @@ bund_bump_data_filled$Matchday <- as.numeric(bund_bump_data_filled$Matchday)
 bund_bump_data_filled$GD <- as.numeric(bund_bump_data_filled$GD)
 
 bund_bump_data_pointsAndGD <- fill_pointsAndGd(bund_bump_data_filled, unique(bund_bump_data_filled$Team))
+
 bund_bump_data_rank <- add_rank(bund_bump_data_pointsAndGD, 20)
 
 unique(bund_bump_data_rank$Team)
 
 get_bumpPlot(df = bund_bump_data_rank, teams = unique(bund_bump_data_rank$Team), 
-             h_team = "", start_md = 1, end_md = 19, rank_option = FALSE, 
-             back_color = "#D3D3D3"
-              )
+             h_team = "", start_md = 1, end_md = 22, rank_option = FALSE, 
+             back_color = "#D3D3D3", palette = serieA_hex
+)
 
-# [Server] GK Viz Functions ----
+# ----------------------------------------------------------------
+# [GK Zone] - Plot Outputs ----
 get_plKeeper_adv <- function(gk_data, gk_data_adv) {
   pl_keepers <- gk_data %>%
     filter(Comp == "Premier League", Min_Playing > 900)
@@ -508,5 +494,5 @@ gk_cross_plot <- function(data) {
     )
 }
 
-# [UI] GK Viz Text ----
+# [GK Zone] - Viz Text(s) ----
 gk_model_text <- paste0("This plot, inspired by this wonderful (article) by John Muller, attempts to ")
