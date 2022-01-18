@@ -27,10 +27,21 @@ gk_data_adv <- fb_big5_advanced_season_stats(season_end_year = 2022,
                                             stat_type = "keepers_adv",
                                             team_or_player = "player")
 
+passing_data <- fb_big5_advanced_season_stats(season_end_year = 2022,
+                                                 stat_type = "passing",
+                                                 team_or_player = "player") %>%
+  filter(Comp == "Premier League", Pos == "GK")
+
 pl_keepers <- gk_data %>%
   filter(Comp == "Premier League", Min_Playing > 900)
 
 pl_keepers_adv <- merge(gk_data_adv, pl_keepers)
+
+pl_keepers_passing <- merge(merge(
+  gk_data_adv,
+  passing_data),
+  pl_keepers)
+  
 colnames(pl_keepers_adv)[colnames(pl_keepers_adv) == "#OPA_Sweeper"] <- "OPA_Sweeper"
 colnames(pl_keepers_adv)[colnames(pl_keepers_adv) == "#OPA_per_90_Sweeper"] <- "OPA_Sweeper_per_90"
 colnames(pl_keepers_adv)[colnames(pl_keepers_adv) == "_per_90_Expected"] <- "per_90"
@@ -195,3 +206,35 @@ gk_cross_plot <- function(data) {
 
 ```
 
+
+```{r, echo=FALSE}
+pl_keepers_passing %>%
+  filter(Comp == "Premier League", ) %>%
+  ggplot() +
+  
+  geom_point(aes(x = AvgLen_Passes, y = Cmp_percent_Total, colour = Launch_percent_Passes, fill = Launch_percent_Passes),
+             shape = 24) +
+  geom_point(aes(x = AvgLen_Goal, y = Cmp_percent_Total, colour = Launch_percent_Passes, fill = Launch_percent_Passes),
+             shape = 25) + 
+  geom_segment(aes(x = AvgLen_Passes, xend = AvgLen_Goal, y = Cmp_percent_Total, yend = Cmp_percent_Total, 
+                   colour = Launch_percent_Passes)) +
+  xlab("Average Length of Passes (yards)") +
+  ylab("Completion Percentage of All Passes") +
+  
+  coord_flip() +
+  
+  geom_vline(xintercept = mean(pl_keepers_passing$AvgLen_Passes), linetype = "dashed", colour = "white") +
+  geom_vline(xintercept = mean(pl_keepers_passing$AvgLen_Goal), linetype = "dashed", colour = "white") +
+
+  theme(
+    panel.grid = element_blank(),
+    panel.background = element_rect(fill = "black"),
+    
+    plot.background = element_rect(fill = "black", colour = "black"),
+    
+    axis.text = element_text(colour = "white"),
+    axis.line = element_line(colour = "white"),
+    axis.title = element_text(colour = "white"),
+    axis.ticks = element_line(colour = "white")
+  )
+```

@@ -9,7 +9,7 @@ library(ggplot2)
 library(ggiraph)
 library(MetBrewer)
 
-match_data <- get_match_results(country = "ENG", gender = "M", season_end_year = "2022", tier = "1st")
+big5_match_data <- get_match_results(country = c("ENG", "ESP", "ITA", "GER", "FRA"), gender = "M", season_end_year = "2022", tier = "1st")
 
 gk_data <- fb_big5_advanced_season_stats(season_end_year = 2022,
                                          stat_type = "keepers",
@@ -183,6 +183,30 @@ gk_cross_plot <- function(data) {
 gk_model_text <- paste0("This plot, inspired by this wonderful (article) by John Muller, attempts to ")
 
 # [Server] Bump Plot Functions ------------------------------------------------------------------------------------------------------
+get_leagueSpecfic <- function(df, comp) {
+  if (comp == "Premier League") {
+    return(
+      df %>% filter(Competition_Name == "Premier League")
+    )
+  } else if (comp == "La Liga") {
+    return(
+      df %>% filter(Competition_Name == "La Liga")
+    )
+  } else if (comp == "Serie A") {
+    return(
+      df %>% filter(Competition_Name == "Serie A")
+    )
+  } else if (comp == "Bundesliga") {
+    return(
+      df %>% filter(Competition_Name == "FuÃŸball-Bundesliga")
+    )
+  } else if (comp == "Ligue 1") {
+    return(
+      df %>% filter(Competition_Name == "Ligue 1")
+    )
+  }
+}
+
 transform_matchResults <- function(fbref_mr) {
   fbref_mr %>%
     mutate(HomePoints = ifelse(HomeGoals > AwayGoals, 3, ifelse(HomeGoals < AwayGoals, 0, 1)),
@@ -192,12 +216,16 @@ transform_matchResults <- function(fbref_mr) {
 
 # finding latest md in which a match was played
 find_lastWeek <- function(df) {
-  for (i in 1:38) {
-    if (nrow(df[which(df$Wk == i & is.na(df$HomePoints)),]) == 10) {
+  
+  end_wk <- tail(df$Wk, 1)
+  match_count <- length(unique(df$Home)) / 2
+  
+  for (i in 1:end_wk) {
+    if (nrow(df[which(df$Wk == i & is.na(df$HomePoints)),]) == match_count) {
       return(i - 1)
     }
   }
-  return(38)
+  return(end_wk)
 }
 
 # creating empty df with 7 columnds
@@ -241,21 +269,23 @@ fill_df <- function(pull_df, last_week) {
 
 # filling in total_points and total_gd based on cumulative sum of rows
 fill_pointsAndGd <- function(df, teams) {
-  for (i in 1:20) {
-    df[df$Team == teams[i],]$Total_Points = cumsum(df[which(df$Team == teams[i] & df$Games_Played <= 38),]$Points)
-    df[df$Team == teams[i],]$Total_GD = cumsum(df[which(df$Team == teams[i] & df$Games_Played <= 38),]$GD)
+  total_matches <- (length(teams) - 1) * 2
+  
+  for (i in 1:length(teams)) {
+    df[df$Team == teams[i],]$Total_Points = cumsum(df[which(df$Team == teams[i] & df$Games_Played <= total_matches),]$Points)
+    df[df$Team == teams[i],]$Total_GD = cumsum(df[which(df$Team == teams[i] & df$Games_Played <= total_matches),]$GD)
   }
   
   return(df)
 }
 
 # group rows by matchday + rank teams by total points + ungroup
-add_rank <- function(df) {
+add_rank <- function(df, team_count) {
   df <- df %>%
     group_by(Matchday) %>%
     arrange(Total_Points, Total_GD, .by_group = TRUE) %>%
     mutate(Rank = row_number(Matchday)) %>%
-    mutate(Rank = -(Rank - 21)) %>%
+    mutate(Rank = -(Rank - (team_count + 1))) %>%
     ungroup()
   
   return(df)
@@ -349,7 +379,7 @@ get_bumpPlot <- function(df, teams, h_team, start_md, end_md, rank_option, back_
         panel.background = element_rect(back_color),
         
         plot.title = element_text(size = 45, face = "bold", hjust = 0.5),
-        
+
         axis.title.y = element_blank(),
         axis.text.y = element_blank(),
         axis.title.x = element_blank(),
@@ -395,3 +425,20 @@ get_bumpPlot <- function(df, teams, h_team, start_md, end_md, rank_option, back_
       )
   }
 }
+
+### script for testing updated bump functions
+bund_match_data <- get_leagueSpecfic(big5_match_data, "La Liga")
+bund_match_data_transformed <- transform_matchResults(bund_match_data)
+bund_last_week <- find_lastWeek(bund_match_data_transformed)
+
+bund_bump_data_empty <- create_df()
+bund_bump_data_filled <- fill_df(bund_match_data_transformed, bund_last_week)
+
+bund_bump_data_filled$Games_Played <- as.numeric(bund_bump_data_filled$Games_Played)
+bund_bump_data_filled$Points <- as.numeric(bund_bump_data_filled$Points)
+bund_bump_data_filled$Total_Points <- as.numeric(bund_bump_data_filled$Total_Points)
+bund_bump_data_filled$Matchday <- as.numeric(bund_bump_data_filled$Matchday)
+bund_bump_data_filled$GD <- as.numeric(bund_bump_data_filled$GD)
+
+bund_bump_data_pointsAndGD <- fill_pointsAndGd(bund_bump_data_filled, unique(bund_bump_data_filled$Team))
+bund_bump_data_rank <- add_rank(bund_bump_data_pointsAndGD, 20)

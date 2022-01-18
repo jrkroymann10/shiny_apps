@@ -8,7 +8,8 @@ shinyServer(function(input, output, session) {
       width_svg = 35, height_svg = 16,
       options = list(
         opts_hover_inv(css = "opacity:0.1;"),
-        opts_hover(css = "stroke-width:2;")
+        opts_hover(css = "stroke-width:2;"),
+        opts_selection(type = "none")
       )
     )
     })
@@ -68,6 +69,8 @@ shinyServer(function(input, output, session) {
             opts_hover_inv(css = "opacity:0.5;")
           )
         )
+    } else if (input$gk_viz == "Building From the Back") {
+        
       }
     
     

@@ -84,7 +84,8 @@ shinyUI(
           column(3,
                  selectInput(inputId = "gk_viz",
                              label = "Select a Viz",
-                             choices = c("Who's Beating the Model?", "Getting Out of the Box", "Are Crosses Scary?"),
+                             choices = c("Who's Beating the Model?", "Getting Out of the Box", "Are Crosses Scary?",
+                                         "Building From the Back"),
                              selected = "Who's Beating the Model?"
                              ),
                  selectInput(inputId = "gk_highlight",
