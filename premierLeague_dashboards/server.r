@@ -1,5 +1,59 @@
 shinyServer(function(input, output, session) {
+  
+  # [Bump Plot] - Updating Team Input Options based off Competition Input ----
+  observe({
+    val <- input$Competition
+    updateSelectizeInput(
+      session,
+      "Teams",
+      "Teams",
+      choices = get_team_choices(input$Competition),
+      options = list(
+        placeholder = 'Select team(s) below',
+        onInitialize = I('function() { this.setValue(""); }')
+      )
+    )
+  })
+  # [Bump Plot] - Resetting Team Input(s) ----
+  observeEvent(
+    input$resetBumpTeams,
+    updateSelectizeInput(session,
+                         "Teams",
+                         "Teams",
+                         choices = get_team_choices(input$Competition),
+                         options = list(
+                           placeholder = 'Select team(s) below',
+                           onInitialize = I('function() { this.setValue(""); }')
+                         ))
+  )
+  
+  
+  # [Bump Plot] - Updating Slider MD Range based off Competition Input ----
+  observe({
+    val <- input$Competition
+    updateSliderInput(session,
+                      "md_range",
+                      min = 1,
+                      max = tail(big5_match_data[big5_match_data$Competition_Name == val & !is.na(big5_match_data$Home_xG),]$Wk, 1),
+                      value = c(1, tail(big5_match_data[big5_match_data$Competition_Name == val & !is.na(big5_match_data$Home_xG),]$Wk, 1)),
+                      step = 1
+                      )
+    })
+  # [Bump Plot] - Resetting Slider MD Range ----
+  observeEvent(
+    input$resetBumpRange,
+    updateSliderInput(session,
+                      "md_range",
+                      min = 1,
+                      max = tail(big5_match_data[big5_match_data$Competition_Name == input$Competition & !is.na(big5_match_data$Home_xG),]$Wk, 1),
+                      value = c(1, tail(big5_match_data[big5_match_data$Competition_Name == input$Competition & !is.na(big5_match_data$Home_xG),]$Wk, 1)),
+                      step = 1
+    )
+  )
+
+  # [Bump Plot] - Plot Output ----
   output$bumpPlot <- renderGirafe({
+    match_data <- get_leagueSpecfic(big5_match_data, input$Competition)
     bump_df <- get_bumpData(match_data)
     teams <- unique(bump_df$Team)
     
@@ -12,33 +66,11 @@ shinyServer(function(input, output, session) {
         opts_selection(type = "none")
       )
     )
-    })
+  })
   
-  observeEvent(
-    input$resetBumpTeams,
-    updateSelectizeInput(session = getDefaultReactiveDomain(),
-                         "Teams",
-                         "Teams",
-                         choices = team_values,
-                         options = list(
-                           placeholder = 'Select team(s) below',
-                           onInitialize = I('function() { this.setValue(""); }')
-                         ))
-  )
-  
-  observeEvent(
-    input$resetBumpRange,
-    updateSliderInput(
-      session = getDefaultReactiveDomain(),
-      inputId = "md_range", 
-      label = "Matchday Range",
-      value = c(1, max(md_values)),
-      min = 1,
-      max = max(md_values),
-      step = 1,
-    )
-  )
-  
+  # ------------------------------------------------------------------------
+
+  # [GK Zone] - Plot Output ---- 
   output$gkPlot <- renderGirafe({
     gk_data <- get_plKeeper_adv(gk_data, gk_data_adv)
     
@@ -76,8 +108,9 @@ shinyServer(function(input, output, session) {
     
     
     })
-  
+  # [GK Zone] - Text Output ----
   output$gk_text <- renderText(
     gk_model_text
   )
+  # ------------------------------------------------------------------------
 })

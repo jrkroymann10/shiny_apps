@@ -25,18 +25,29 @@ shinyUI(
           sidebarLayout(
             sidebarPanel( 
               sliderInput(
-                inputId = "md_range", 
+                inputId = "md_range",
                 label = "Matchday Range",
-                value = c(1, max(md_values)),
+                value = c(1, tail(big5_match_data[big5_match_data$Competition_Name == "Premier League" & !is.na(big5_match_data$Home_xG),]$Wk, 1)),
                 min = 1,
-                max = max(md_values),
+                max = tail(big5_match_data[big5_match_data$Competition_Name == "Premier League" & !is.na(big5_match_data$Home_xG),]$Wk, 1),
                 round = TRUE,
                 step = 1,
                 width = 300),
               selectizeInput(
+                "Competition",
+                "Competition",
+                choices = c("Bundesliga", "La Liga", "Ligue 1", "Premier League",
+                            "Serie A"),
+                multiple = FALSE,
+                options = list(
+                  placeholder = 'Select a Competition',
+                  onInitialize = I('function() { this.setValue("Premier League"); }')
+                ),
+                width = 300),
+              selectizeInput(
                 "Teams",
                 "Teams",
-                choices = team_values,
+                choices = pl_teams,
                 multiple = TRUE,
                 options = list(
                   placeholder = 'Select team(s) below',
@@ -65,7 +76,7 @@ shinyUI(
                 column(
                   width = 6,
                   align = "center",
-                  actionButton(inputId = "resetBumpRange", "Reset Range", width = 150))
+                  actionButton(inputId = "resetBumpRange", "Reset MD Range", width = 150))
               ),
               
               width = 3),
