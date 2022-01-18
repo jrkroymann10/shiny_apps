@@ -58,7 +58,8 @@ shinyServer(function(input, output, session) {
     teams <- unique(bump_df$Team)
     
     girafe(
-      ggobj = get_bumpPlot(bump_df, teams, input$Teams, input$md_range[1], input$md_range[2], input$bumpRank, substr(input$back_color, 1, 7)),
+      ggobj = get_bumpPlot(bump_df, teams, input$Teams, input$md_range[1], input$md_range[2], input$bumpRank,
+                           substr(input$back_color, 1, 7), get_leaguePalette(input$Competition)),
       width_svg = 35, height_svg = 16,
       options = list(
         opts_hover_inv(css = "opacity:0.1;"),

@@ -66,11 +66,34 @@ get_team_choices <- function(comp) {
 
 
 # [Bump Plot Server] - Team Hex Codes ----
+bund_hex <- c("#005CA9", "#DE023F", "#005CA9", "#E1000F", "#46714d", "#009932", 
+              "#FFFFFF", "#DC052D", "#FDDC02", "#E32221", "#004E95", "#000000",
+              "#65B32E", "#918F90", "#ED1C24", "#FDE100", "#1C63B7", "#E32219")
+
+laLiga_hex <- c()
+
+ligue1_hex <- c()
+
 pl_hex <- c("#FDB913", "#630F33", "#670E36", "#6CABDD", "#9C824A",
             "#D71920", "#241F20", "#A7A5A6", "#00A650", "#AC944D",
             "#0053A0", "#ffffff", "#fbee23", "#132257", "#e30613", 
             "#274488", "#7A263A", "#034694", "#D01317", "#B80102")
 
+serieA_hex <- c()
+
+get_leaguePalette <- function(comp) {
+  if (comp == "Bundesliga") {
+    return(bund_hex)
+  } else if (comp == "La Liga") {
+    return(laLiga_hex)
+  } else if (comp == "Ligue 1") {
+    return(ligue1_hex)
+  } else if (comp == "Premier League") {
+    return(pl_hex)
+  } else if (comp == "Serie A") {
+    return(serieA_hex)
+  }
+}
 # [Bump Plot Server] Data Transformation Functions ----
 get_leagueSpecfic <- function(df, comp) {
   if (comp == "Premier League") {
@@ -227,7 +250,7 @@ get_bumpData <- function(match_data) {
 }
 
 # bump plot
-get_bumpPlot <- function(df, teams, h_team, start_md, end_md, rank_option, back_color) {
+get_bumpPlot <- function(df, teams, h_team, start_md, end_md, rank_option, back_color, palette) {
   start_md <- as.numeric(start_md)
   end_md <- as.numeric(end_md) 
   
@@ -239,9 +262,10 @@ get_bumpPlot <- function(df, teams, h_team, start_md, end_md, rank_option, back_
       ggplot(aes(Matchday, Rank, group = Team, colour = Team)) +
       geom_bump(smooth = 5, size = 3, lineend = "round") + 
       geom_point(size = 5) +
-      #scale_colour_manual(
-      #  breaks = teams
-      #) +
+      scale_colour_manual(
+        breaks = teams,
+        values = palette
+      ) +
       geom_text(data = df %>% 
                   filter(Matchday == start_md),
                 aes(label = Team, start_md - 1), fontface = "bold", hjust = 0.5, size = 11) +
@@ -278,9 +302,10 @@ get_bumpPlot <- function(df, teams, h_team, start_md, end_md, rank_option, back_
       ggplot(aes(Matchday, Rank, group = Team, colour = Team, data_id = Team)) +
       geom_path_interactive(size = 3, lineend = "round") + 
       geom_point_interactive(size = 5) + 
-      #scale_colour_manual(
-        #breaks = teams
-        #) +
+      scale_colour_manual(
+       breaks = teams,
+       values = palette
+         ) +
       geom_text_interactive(data = df %>% 
                               filter(Matchday == start_md),
                             aes(label = Team, start_md - 1.2), hjust = 0.5, fontface = "bold", size = 11) +
@@ -326,6 +351,8 @@ bund_bump_data_filled$GD <- as.numeric(bund_bump_data_filled$GD)
 
 bund_bump_data_pointsAndGD <- fill_pointsAndGd(bund_bump_data_filled, unique(bund_bump_data_filled$Team))
 bund_bump_data_rank <- add_rank(bund_bump_data_pointsAndGD, 20)
+
+unique(bund_bump_data_rank$Team)
 
 get_bumpPlot(df = bund_bump_data_rank, teams = unique(bund_bump_data_rank$Team), 
              h_team = "", start_md = 1, end_md = 19, rank_option = FALSE, 
