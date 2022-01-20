@@ -108,30 +108,6 @@ get_leaguePalette <- function(comp) {
   }
 }
 # [Bump Plot] - Data Transformation Functions ----
-get_leagueSpecfic <- function(df, comp) {
-  if (comp == "Premier League") {
-    return(
-      df %>% filter(Competition_Name == "Premier League")
-    )
-  } else if (comp == "La Liga") {
-    return(
-      df %>% filter(Competition_Name == "La Liga")
-    )
-  } else if (comp == "Serie A") {
-    return(
-      df %>% filter(Competition_Name == "Serie A")
-    )
-  } else if (comp == "Bundesliga") {
-    return(
-      df %>% filter(Competition_Name == "Bundesliga")
-    )
-  } else if (comp == "Ligue 1") {
-    return(
-      df %>% filter(Competition_Name == "Ligue 1")
-    )
-  }
-}
-
 transform_matchResults <- function(fbref_mr) {
   fbref_mr %>%
     mutate(HomePoints = ifelse(HomeGoals > AwayGoals, 3, ifelse(HomeGoals < AwayGoals, 0, 1)),
@@ -234,6 +210,48 @@ get_bumpData <- function(match_data) {
   bump_df <- add_rank(bump_df, length(unique(bump_df$Team)))
 }
 
+# [Bump Plot] - Loading Bump Data for each Competition ----
+bund_bump_data <- get_bumpData(big5_match_data %>% filter(Competition_Name == "Bundesliga"))
+laLiga_bump_data <- get_bumpData(big5_match_data %>% filter(Competition_Name == "La Liga"))
+ligue1_bump_data <- get_bumpData(big5_match_data %>% filter(Competition_Name == "Ligue 1"))
+pl_bump_data <- get_bumpData(big5_match_data %>% filter(Competition_Name == "Premier League"))
+serieA_bump_data <- get_bumpData(big5_match_data %>% filter(Competition_Name == "Serie A"))
+
+get_league_bumpData <- function(comp) {
+  if (comp == "Bundesliga") {
+    return(bund_bump_data)
+  } else if (comp == "La Liga") {
+    return(laLiga_bump_data)
+  } else if (comp == "Ligue 1") {
+    return(ligue1_bump_data)
+  } else if (comp == "Premier League") {
+    return(pl_bump_data)
+  } else if (comp == "Serie A") {
+    return(serieA_bump_data)
+  }
+}
+
+# [Bump Plot] - Setting MD Range Max for each Competition ----
+bund_maxMD <- find_lastWeek(transform_matchResults(big5_match_data %>% filter(Competition_Name == "Bundesliga")))
+laLiga_maxMD <- find_lastWeek(transform_matchResults(big5_match_data %>% filter(Competition_Name == "La Liga")))
+ligue1_maxMD <- find_lastWeek(transform_matchResults(big5_match_data %>% filter(Competition_Name == "Ligue 1")))
+pl_maxMD <- find_lastWeek(transform_matchResults(big5_match_data %>% filter(Competition_Name == "Premier League")))
+serieA_maxMD <- find_lastWeek(transform_matchResults(big5_match_data %>% filter(Competition_Name == "Serie A")))
+
+get_league_maxMD <- function(comp) {
+  if (comp == "Bundesliga") {
+    return(bund_maxMD)
+  } else if (comp == "La Liga") {
+    return(laLiga_maxMD)
+  } else if (comp == "Ligue 1") {
+    return(ligue1_maxMD)
+  } else if (comp == "Premier League") {
+    return(pl_maxMD)
+  } else if (comp == "Serie A") {
+    return(serieA_maxMD)
+  }
+}
+
 # [Bump Plot] - Plot Output ----
 get_bumpPlot <- function(df, teams, h_team, start_md, end_md, rank_option, back_color, palette) {
   start_md <- as.numeric(start_md)
@@ -318,31 +336,29 @@ get_bumpPlot <- function(df, teams, h_team, start_md, end_md, rank_option, back_
   }
 }
 
-
-
-# script for testing updated bump functions 
-bund_match_data <- get_leagueSpecfic(big5_match_data, "Bundesliga")
-bund_match_data_transformed <- transform_matchResults(bund_match_data)
-bund_last_week <- find_lastWeek(bund_match_data_transformed)
-
-bund_bump_data_filled <- fill_df(bund_match_data_transformed, bund_last_week)
-
-bund_bump_data_filled$Games_Played <- as.numeric(bund_bump_data_filled$Games_Played)
-bund_bump_data_filled$Points <- as.numeric(bund_bump_data_filled$Points)
-bund_bump_data_filled$Total_Points <- as.numeric(bund_bump_data_filled$Total_Points)
-bund_bump_data_filled$Matchday <- as.numeric(bund_bump_data_filled$Matchday)
-bund_bump_data_filled$GD <- as.numeric(bund_bump_data_filled$GD)
-
-bund_bump_data_pointsAndGD <- fill_pointsAndGd(bund_bump_data_filled, unique(bund_bump_data_filled$Team))
-
-bund_bump_data_rank <- add_rank(bund_bump_data_pointsAndGD, 20)
-
-unique(bund_bump_data_rank$Team)
-
-get_bumpPlot(df = bund_bump_data_rank, teams = unique(bund_bump_data_rank$Team), 
-             h_team = "", start_md = 1, end_md = 22, rank_option = FALSE, 
-             back_color = "#D3D3D3", palette = serieA_hex
-)
+# # script for testing updated bump functions 
+# bund_match_data <- get_leagueSpecfic(big5_match_data, "Bundesliga")
+# bund_match_data_transformed <- transform_matchResults(bund_match_data)
+# bund_last_week <- find_lastWeek(bund_match_data_transformed)
+# 
+# bund_bump_data_filled <- fill_df(bund_match_data_transformed, bund_last_week)
+# 
+# bund_bump_data_filled$Games_Played <- as.numeric(bund_bump_data_filled$Games_Played)
+# bund_bump_data_filled$Points <- as.numeric(bund_bump_data_filled$Points)
+# bund_bump_data_filled$Total_Points <- as.numeric(bund_bump_data_filled$Total_Points)
+# bund_bump_data_filled$Matchday <- as.numeric(bund_bump_data_filled$Matchday)
+# bund_bump_data_filled$GD <- as.numeric(bund_bump_data_filled$GD)
+# 
+# bund_bump_data_pointsAndGD <- fill_pointsAndGd(bund_bump_data_filled, unique(bund_bump_data_filled$Team))
+# 
+# bund_bump_data_rank <- add_rank(bund_bump_data_pointsAndGD, 20)
+# 
+# unique(bund_bump_data_rank$Team)
+# 
+# get_bumpPlot(df = bund_bump_data_rank, teams = unique(bund_bump_data_rank$Team), 
+#              h_team = "", start_md = 1, end_md = 22, rank_option = FALSE, 
+#              back_color = "#D3D3D3", palette = serieA_hex
+# )
 
 # ----------------------------------------------------------------
 # [GK Zone] - Plot Outputs ----

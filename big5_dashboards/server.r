@@ -1,10 +1,13 @@
 shinyServer(function(input, output, session) {
   # [Bump Plot] - Plot Output ----
   output$bumpPlot <- renderGirafe({
-    match_data <- get_leagueSpecfic(big5_match_data, input$Competition)
-    bump_df <- get_bumpData(match_data)
+    bump_df <- get_league_bumpData(input$Competition)
     teams <- unique(bump_df$Team)
     
+    validate(
+      need(input$md_range[2] <= get_league_maxMD(input$Competition), "")
+    )
+
     girafe(
       ggobj = get_bumpPlot(bump_df, teams, input$Teams, input$md_range[1], input$md_range[2], input$bumpRank,
                            substr(input$back_color, 1, 7), get_leaguePalette(input$Competition)),
@@ -51,8 +54,8 @@ shinyServer(function(input, output, session) {
     updateSliderInput(session,
                       "md_range",
                       min = 1,
-                      max = tail(big5_match_data[big5_match_data$Competition_Name == val & !is.na(big5_match_data$Home_xG),]$Wk, 1),
-                      value = c(1, tail(big5_match_data[big5_match_data$Competition_Name == val & !is.na(big5_match_data$Home_xG),]$Wk, 1)),
+                      max = get_league_maxMD(val),
+                      value = c(1, get_league_maxMD(val)),
                       step = 1
                       )
     })

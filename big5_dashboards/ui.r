@@ -27,9 +27,9 @@ shinyUI(
               sliderInput(
                 inputId = "md_range",
                 label = "Matchday Range",
-                value = c(1, tail(big5_match_data[big5_match_data$Competition_Name == "Premier League" & !is.na(big5_match_data$Home_xG),]$Wk, 1)),
+                value = c(1, tail(big5_match_data[big5_match_data$Competition_Name == "Bundesliga" & !is.na(big5_match_data$Home_xG),]$Wk, 1)),
                 min = 1,
-                max = tail(big5_match_data[big5_match_data$Competition_Name == "Premier League" & !is.na(big5_match_data$Home_xG),]$Wk, 1),
+                max = tail(big5_match_data[big5_match_data$Competition_Name == "Bundesliga" & !is.na(big5_match_data$Home_xG),]$Wk, 1),
                 round = TRUE,
                 step = 1,
                 width = 300),
@@ -41,7 +41,7 @@ shinyUI(
                 multiple = FALSE,
                 options = list(
                   placeholder = 'Select a Competition',
-                  onInitialize = I('function() { this.setValue("Premier League"); }')
+                  onInitialize = I('function() { this.setValue("Bundesliga"); }')
                 ),
                 width = 300),
               selectizeInput(
