@@ -12,11 +12,6 @@ library(MetBrewer)
 library(worldfootballR)
 # 
 # [Loading] - Data ----
-big5_match_data <- get_match_results(country = c("ENG", "ESP", "ITA", "GER", "FRA"), gender = "M", season_end_year = "2022", tier = "1st") %>%
-  mutate(Home = ifelse(Home == "M'Gladbach", "Gladbach", Home),
-         Away = ifelse(Away == "M'Gladbach", "Gladbach", Away))
-# cat(file=stderr(), paste("Gladbach: ", big5_match_data[1,]$Home, sep = ""), "\n")
-
 # # gk_data <- fb_big5_advanced_season_stats(season_end_year = 2022,
 # #                                          stat_type = "keepers",
 # #                                          team_or_player = "player")
@@ -35,7 +30,7 @@ bund_teams <- c("Arminia", "Augsburg", "Bayern", "Bochum", "Dortmund", "Frankfur
                 "Freiburg", "Gladbach", "Fürth", "Hertha BSC", "Hoffenheim", "Köln",
                 "Leverkusen", "Mainz 05", "RB Leipzig", "Stuttgart", "Union Berlin", "Wolfsburg")
 
-laLiga_teams <- c("Alavés", "Athletic Club", "Atlético", "Barcelona", "Betis",
+laLiga_teams <- c("Alavés", "Athletic Club", "Atlético Madrid", "Barcelona", "Betis",
                   "Cádiz", "Celta Vigo", "Elche", "Espanyol", "Getafe",
                   "Granada", "Levante", "Mallorca", "Osasuna", "Rayo",
                   "Real Madrid", "Sociedad", "Sevilla", "Valencia", "Villarreal")

@@ -42,7 +42,8 @@ shinyUI(
                    actionButton(inputId = "resetBumpRange", "Reset MD Range", width = 150))
                  ),
                width = 3),
-             mainPanel(girafeOutput(outputId = "bumpPlot")
+             mainPanel(girafeOutput(outputId = "bumpPlot"),
+                       width = 9
              )
            )
          )
