@@ -1,0 +1,14 @@
+name: big5_dashboards
+title: big5_dashboards
+username:
+account: jrkroymann10
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 5508340
+bundleId: 5532809
+url: https://jrkroymann10.shinyapps.io/big5_dashboards/
+when: 1643761499.26808
+lastSyncTime: 1643761499.26808
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: gkZone_code.rmd|leaguetable_code.Rmd|README.md
