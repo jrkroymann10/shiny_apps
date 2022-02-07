@@ -12,6 +12,224 @@ library(MetBrewer)
 library(worldfootballR)
 # 
 # [Loading] - Data ----
+big5 <- data.frame(get_match_results(country = c("ENG", "ESP", "ITA", "GER", "FRA"), gender = "M", season_end_year = "2022", tier = "1st") %>%
+                     mutate(Home = ifelse(Home == "M'Gladbach", "Gladbach",
+                                          ifelse(Home == "Manchester Utd", "Man Utd",
+                                                 ifelse(Home == "Manchester City", "Man City",
+                                                        ifelse(Home == "Atlético Madrid", "Athletico",
+                                                               ifelse(Home == "Rayo Vallecano", "Rayo",
+                                                                      Home))))),
+                            Away = ifelse(Away == "M'Gladbach", "Gladbach",
+                                          ifelse(Away == "Manchester Utd", "Man Utd",
+                                                 ifelse(Away == "Manchester City", "Man City",
+                                                        ifelse(Away == "Atlético Madrid", "Athletico",
+                                                               ifelse(Away == "Rayo Vallecano", "Rayo",
+                                                                      Away))))),
+                            Competition_Name = ifelse(Competition_Name != "Premier League" & Competition_Name != "La Liga" & Competition_Name != "Ligue 1" & Competition_Name != "Serie A", "Bundesliga", Competition_Name))) # weird work around for unicode reading on shiny apps
+# ???mutate(Home = case_when( ----
+#   Home == "Manchester Utd" ~ "Man Utd",
+#   Home == "Liverpool" ~ "Liverpool",
+#   Home == "Chelsea" ~ "Chelsea",
+#   Home == "West Ham" ~ "West Ham",
+#   Home == "Everton" ~ "Everton",
+#   Home == "Brentford" ~ "Brentford",
+#   Home == "Tottenham" ~ "Tottenham",
+#   Home == "Watford" ~ "Watford", 
+#   Home == "Brighton" ~ "Brighton", 
+#   Home == "Leicester City" ~ "Leicester",
+#   Home == "Leeds United" ~ "Leeds",
+#   Home == "Norwich City" ~ "Norwich",
+#   Home == "Crystal Palace" ~ "Palace",
+#   Home == "Newcastle Utd" ~ "Newcastle",
+#   Home == "Southampton" ~ "Sthampton",
+#   Home == "Arsenal" ~ "Arsenal",
+#   Home == "Manchester City" ~ "Man City",
+#   Home == "Aston Villa" ~ "Aston Villa",
+#   Home == "Burnley" ~ "Burnley",
+#   Home == "Wolves" ~ "Wolves",
+#   Home == "Arminia" ~ "Arminia",
+#   Home == "Augsburg" ~ "Augsburg",
+#   Home == "Bayern Munich" ~ "Bayern",
+#   Home == "Bochum" ~ "Bochum",
+#   Home == "Dortmund" ~ "Dortmund",
+#   Home == "Eint Frankfurt" ~ "Frankfurt",
+#   Home == "Freiburg" ~ "Freiburg",
+#   Home == "M'Gladbach" ~ "Gladbach",
+#   Home == "Greuther Fürth" ~ "Fürth",
+#   Home == "Hertha BSC" ~ "Hertha BSC", 
+#   Home == "Hoffenheim" ~ "Hoffenheim",
+#   Home == "Köln" ~ "Köln",
+#   Home == "Leverkusen" ~ "Leverkusen",
+#   Home == "Mainz 05" ~ "Mainz 05",
+#   Home == "RB Leipzig" ~ "RB Leipzig",
+#   Home == "Stuttgart" ~ "Stuttgart",
+#   Home == "Union Berlin" ~ "Union Berlin", 
+#   Home == "Wolfsburg" ~ "Wolfsburg",
+#   Home == "Alavés" ~ "Alavés",
+#   Home == "Athletic Club" ~ "Athletic Club",
+#   Home == "Atlético Madrid" ~ "Atlético Madrid",
+#   Home == "Barcelona" ~ "Barcelona",
+#   Home == "Betis" ~ "Betis",
+#   Home == "Cádiz" ~ "Cádiz",
+#   Home == "Celta Vigo" ~ "Celta Vigo",
+#   Home == "Elche" ~ "Elche", 
+#   Home == "Espanyol" ~ "Espanyol",
+#   Home == "Getafe" ~ "Getafe",
+#   Home == "Granada" ~ "Granada",
+#   Home == "Levante" ~ "Levante", 
+#   Home == "Mallorca" ~ "Mallorca", 
+#   Home == "Osasuna" ~ "Osasuna",
+#   Home == "Rayo Vallecano" ~ "Rayo",
+#   Home == "Real Madrid" ~ "Real Madrid",
+#   Home == "Real Sociedad" ~ "Sociedad",
+#   Home == "Sevilla" ~ "Sevilla", 
+#   Home == "Valencia" ~ "Valencia",
+#   Home == "Villarreal" ~ "Villarreal",
+#   Home == "Angers" ~ "Angers",
+#   Home == "Bordeaux" ~ "Bordeaux",
+#   Home == "Brest" ~ "Brest",
+#   Home == "Clermont Foot" ~ "Clermont",
+#   Home == "Lens" ~ "Lens", 
+#   Home == "Lille" ~ "Lille",
+#   Home == "Lorient" ~ "Lorient",
+#   Home == "Lyon" ~ "Lyon",
+#   Home == "Marseille" ~ "Marseille",
+#   Home == "Metz" ~ "Mets", 
+#   Home == "Monaco" ~ "Monaco",
+#   Home == "Montpellier" ~ "Montpellier",
+#   Home == "Nantes" ~ "Nantes",
+#   Home == "Nice" ~ "Nice",
+#   Home == "Paris S-G" ~ "Paris S-G",
+#   Home == "Reims" ~ "Reims",
+#   Home == "Rennes" ~ "Rennes",
+#   Home == "Saint-Étienne" ~ "Étienne",
+#   Home == "Strasbourg" ~ "Strasbourg",
+#   Home == "Troyes" ~ "Troyes",
+#   Home == "Reimes" ~ "Reims",
+#   Home == "Atalanta" ~ "Atalanta",
+#   Home == "Bologna" ~ "Bologna",
+#   Home == "Cagliari" ~ "Cagliari",
+#   Home == "Empoli" ~ "Empoli",
+#   Home == "Fiorentina" ~ "Fiorentina",
+#   Home == "Genoa" ~ "Genoa",
+#   Home == "Hellas Verona" ~ "Verona",
+#   Home == "Inter" ~ "Inter",
+#   Home == "Juventus" ~ "Juventus",
+#   Home == "Lazio" ~ "Lazio",
+#   Home == "Milan" ~ "Milan",
+#   Home == "Napoli" ~ "Napoli",
+#   Home == "Roma" ~ "Roma",
+#   Home == "Salernitana" ~ "Salernitana",
+#   Home == "Sampdoria" ~ "Sampdoria",
+#   Home == "Sassuolo" ~ "Sassuolo",
+#   Home == "Spezia" ~ "Spezia",
+#   Home == "Torina" ~ "Torino",
+#   Home == "Udinese" ~ "Udinese",
+#   Home == "Venezia" ~ "Venezia"
+# ),
+# Away = case_when(
+#   Away == "Manchester Utd" ~ "Man Utd",
+#   Away == "Liverpool" ~ "Liverpool",
+#   Away == "Chelsea" ~ "Chelsea",
+#   Away == "West Ham" ~ "West Ham",
+#   Away == "Everton" ~ "Everton",
+#   Away == "Brentford" ~ "Brentford",
+#   Away == "Tottenham" ~ "Tottenham",
+#   Away == "Watford" ~ "Watford", 
+#   Away == "Brighton" ~ "Brighton", 
+#   Away == "Leicester City" ~ "Leicester",
+#   Away == "Leeds United" ~ "Leeds",
+#   Away == "Norwich City" ~ "Norwich",
+#   Away == "Crystal Palace" ~ "Palace",
+#   Away == "Newcastle Utd" ~ "Newcastle",
+#   Away == "Southampton" ~ "Sthampton",
+#   Away == "Arsenal" ~ "Arsenal",
+#   Away == "Manchester City" ~ "Man City",
+#   Away == "Aston Villa" ~ "Aston Villa",
+#   Away == "Burnley" ~ "Burnley",
+#   Away == "Wolves" ~ "Wolves",
+#   Away == "Arminia" ~ "Arminia",
+#   Away == "Augsburg" ~ "Augsburg",
+#   Away == "Bayern Munich" ~ "Bayern",
+#   Away == "Bochum" ~ "Bochum",
+#   Away == "Dortmund" ~ "Dortmund",
+#   Away == "Eint Frankfurt" ~ "Frankfurt",
+#   Away == "Freiburg" ~ "Freiburg",
+#   Away == "M'Gladbach" ~ "Gladbach",
+#   Away == "Greuther Fürth" ~ "Fürth",
+#   Away == "Hertha BSC" ~ "Hertha BSC", 
+#   Away == "Hoffenheim" ~ "Hoffenheim",
+#   Away == "Köln" ~ "Köln",
+#   Away == "Leverkusen" ~ "Leverkusen",
+#   Away == "Mainz 05" ~ "Mainz 05",
+#   Away == "RB Leipzig" ~ "RB Leipzig",
+#   Away == "Stuttgart" ~ "Stuttgart",
+#   Away == "Union Berlin" ~ "Union Berlin", 
+#   Away == "Wolfsburg" ~ "Wolfsburg",
+#   Away == "Alavés" ~ "Alavés",
+#   Away == "Athletic Club" ~ "Athletic Club",
+#   Away == "Atlético Madrid" ~ "Atlético Madrid",
+#   Away == "Barcelona" ~ "Barcelona",
+#   Away == "Betis" ~ "Betis",
+#   Away == "Cádiz" ~ "Cádiz",
+#   Away == "Celta Vigo" ~ "Celta Vigo",
+#   Away == "Elche" ~ "Elche", 
+#   Away == "Espanyol" ~ "Espanyol",
+#   Away == "Getafe" ~ "Getafe",
+#   Away == "Granada" ~ "Granada",
+#   Away == "Levante" ~ "Levante", 
+#   Away == "Mallorca" ~ "Mallorca", 
+#   Away == "Osasuna" ~ "Osasuna",
+#   Away == "Rayo Vallecano" ~ "Rayo",
+#   Away == "Real Madrid" ~ "Real Madrid",
+#   Away == "Real Sociedad" ~ "Sociedad",
+#   Away == "Sevilla" ~ "Sevilla", 
+#   Away == "Valencia" ~ "Valencia",
+#   Away == "Villarreal" ~ "Villarreal",
+#   Away == "Angers" ~ "Angers",
+#   Away == "Bordeaux" ~ "Bordeaux",
+#   Away == "Brest" ~ "Brest",
+#   Away == "Clermont Foot" ~ "Clermont",
+#   Away == "Lens" ~ "Lens", 
+#   Away == "Lille" ~ "Lille",
+#   Away == "Lorient" ~ "Lorient",
+#   Away == "Lyon" ~ "Lyon",
+#   Away == "Marseille" ~ "Marseille",
+#   Away == "Metz" ~ "Mets", 
+#   Away == "Monaco" ~ "Monaco",
+#   Away == "Montpellier" ~ "Montpellier",
+#   Away == "Nantes" ~ "Nantes",
+#   Away == "Nice" ~ "Nice",
+#   Away == "Paris S-G" ~ "Paris S-G",
+#   Away == "Reims" ~ "Reims",
+#   Away == "Rennes" ~ "Rennes",
+#   Away == "Saint-Étienne" ~ "Étienne",
+#   Away == "Strasbourg" ~ "Strasbourg",
+#   Away == "Troyes" ~ "Troyes",
+#   Away == "Reimes" ~ "Reims",
+#   Away == "Atalanta" ~ "Atalanta",
+#   Away == "Bologna" ~ "Bologna",
+#   Away == "Cagliari" ~ "Cagliari",
+#   Away == "Empoli" ~ "Empoli",
+#   Away == "Fiorentina" ~ "Fiorentina",
+#   Away == "Genoa" ~ "Genoa",
+#   Away == "Hellas Verona" ~ "Verona",
+#   Away == "Inter" ~ "Inter",
+#   Away == "Juventus" ~ "Juventus",
+#   Away == "Lazio" ~ "Lazio",
+#   Away == "Milan" ~ "Milan",
+#   Away == "Napoli" ~ "Napoli",
+#   Away == "Roma" ~ "Roma",
+#   Away == "Salernitana" ~ "Salernitana",
+#   Away == "Sampdoria" ~ "Sampdoria",
+#   Away == "Sassuolo" ~ "Sassuolo",
+#   Away == "Spezia" ~ "Spezia",
+#   Away == "Torina" ~ "Torino",
+#   Away == "Udinese" ~ "Udinese",
+#   Away == "Venezia" ~ "Venezia"
+#   )
+# )
+
 # # gk_data <- fb_big5_advanced_season_stats(season_end_year = 2022,
 # #                                          stat_type = "keepers",
 # #                                          team_or_player = "player")
@@ -26,28 +244,29 @@ library(worldfootballR)
 # 
 # ---------------------------------------------------------------
 # {Bump Plot] - Teams ----
-bund_teams <- c("Arminia", "Augsburg", "Bayern", "Bochum", "Dortmund", "Frankfurt",
-                "Freiburg", "Gladbach", "Fürth", "Hertha BSC", "Hoffenheim", "Köln",
+bund_teams <- c("Arminia", "Augsburg", "Bayern Munich", "Bochum", "Dortmund", "Eint Frankfurt",
+                "Freiburg", "Gladbach", "Greuther Fürth", "Hertha BSC", "Hoffenheim", "Köln",
                 "Leverkusen", "Mainz 05", "RB Leipzig", "Stuttgart", "Union Berlin", "Wolfsburg")
 
 laLiga_teams <- c("Alavés", "Athletic Club", "Atlético Madrid", "Barcelona", "Betis",
                   "Cádiz", "Celta Vigo", "Elche", "Espanyol", "Getafe",
                   "Granada", "Levante", "Mallorca", "Osasuna", "Rayo",
-                  "Real Madrid", "Sociedad", "Sevilla", "Valencia", "Villarreal")
+                  "Real Madrid", "Real Sociedad", "Sevilla", "Valencia", "Villarreal")
 
-ligue1_teams <- c("Angers", "Bordeaux", "Brest", "Clermont", "Lens", "Lille",
+ligue1_teams <- c("Angers", "Bordeaux", "Brest", "Clermont Foot", "Lens", "Lille",
                   "Lorient", "Lyon", "Marseille", "Metz", "Monaco", "Montpellier",
-                  "Nantes", "Nice", "Paris S-G", "Reims", "Rennes", "Étienne",
+                  "Nantes", "Nice", "Paris S-G", "Reims", "Rennes", "Saint-Étienne",
                   "Strasbourg", "Troyes")
 
-pl_teams <- c("Arsenal", "Aston Villa", "Brentford", "Brighton", "Burnley", "Chelsea",
-              "Everton", "Leeds", "Leicester", "Liverpool", "Man City", "Man Utd", "Newcastle",
-              "Norwich", "Palace", "Sthampton", "Tottenham", "Watford", "West Ham", "Wolves")
+pl_teams <- c("Arsenal", "Aston Villa", "Brentford", "Brighton", "Burnley", 
+              "Chelsea", "Crystal Palace", "Everton", "Leeds United", "Leicester City", 
+              "Liverpool", "Man City", "Man Utd", "Newcastle Utd", "Norwich City", 
+              "Southampton", "Tottenham", "Watford", "West Ham", "Wolves")
 
 serieA_teams <- c("Atalanta", "Bologna", "Cagliari", "Empoli", "Fiorentina",
-                  "Genoa", "Inter", "Juventus", "Lazio", "Milan",
-                  "Napoli", "Roma", "Salernitana", "Sampdoria", "Sassuolo",
-                  "Spezia", "Torino", "Udinese", "Venezia", "Verona")
+                  "Genoa", "Hellas Verona", "Inter", "Juventus", "Lazio", 
+                  "Milan", "Napoli", "Roma", "Salernitana", "Sampdoria", 
+                  "Sassuolo", "Spezia", "Torino", "Udinese", "Venezia", "Verona")
 #
 # [Bump Plot] - Team Hex Codes ----
 bund_hex <- c("#005CA9", "#DE023F", "#005CA9", "#E1000F", "#46714d", "#009932",
@@ -76,8 +295,9 @@ serieA_hex <- c("#005395", "#8A1E03", "#742038", "#1B5497", "#00579C",
 #
 #
 # [Bump Plot] - Data Transformation Functions ----
-# # finding latest md in which a match was played
+# finding latest md in which a match was played
 find_lastWeek <- function(df) {
+  cat(file=stderr(), nrow(df), "\n")
   total_wk <- tail(df$Wk, 1)
 
   for (i in 1:total_wk) {
@@ -164,30 +384,6 @@ get_bumpData <- function(match_data, last_week) {
   return(bump_df)
 }
 
-# [Bump Plot] - Setting MD Range Max for each Competition ----
-# bund_maxMD <- find_lastWeek(big5_match_data %>% dplyr::filter(Competition_Name == "Fußball-Bundesliga") %>%
-#                               mutate(HomePoints = ifelse(HomeGoals > AwayGoals, 3, ifelse(HomeGoals < AwayGoals, 0, 1)),
-#                                      AwayPoints = ifelse(HomeGoals > AwayGoals, 0, ifelse(HomeGoals < AwayGoals, 3, 1)),
-#                                      gamePlayed = ifelse(!is.na(HomePoints), 1, 0)))
-# laLiga_maxMD <- find_lastWeek(big5_match_data %>% dplyr::filter(Competition_Name == "La Liga") %>%
-#                                 mutate(HomePoints = ifelse(HomeGoals > AwayGoals, 3, ifelse(HomeGoals < AwayGoals, 0, 1)),
-#                                        AwayPoints = ifelse(HomeGoals > AwayGoals, 0, ifelse(HomeGoals < AwayGoals, 3, 1)),
-#                                        gamePlayed = ifelse(!is.na(HomePoints), 1, 0)))
-# ligue1_maxMD <- find_lastWeek(big5_match_data %>% dplyr::filter(Competition_Name == "Ligue 1") %>%
-#                                 mutate(HomePoints = ifelse(HomeGoals > AwayGoals, 3, ifelse(HomeGoals < AwayGoals, 0, 1)),
-#                                        AwayPoints = ifelse(HomeGoals > AwayGoals, 0, ifelse(HomeGoals < AwayGoals, 3, 1)),
-#                                        gamePlayed = ifelse(!is.na(HomePoints), 1, 0)))
-# pl_maxMD <- find_lastWeek(big5_match_data %>% dplyr::filter(Competition_Name == "Premier League") %>%
-#                             mutate(HomePoints = ifelse(HomeGoals > AwayGoals, 3, ifelse(HomeGoals < AwayGoals, 0, 1)),
-#                                    AwayPoints = ifelse(HomeGoals > AwayGoals, 0, ifelse(HomeGoals < AwayGoals, 3, 1)),
-#                                    gamePlayed = ifelse(!is.na(HomePoints), 1, 0)))
-# serieA_maxMD <- find_lastWeek(big5_match_data %>% dplyr::filter(Competition_Name == "Serie A") %>%
-#                                 mutate(HomePoints = ifelse(HomeGoals > AwayGoals, 3, ifelse(HomeGoals < AwayGoals, 0, 1)),
-#                                        AwayPoints = ifelse(HomeGoals > AwayGoals, 0, ifelse(HomeGoals < AwayGoals, 3, 1)),
-#                                        gamePlayed = ifelse(!is.na(HomePoints), 1, 0)))
-
-#cat(file=stderr(), paste("Bundesliga Last Week: ", bund_maxMD, sep = ""), "\n")
-
 # [Bump Plot] - Functions ----
 get_leaguePalette <- function(comp = "Fußball-Bundesliga") {
   if (comp == "La Liga") {
@@ -202,34 +398,7 @@ get_leaguePalette <- function(comp = "Fußball-Bundesliga") {
     return(bund_hex)
   }
 }
-get_league_maxMD <- function(comp = "Fußball-Bundesliga") {
-  if (comp == "La Liga") {
-    return(find_lastWeek(big5_match_data %>% dplyr::filter(Competition_Name == "La Liga") %>%
-                                                           mutate(HomePoints = ifelse(HomeGoals > AwayGoals, 3, ifelse(HomeGoals < AwayGoals, 0, 1)),
-                                                                  AwayPoints = ifelse(HomeGoals > AwayGoals, 0, ifelse(HomeGoals < AwayGoals, 3, 1)),
-                                                                  gamePlayed = ifelse(!is.na(HomePoints), 1, 0))))
-  } else if (comp == "Ligue 1") {
-    return(find_lastWeek(big5_match_data %>% dplyr::filter(Competition_Name == "Ligue 1") %>%
-                                                           mutate(HomePoints = ifelse(HomeGoals > AwayGoals, 3, ifelse(HomeGoals < AwayGoals, 0, 1)),
-                                                                  AwayPoints = ifelse(HomeGoals > AwayGoals, 0, ifelse(HomeGoals < AwayGoals, 3, 1)),
-                                                                  gamePlayed = ifelse(!is.na(HomePoints), 1, 0))))
-  } else if (comp == "Premier League") {
-    return(find_lastWeek(big5_match_data %>% dplyr::filter(Competition_Name == "Premier League") %>%
-                                                       mutate(HomePoints = ifelse(HomeGoals > AwayGoals, 3, ifelse(HomeGoals < AwayGoals, 0, 1)),
-                                                              AwayPoints = ifelse(HomeGoals > AwayGoals, 0, ifelse(HomeGoals < AwayGoals, 3, 1)),
-                                                              gamePlayed = ifelse(!is.na(HomePoints), 1, 0))))
-  } else if (comp == "Serie A") {
-    return(find_lastWeek(big5_match_data %>% dplyr::filter(Competition_Name == "Serie A") %>%
-                                                           mutate(HomePoints = ifelse(HomeGoals > AwayGoals, 3, ifelse(HomeGoals < AwayGoals, 0, 1)),
-                                                                  AwayPoints = ifelse(HomeGoals > AwayGoals, 0, ifelse(HomeGoals < AwayGoals, 3, 1)),
-                                                                  gamePlayed = ifelse(!is.na(HomePoints), 1, 0))))
-  } else {
-    return(find_lastWeek(big5_match_data %>% dplyr::filter(Competition_Name == "Fußball-Bundesliga") %>%
-                                                         mutate(HomePoints = ifelse(HomeGoals > AwayGoals, 3, ifelse(HomeGoals < AwayGoals, 0, 1)),
-                                                                AwayPoints = ifelse(HomeGoals > AwayGoals, 0, ifelse(HomeGoals < AwayGoals, 3, 1)),
-                                                                gamePlayed = ifelse(!is.na(HomePoints), 1, 0))))
-  }
-}
+
 get_team_choices <- function(comp = "Fußball-Bundesliga") {
   if (comp == "La Liga") {
     return(laLiga_teams)
@@ -241,6 +410,81 @@ get_team_choices <- function(comp = "Fußball-Bundesliga") {
     return(serieA_teams)
   } else {
     return(bund_teams)
+  }
+}
+# [Bump Plot] - Plot Output ----
+getBumpPlot <- function(df, md_start, md_end, teams, sel_teams, league_palette, bump_rank, background) {
+  if (length(sel_teams) >= 1) {
+    df %>%
+      ggplot(aes(x = Matchday, y = Rank, colour = Team)) +
+      geom_bump(smooth = 5, size = 3, lineend = "round") +
+      geom_point(size = 5) +
+      scale_colour_manual(
+        breaks = teams,
+        values = league_palette
+      ) +
+      geom_text(data = df %>%
+                  dplyr::filter(Matchday == md_start),
+                aes(label = Team, md_start - 1), fontface = "bold", hjust = 0.45, size = 11) +
+      geom_text(data = df %>%
+                  dplyr::filter(Matchday == md_end),
+                aes(label = Team, x = md_end + 1), fontface = "bold", hjust = 0.35, size = 11) +
+      gghighlight(any(Team == sel_teams),
+                  use_direct_label = bump_rank,
+                  label_key = Rank,
+                  label_params = list(colour = "black", size = 10),
+                  unhighlighted_params = list(alpha = 0.1)) +
+      scale_y_reverse() +
+      # labs(title = paste("Premier League Table Progression (Matchday ", start_md, " - ", end_md, ")",
+      #                    sep = "")) +
+      theme_minimal() +
+      theme(
+        legend.position = "none",
+        
+        panel.grid = element_blank(),
+        panel.background = element_rect(substring(background, 1, 7)),
+        
+        plot.title = element_text(size = 45, face = "bold", hjust = 0.5),
+        
+        axis.title.y = element_blank(),
+        axis.text.y = element_blank(),
+        axis.title.x = element_blank(),
+        axis.text.x = element_blank()
+      )
+  }
+  else {
+    df %>%
+      ggplot(aes(x = Matchday, y = Rank, colour = Team, data_id = Team)) +
+      geom_path_interactive(size = 3, lineend = "round") + 
+      geom_point_interactive(size = 5) + 
+      #xlim(input$md_range[1] - 1, input$md_range[2] + 1) +
+      scale_colour_manual(
+        breaks = teams,
+        values = league_palette
+      ) +
+      geom_text_interactive(data = df %>%
+                              dplyr::filter(Matchday == md_start),
+                            aes(label = Team, x = md_start - 1), fontface = "bold", hjust = 0.45, size = 11) +
+      geom_text_interactive(data = df %>%
+                              dplyr::filter(Matchday == md_end),
+                            aes(label = Team, x = md_end + 1), fontface = "bold", hjust = 0.35, size = 11) +
+      scale_y_reverse() +
+      # labs(title = paste("Premier League Table Progression (Matchday ", start_md, " - ", end_md, ")",
+      #                    sep = "")) +
+      theme_minimal() +
+      theme(
+        legend.position = "none",
+        
+        panel.grid = element_blank(),
+        panel.background = element_rect(substring(background, 1, 7)),
+        
+        plot.title = element_text(size = 45, face = "bold", hjust = 0.5),
+        
+        axis.title.y = element_blank(),
+        axis.text.y = element_blank(),
+        axis.title.x = element_blank(),
+        axis.text.x = element_blank()
+      )
   }
 }
 # ----------------------------------------------------------------
