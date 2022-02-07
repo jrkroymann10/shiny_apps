@@ -1,7 +1,7 @@
 # shinyServer ----
 # ----
 shinyServer(function(input, output, session) {
-  # [Bump Plot] - Reactive Data? ----
+  # [Bump Plot] - Reactive Data ----
   matches <- reactive({
     req(input$competition)
     big5 %>% dplyr::filter(Competition_Name == input$competition) %>%
@@ -47,7 +47,7 @@ shinyServer(function(input, output, session) {
                    choices = get_team_choices(input$competition),
                    multiple = TRUE,
                    options = list(
-                     placeholder = 'Select team(s) below',
+                     placeholder = 'Select Team(s) below',
                      onInitialize = I('function() { this.setValue(); }')
                      ),
                    width = 300)
@@ -78,7 +78,7 @@ shinyServer(function(input, output, session) {
   })
 
   output$firstTeam <- renderText({
-    unique(big5$Competition_Name)
+    length(input$gkZoneComp)
   })
 
   # [Bump Plot] - Plot Output ----
@@ -127,48 +127,64 @@ shinyServer(function(input, output, session) {
                       max = last_wk(),
                       step = 1)
   )
-})
   # ------------------------------------------------------------------------
+  # [GK Zone] - Reactive Data ----
+  gkData <- reactive({
+    if (length(input$gkZoneComp) < 1) {
+      gkDataCombined %>% dplyr::filter(Min_Playing >= 900)
+    }
+    else {
+      gkDataCombined %>% dplyr::filter(Comp == input$gkZoneComp & Min_Playing >= 900)
+    }
+  })
+  # [GK Zone] - UI (Viz Selection) ----
+  output$gkZoneViz <- renderUI({
+    selectizeInput(inputId = "gkZoneViz",
+                   label = "Visualizations",
+                   choices = c("Who's Beating the Model?", "Getting Out of the Box",
+                               "Are Crosses Scary?", "Building From the Back"),
+                   options = list(
+                     placeholder = 'Select a Narrative to Investigate',
+                     onInitialize = I('function() { this.setValue(); }'))
+                   )
+  })
+  # [GK Zone] - UI (Competition Selection) ----
+  output$gkZoneComp <- renderUI({
+    selectizeInput(inputId = "gkZoneComp",
+                   label = "Competition(s)",
+                   choices = sort(unique(gkDataCombined$Comp)),
+                   multiple = TRUE,
+                   options = list(
+                     placeholder = 'Select Competition(s) to Filter By',
+                     onInitialize = I('function() { this.setValue(); }')))
+  })
+  # [GK Zone] - UI (Player Selection) ----
+  output$gkZonePlayer <- renderUI({
+    selectizeInput(inputId = "gkZonePlayer",
+                   label = "Goalkeeper(s)",
+                   choices = sort(gkData()$Player),
+                   multiple = TRUE,
+                   options = list(
+                     placeholder = 'Select Goalkeeper(s) to Track Across Plots',
+                     onInitialize = I('function() { this.setValue(); }'))
+                   )
+  })
   # [GK Zone] - Plot Output ---- 
-  # # # output$gkPlot <- renderGirafe({
-  # # #   gk_data <- get_plKeeper_adv(gk_data, gk_data_adv)
-  # # #   
-  # # #   if (input$gk_viz == "Who's Beating the Model?") {
-  # # #     girafe(
-  # # #       ggobj = gk_model_plot(gk_data),
-  # # #       width_svg = 9, height_svg = 5.5,
-  # # #       options = list(
-  # # #         opts_tooltip(use_fill = TRUE),
-  # # #         opts_hover_inv(css = "opacity:0.5;")
-  # # #       )
-  # # #     )
-  # # #   } else if (input$gk_viz == "Getting Out of the Box") {
-  # # #     girafe(
-  # # #       ggobj = gk_sweeper_plot(gk_data),
-  # # #       width_svg = 9, height_svg = 5.5,
-  # # #       options = list(
-  # # #         opts_tooltip(use_fill = TRUE),
-  # # #         opts_hover_inv(css = "opacity:0.5;")
-  # # #       )
-  # # #     )
-  # # #   } else if (input$gk_viz == "Are Crosses Scary?") {
-  # # #     girafe(
-  # # #       ggobj = gk_cross_plot(gk_data),
-  # # #       width_svg = 9, height_svg = 5.5,
-  # # #       options = list(
-  # # #         opts_tooltip(use_fill = TRUE),
-  # # #         opts_hover_inv(css = "opacity:0.5;")
-  # # #       )
-  # # #     )
-  # # #   } else if (input$gk_viz == "Building From the Back") {
-  # # #     
-  # # #   }
-  # # #   
-  # # #   
-  # # #   
-  # # # })
+  output$gkZonePlot <- renderGirafe({
+    # browser()
+    req(input$gkZoneViz)
+    girafe(
+      ggobj = getGkZonePlot(input$gkZoneViz, gkData()),
+      width_svg = 9, height_svg = 5.5,
+      options = list(
+        opts_tooltip(use_fill = TRUE),
+        opts_hover_inv(css = "opacity:0.5;")
+        )
+      )
+    })
   # [GK Zone] - Text Output ----
   # # # output$gk_text <- renderText(
   # # #   gk_model_text
   # # # )
   # ------------------------------------------------------------------------
+})

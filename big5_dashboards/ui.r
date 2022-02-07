@@ -43,51 +43,42 @@ shinyUI(
                  ),
                width = 3),
              mainPanel(girafeOutput(outputId = "bumpPlot"),
-                       width = 9
-             )
+                       width = 9)
            )
          )
+      ),
+
+
+      # GK Zone Tab ----
+      tabPanel(
+        "GK Zone",
+
+        titlePanel("Pick the Visualization you'd like to view (Or the one the makes you feel best about your team's keeper)"),
+        br(),
+        sidebarLayout(
+          sidebarPanel(
+            uiOutput(outputId = "gkZoneViz"),
+            uiOutput(outputId = "gkZoneComp"),
+            uiOutput(outputId = "gkZonePlayer"),
+            uiOutput(outputId = "gkZoneText"),
+            width = 3
+          ),
+          mainPanel(girafeOutput("gkZonePlot"),
+                    width = 9
+          )
+        )
+        # fluidRow(
+        #          # selectInput(inputId = "gk_highlight",
+        #          #             label = "Highlight a Goalkeeper",
+        #          #             choices = pl_gks$Player,
+        #          #             selected = "Aaron Ramsdale"),
+        #          textOutput("gk_text"),
+        #   ),
+        #   column(9,
+        #          girafeOutput("gkPlot")
+        #   )
+        # ),
+      )
       )
     )
   )
-)
-#              )
-#            )
-#          )
-#       )
-#     )
-# )
-#   
-#       #     ),
-#       #     br()
-#       #   )
-#       # ))))
-      # GK Zone Tab ----
-# #       tabPanel(
-# #         "GK Zone",
-# #         
-# #         titlePanel("Pick the Visualization you'd like to view (Or the one the makes you feel best about your team's keeper)"),
-# #         br(),
-# #         fluidRow(
-# #           column(3,
-# #                  selectInput(inputId = "gk_viz",
-# #                              label = "Select a Viz",
-# #                              choices = c("Who's Beating the Model?", "Getting Out of the Box", "Are Crosses Scary?",
-# #                                          "Building From the Back"),
-# #                              selected = "Who's Beating the Model?"
-# #                  ),
-# #                  selectInput(inputId = "gk_highlight",
-# #                              label = "Highlight a Goalkeeper",
-# #                              choices = pl_gks$Player,
-# #                              selected = "Aaron Ramsdale"),
-# #                  textOutput("gk_text"),
-# #           ),
-# #           column(9,
-# #                  girafeOutput("gkPlot")
-# #           )
-# #         ),
-# #         br()
-# #       )
-# #     )
-# #   )
-# # )

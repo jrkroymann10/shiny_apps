@@ -16,233 +16,39 @@ big5 <- data.frame(get_match_results(country = c("ENG", "ESP", "ITA", "GER", "FR
                      mutate(Home = ifelse(Home == "M'Gladbach", "Gladbach",
                                           ifelse(Home == "Manchester Utd", "Man Utd",
                                                  ifelse(Home == "Manchester City", "Man City",
-                                                        ifelse(Home == "Atlético Madrid", "Athletico",
-                                                               ifelse(Home == "Rayo Vallecano", "Rayo",
-                                                                      Home))))),
+                                                        ifelse(Home == "Rayo Vallecano", "Rayo",
+                                                                      Home)))),
                             Away = ifelse(Away == "M'Gladbach", "Gladbach",
                                           ifelse(Away == "Manchester Utd", "Man Utd",
                                                  ifelse(Away == "Manchester City", "Man City",
-                                                        ifelse(Away == "Atlético Madrid", "Athletico",
                                                                ifelse(Away == "Rayo Vallecano", "Rayo",
-                                                                      Away))))),
+                                                                      Away)))),
                             Competition_Name = ifelse(Competition_Name != "Premier League" & Competition_Name != "La Liga" & Competition_Name != "Ligue 1" & Competition_Name != "Serie A", "Bundesliga", Competition_Name))) # weird work around for unicode reading on shiny apps
-# ???mutate(Home = case_when( ----
-#   Home == "Manchester Utd" ~ "Man Utd",
-#   Home == "Liverpool" ~ "Liverpool",
-#   Home == "Chelsea" ~ "Chelsea",
-#   Home == "West Ham" ~ "West Ham",
-#   Home == "Everton" ~ "Everton",
-#   Home == "Brentford" ~ "Brentford",
-#   Home == "Tottenham" ~ "Tottenham",
-#   Home == "Watford" ~ "Watford", 
-#   Home == "Brighton" ~ "Brighton", 
-#   Home == "Leicester City" ~ "Leicester",
-#   Home == "Leeds United" ~ "Leeds",
-#   Home == "Norwich City" ~ "Norwich",
-#   Home == "Crystal Palace" ~ "Palace",
-#   Home == "Newcastle Utd" ~ "Newcastle",
-#   Home == "Southampton" ~ "Sthampton",
-#   Home == "Arsenal" ~ "Arsenal",
-#   Home == "Manchester City" ~ "Man City",
-#   Home == "Aston Villa" ~ "Aston Villa",
-#   Home == "Burnley" ~ "Burnley",
-#   Home == "Wolves" ~ "Wolves",
-#   Home == "Arminia" ~ "Arminia",
-#   Home == "Augsburg" ~ "Augsburg",
-#   Home == "Bayern Munich" ~ "Bayern",
-#   Home == "Bochum" ~ "Bochum",
-#   Home == "Dortmund" ~ "Dortmund",
-#   Home == "Eint Frankfurt" ~ "Frankfurt",
-#   Home == "Freiburg" ~ "Freiburg",
-#   Home == "M'Gladbach" ~ "Gladbach",
-#   Home == "Greuther Fürth" ~ "Fürth",
-#   Home == "Hertha BSC" ~ "Hertha BSC", 
-#   Home == "Hoffenheim" ~ "Hoffenheim",
-#   Home == "Köln" ~ "Köln",
-#   Home == "Leverkusen" ~ "Leverkusen",
-#   Home == "Mainz 05" ~ "Mainz 05",
-#   Home == "RB Leipzig" ~ "RB Leipzig",
-#   Home == "Stuttgart" ~ "Stuttgart",
-#   Home == "Union Berlin" ~ "Union Berlin", 
-#   Home == "Wolfsburg" ~ "Wolfsburg",
-#   Home == "Alavés" ~ "Alavés",
-#   Home == "Athletic Club" ~ "Athletic Club",
-#   Home == "Atlético Madrid" ~ "Atlético Madrid",
-#   Home == "Barcelona" ~ "Barcelona",
-#   Home == "Betis" ~ "Betis",
-#   Home == "Cádiz" ~ "Cádiz",
-#   Home == "Celta Vigo" ~ "Celta Vigo",
-#   Home == "Elche" ~ "Elche", 
-#   Home == "Espanyol" ~ "Espanyol",
-#   Home == "Getafe" ~ "Getafe",
-#   Home == "Granada" ~ "Granada",
-#   Home == "Levante" ~ "Levante", 
-#   Home == "Mallorca" ~ "Mallorca", 
-#   Home == "Osasuna" ~ "Osasuna",
-#   Home == "Rayo Vallecano" ~ "Rayo",
-#   Home == "Real Madrid" ~ "Real Madrid",
-#   Home == "Real Sociedad" ~ "Sociedad",
-#   Home == "Sevilla" ~ "Sevilla", 
-#   Home == "Valencia" ~ "Valencia",
-#   Home == "Villarreal" ~ "Villarreal",
-#   Home == "Angers" ~ "Angers",
-#   Home == "Bordeaux" ~ "Bordeaux",
-#   Home == "Brest" ~ "Brest",
-#   Home == "Clermont Foot" ~ "Clermont",
-#   Home == "Lens" ~ "Lens", 
-#   Home == "Lille" ~ "Lille",
-#   Home == "Lorient" ~ "Lorient",
-#   Home == "Lyon" ~ "Lyon",
-#   Home == "Marseille" ~ "Marseille",
-#   Home == "Metz" ~ "Mets", 
-#   Home == "Monaco" ~ "Monaco",
-#   Home == "Montpellier" ~ "Montpellier",
-#   Home == "Nantes" ~ "Nantes",
-#   Home == "Nice" ~ "Nice",
-#   Home == "Paris S-G" ~ "Paris S-G",
-#   Home == "Reims" ~ "Reims",
-#   Home == "Rennes" ~ "Rennes",
-#   Home == "Saint-Étienne" ~ "Étienne",
-#   Home == "Strasbourg" ~ "Strasbourg",
-#   Home == "Troyes" ~ "Troyes",
-#   Home == "Reimes" ~ "Reims",
-#   Home == "Atalanta" ~ "Atalanta",
-#   Home == "Bologna" ~ "Bologna",
-#   Home == "Cagliari" ~ "Cagliari",
-#   Home == "Empoli" ~ "Empoli",
-#   Home == "Fiorentina" ~ "Fiorentina",
-#   Home == "Genoa" ~ "Genoa",
-#   Home == "Hellas Verona" ~ "Verona",
-#   Home == "Inter" ~ "Inter",
-#   Home == "Juventus" ~ "Juventus",
-#   Home == "Lazio" ~ "Lazio",
-#   Home == "Milan" ~ "Milan",
-#   Home == "Napoli" ~ "Napoli",
-#   Home == "Roma" ~ "Roma",
-#   Home == "Salernitana" ~ "Salernitana",
-#   Home == "Sampdoria" ~ "Sampdoria",
-#   Home == "Sassuolo" ~ "Sassuolo",
-#   Home == "Spezia" ~ "Spezia",
-#   Home == "Torina" ~ "Torino",
-#   Home == "Udinese" ~ "Udinese",
-#   Home == "Venezia" ~ "Venezia"
-# ),
-# Away = case_when(
-#   Away == "Manchester Utd" ~ "Man Utd",
-#   Away == "Liverpool" ~ "Liverpool",
-#   Away == "Chelsea" ~ "Chelsea",
-#   Away == "West Ham" ~ "West Ham",
-#   Away == "Everton" ~ "Everton",
-#   Away == "Brentford" ~ "Brentford",
-#   Away == "Tottenham" ~ "Tottenham",
-#   Away == "Watford" ~ "Watford", 
-#   Away == "Brighton" ~ "Brighton", 
-#   Away == "Leicester City" ~ "Leicester",
-#   Away == "Leeds United" ~ "Leeds",
-#   Away == "Norwich City" ~ "Norwich",
-#   Away == "Crystal Palace" ~ "Palace",
-#   Away == "Newcastle Utd" ~ "Newcastle",
-#   Away == "Southampton" ~ "Sthampton",
-#   Away == "Arsenal" ~ "Arsenal",
-#   Away == "Manchester City" ~ "Man City",
-#   Away == "Aston Villa" ~ "Aston Villa",
-#   Away == "Burnley" ~ "Burnley",
-#   Away == "Wolves" ~ "Wolves",
-#   Away == "Arminia" ~ "Arminia",
-#   Away == "Augsburg" ~ "Augsburg",
-#   Away == "Bayern Munich" ~ "Bayern",
-#   Away == "Bochum" ~ "Bochum",
-#   Away == "Dortmund" ~ "Dortmund",
-#   Away == "Eint Frankfurt" ~ "Frankfurt",
-#   Away == "Freiburg" ~ "Freiburg",
-#   Away == "M'Gladbach" ~ "Gladbach",
-#   Away == "Greuther Fürth" ~ "Fürth",
-#   Away == "Hertha BSC" ~ "Hertha BSC", 
-#   Away == "Hoffenheim" ~ "Hoffenheim",
-#   Away == "Köln" ~ "Köln",
-#   Away == "Leverkusen" ~ "Leverkusen",
-#   Away == "Mainz 05" ~ "Mainz 05",
-#   Away == "RB Leipzig" ~ "RB Leipzig",
-#   Away == "Stuttgart" ~ "Stuttgart",
-#   Away == "Union Berlin" ~ "Union Berlin", 
-#   Away == "Wolfsburg" ~ "Wolfsburg",
-#   Away == "Alavés" ~ "Alavés",
-#   Away == "Athletic Club" ~ "Athletic Club",
-#   Away == "Atlético Madrid" ~ "Atlético Madrid",
-#   Away == "Barcelona" ~ "Barcelona",
-#   Away == "Betis" ~ "Betis",
-#   Away == "Cádiz" ~ "Cádiz",
-#   Away == "Celta Vigo" ~ "Celta Vigo",
-#   Away == "Elche" ~ "Elche", 
-#   Away == "Espanyol" ~ "Espanyol",
-#   Away == "Getafe" ~ "Getafe",
-#   Away == "Granada" ~ "Granada",
-#   Away == "Levante" ~ "Levante", 
-#   Away == "Mallorca" ~ "Mallorca", 
-#   Away == "Osasuna" ~ "Osasuna",
-#   Away == "Rayo Vallecano" ~ "Rayo",
-#   Away == "Real Madrid" ~ "Real Madrid",
-#   Away == "Real Sociedad" ~ "Sociedad",
-#   Away == "Sevilla" ~ "Sevilla", 
-#   Away == "Valencia" ~ "Valencia",
-#   Away == "Villarreal" ~ "Villarreal",
-#   Away == "Angers" ~ "Angers",
-#   Away == "Bordeaux" ~ "Bordeaux",
-#   Away == "Brest" ~ "Brest",
-#   Away == "Clermont Foot" ~ "Clermont",
-#   Away == "Lens" ~ "Lens", 
-#   Away == "Lille" ~ "Lille",
-#   Away == "Lorient" ~ "Lorient",
-#   Away == "Lyon" ~ "Lyon",
-#   Away == "Marseille" ~ "Marseille",
-#   Away == "Metz" ~ "Mets", 
-#   Away == "Monaco" ~ "Monaco",
-#   Away == "Montpellier" ~ "Montpellier",
-#   Away == "Nantes" ~ "Nantes",
-#   Away == "Nice" ~ "Nice",
-#   Away == "Paris S-G" ~ "Paris S-G",
-#   Away == "Reims" ~ "Reims",
-#   Away == "Rennes" ~ "Rennes",
-#   Away == "Saint-Étienne" ~ "Étienne",
-#   Away == "Strasbourg" ~ "Strasbourg",
-#   Away == "Troyes" ~ "Troyes",
-#   Away == "Reimes" ~ "Reims",
-#   Away == "Atalanta" ~ "Atalanta",
-#   Away == "Bologna" ~ "Bologna",
-#   Away == "Cagliari" ~ "Cagliari",
-#   Away == "Empoli" ~ "Empoli",
-#   Away == "Fiorentina" ~ "Fiorentina",
-#   Away == "Genoa" ~ "Genoa",
-#   Away == "Hellas Verona" ~ "Verona",
-#   Away == "Inter" ~ "Inter",
-#   Away == "Juventus" ~ "Juventus",
-#   Away == "Lazio" ~ "Lazio",
-#   Away == "Milan" ~ "Milan",
-#   Away == "Napoli" ~ "Napoli",
-#   Away == "Roma" ~ "Roma",
-#   Away == "Salernitana" ~ "Salernitana",
-#   Away == "Sampdoria" ~ "Sampdoria",
-#   Away == "Sassuolo" ~ "Sassuolo",
-#   Away == "Spezia" ~ "Spezia",
-#   Away == "Torina" ~ "Torino",
-#   Away == "Udinese" ~ "Udinese",
-#   Away == "Venezia" ~ "Venezia"
-#   )
-# )
 
-# # gk_data <- fb_big5_advanced_season_stats(season_end_year = 2022,
-# #                                          stat_type = "keepers",
-# #                                          team_or_player = "player")
-# #
-# # gk_data_adv <- fb_big5_advanced_season_stats(season_end_year = 2022,
-# #                                              stat_type = "keepers_adv",
-# #                                              team_or_player = "player")
-# #
-# # pl_gks <- gk_data %>%
-# #   dplyr::filter(Comp == "Premier League", Min_Playing >= 900) %>%
-# #   select(Player)
-# 
-# ---------------------------------------------------------------
+gkData <- fb_big5_advanced_season_stats(season_end_year = 2022,
+                                         stat_type = "keepers",
+                                         team_or_player = "player")
+
+gkAdvData <- fb_big5_advanced_season_stats(season_end_year = 2022,
+                                           stat_type = "keepers_adv",
+                                           team_or_player = "player")
+
+colnames(gkAdvData)[colnames(gkAdvData) == "#OPA_Sweeper"] <- "OPA_Sweeper"
+colnames(gkAdvData)[colnames(gkAdvData) == "#OPA_per_90_Sweeper"] <- "OPA_Sweeper_per_90"
+
+
+passingData <- fb_big5_advanced_season_stats(season_end_year = 2022,
+                                             stat_type = "passing",
+                                             team_or_player = "player")
+
+gkDataCombined <- data.frame(merge(merge(gkData,
+                                         gkAdvData),  
+                                   passingData))
+
+
+colnames(gkDataCombined)[colnames(gkDataCombined) == "X_per_90_Expected"] <- "per_90"
+colnames(gkDataCombined)[colnames(gkDataCombined) == "PSxG._per__minus__Expected"] <- "PSxG_minus_GA"
+# ---------------------------------------------------------------------------------------------------
 # {Bump Plot] - Teams ----
 bund_teams <- c("Arminia", "Augsburg", "Bayern Munich", "Bochum", "Dortmund", "Eint Frankfurt",
                 "Freiburg", "Gladbach", "Greuther Fürth", "Hertha BSC", "Hoffenheim", "Köln",
@@ -489,154 +295,149 @@ getBumpPlot <- function(df, md_start, md_end, teams, sel_teams, league_palette, 
 }
 # ----------------------------------------------------------------
 # [GK Zone] - Plot Outputs ----
-# # get_plKeeper_adv <- function(gk_data, gk_data_adv) {
-# #   pl_keepers <- gk_data %>%
-# #     dplyr::filter(Comp == "Premier League", Min_Playing > 900)
-# #   
-# #   pl_keepers_adv <- merge(gk_data_adv, pl_keepers)
-# #   colnames(pl_keepers_adv)[colnames(pl_keepers_adv) == "#OPA_Sweeper"] <- "OPA_Sweeper"
-# #   colnames(pl_keepers_adv)[colnames(pl_keepers_adv) == "#OPA_per_90_Sweeper"] <- "OPA_Sweeper_per_90"
-# #   colnames(pl_keepers_adv)[colnames(pl_keepers_adv) == "_per_90_Expected"] <- "per_90"
-# #   colnames(pl_keepers_adv)[colnames(pl_keepers_adv) == "PSxG+_per__minus__Expected"] <- "PSxG_minus_GA"
-# #   
-# #   return(pl_keepers_adv)
-# # }
-# # 
-# # gk_model_plot <- function(data) {
-# #   ggplot(data = data, aes(x = SoTA, y = PSxG_minus_GA, colour = Save_percent)) +
-# #     xlim(40, 100) +
-# #     geom_vline(xintercept = 70, colour = "white", linetype = "dashed") +
-# #     geom_hline(yintercept = 0, colour = "white", linetype = "dashed") +
-# #     geom_point_interactive(aes(size = 3, tooltip = paste(Player, " - ", Squad, "\n",
-# #                                                          "PSxG - GA: ", PSxG_minus_GA, "\n",
-# #                                                          "SoTA: ", SoTA, "\n",
-# #                                                          "GA: ", GA,
-# #                                                          sep = ),
-# #                                data_id = Player)) + 
-# #     scale_colour_gradientn(colours = met.brewer("OKeeffe2", n = 5)) +
-# #     scale_y_continuous(limits = c(-8, 8),
-# #                        breaks = c(-8, -6, -4, -2, 0, 2, 4, 6, 8)) +
-# #     labs(title = "Who's Beating the Model? (And Does it Matter?)",
-# #          subtitle = "Shot Stopping Ability by Shots on Target for Premier League GK's (> 900 minutes played)") +
-# #     xlab("Shots on Target Against") +
-# #     ylab("Post-Shot Expected Goals - Goals Allowed per 90") +
-# #     guides(size = FALSE,
-# #            colour = guide_colourbar(label.position = "bottom",
-# #                                     title.position = "top",
-# #                                     title = "Save %",
-# #            )
-# #     ) +
-# #     theme(
-# #       text = element_text(colour = "white"),
-# #       title = element_text(size = 14, margin = margin(2.5, 0, 0, 0)),
-# #       
-# #       plot.background = element_rect(fill = "black"),
-# #       
-# #       axis.title = element_text(colour = "white", size = 12),
-# #       axis.title.y = element_text(margin = margin(0, 8, 0, 6)),
-# #       axis.title.x = element_text(margin = margin(3, 0, 6, 0)),
-# #       axis.text = element_text(colour = "white"),
-# #       axis.ticks = element_line(colour = "white", linetype = "longdash"),
-# #       axis.line = element_line(colour = "white"),
-# #       
-# #       panel.background = element_rect(colour = "black", fill = "black"),
-# #       panel.grid = element_blank(),
-# #       
-# #       legend.position = c(0.175, 0.8),
-# #       legend.direction = "horizontal",
-# #       legend.background = element_rect(colour = "white", fill = "black", linetype = "dashed"),
-# #       legend.text = element_text(colour = "white"),
-# #       legend.title = element_text(colour = "white"),
-# #       legend.title.align = 0.5,
-# #       legend.key.size = unit(0.75, "cm")
-# #     )}
-# # 
-# # gk_sweeper_plot <- function(data) {
-# #   ggplot(data = data, aes(x = AvgDist_Sweeper, y = OPA_Sweeper_per_90)) +
-# #     geom_text(aes(x = 18, y = 0.25, label = "Outside of Box", hjust = 1.25), colour = "white") +
-# #     geom_text(aes(x = 12, y = 1.41, label = "Penalty Spot", hjust = -.25), colour = "white") +
-# #     geom_vline(xintercept = 12, colour = "white", linetype = "dashed") +
-# #     geom_vline(xintercept = 18, colour = "white", linetype = "dashed") +
-# #     
-# #     geom_point_interactive(size = 4, colour = met.brewer("Lakota", n = 1), 
-# #                            aes(tooltip = paste(Player, " - ", Squad, "\n",
-# #                                                "Avg Distance: ", AvgDist_Sweeper, "\n",
-# #                                                "Def Actions per 90: ", OPA_Sweeper_per_90, "\n",
-# #                                                sep = ""),
-# #                                data_id = Player)) +
-# #     scale_x_continuous(expand = c(0,0), limits = c(11.5, 18.5)) +
-# #     scale_y_continuous(expand = c(0,0), limits = c(0.1, 1.55)) +
-# #     labs(title = "Sweeper or Nah?",
-# #          subtitle = "Distance of Defensive Actions from Goal by Activity Outside of the Penalty Area") +
-# #     
-# #     ylab("Defensive Actions Outside of Penalty Area per 90") +
-# #     xlab("Average Distance from Goal of All Defensive Actions (Yards)") +
-# #     
-# #     theme(
-# #       panel.grid = element_blank(),
-# #       panel.background = element_rect(fill = "black"),
-# #       text = element_text(colour = "white"),
-# #       
-# #       plot.background = element_rect(fill = "black"),
-# #       
-# #       axis.line = element_line(colour = "white"),
-# #       axis.text = element_text(colour = "white"),
-# #       axis.title = element_text(colour = "white", size = 12),
-# #       axis.ticks = element_line(colour = "white"),
-# #       axis.title.y = element_text(margin = margin(0, 7.5, 0, 5)),
-# #       axis.title.x = element_text(margin = margin(4, 0, 5, 0)),
-# #       
-# #       title = element_text(size = 14, margin = margin(5, 0, 0, 0))
-# #     )
-# # }
-# # 
-# # gk_cross_plot <- function(data) {
-# #   fill_gradient <- colorRampPalette(c("#6ca3a0", "#002a3a"))
-# #   
-# #   ggplot(data = data, aes(x = reorder(Player, +Stp_percent_Crosses), y = Stp_percent_Crosses, fill = CK_Goals,)) +
-# #     geom_bar_interactive(stat = "identity", width = .8, 
-# #                          aes(tooltip = paste0(Player, " - ", Squad, "\n",
-# #                                               "# of Attempted Crosses: ", Opp_Crosses, "\n",
-# #                                               "# of Stopped Crosses: ", Stp_Crosses, "\n",
-# #                                               "% of Crosses Stopped: ", Stp_percent_Crosses, "\n",
-# #                                               "Goals from Corners: ", CK_Goals, 
-# #                                               sep = ""),
-# #                              data_id = Player)) +
-# #     coord_flip() +
-# #     scale_y_continuous(expand = c(0,0), limits = c(0, 15.5), breaks = c(5, 10, 15)) +
-# #     scale_fill_gradientn(colours = fill_gradient(10)) +
-# #     
-# #     ylab("Percentage of Penalty Area Crosses Successfully Stopped") +
-# #     guides(fill = guide_colorbar(label.position = "bottom",
-# #                                  title.position = "top",
-# #                                  title = "Goals from Corners")) +
-# #     
-# #     labs(title = "Controlling the Box - Cross Stopping Ability of Premier League GK's (> 900 Minutes Played)") +
-# #     
-# #     theme(
-# #       title = element_text(colour = "white", hjust = 1),
-# #       
-# #       axis.title.y = element_blank(),
-# #       axis.title.x = element_text(colour = "white"),
-# #       axis.text = element_text(colour = "white"),
-# #       axis.line = element_line(colour = "white"),
-# #       axis.ticks = element_line(colour = "white"),
-# #       
-# #       panel.grid = element_blank(),
-# #       panel.background = element_rect(fill = "black"),
-# #       
-# #       plot.background = element_rect(fill = "black"),
-# #       
-# #       legend.direction = "horizontal",
-# #       legend.background = element_rect(fill = "black", colour = "white", linetype = "dashed"),
-# #       legend.title.align = 0.5,
-# #       legend.text = element_text(colour = "white"),
-# #       legend.title = element_text(colour = "white"),
-# #       legend.key.width = unit(20, "pt"),
-# #       legend.position = c(0.8, 0.25)
-# #     )
-# # }
-# # 
+getGkZonePlot <- function(vizSelected, gkData) {
+  if (vizSelected == "Who's Beating the Model?") {
+    gkZoneModelPlot(gkData)
+  }
+  else if (vizSelected == "Getting Out of the Box") {
+    gkZoneSweeperPlot(gkData)
+  }
+  else {
+    gkZoneCrossPlot(gkData)
+  }
+}
+
+gkZoneModelPlot <- function(data) {
+  ggplot(data = data, aes(x = SoTA, y = PSxG_minus_GA, colour = Comp)) +
+    # xlim(min(data$SoTa) - 1.5, max(data$SoTa + 1.5)) +
+    geom_vline(xintercept = mean(data$SoTA), colour = "white", linetype = "dashed") +
+    geom_hline(yintercept = mean(data$PSxG_minus_GA), colour = "white", linetype = "dashed") +
+    geom_point_interactive(aes(size = 3, tooltip = paste(Player, " - ", Squad, "\n",
+                                                         "PSxG - GA: ", PSxG_minus_GA, "\n",
+                                                         "SoTA: ", SoTA, "\n",
+                                                         "GA: ", GA,
+                                                         sep = ),
+                               data_id = Player)) +
+    # scale_colour_gradientn(colours = met.brewer("OKeeffe2", n = 5)) +
+    # scale_y_continuous(limits = c(min(data$PSxG_minus_GA) - 1.5, max(data$PSxG_minus_GA) + 1.5)) +
+    labs(title = "Who's Beating the Model? (And Does it Matter?)",
+         subtitle = "Shot Stopping Ability by Shots on Target for Big 5 GK's (> 900 minutes played)") +
+    xlab("Shots on Target Against") +
+    ylab("Post-Shot Expected Goals - Goals Allowed per 90") +
+    guides(size = FALSE,
+           colour = guide_colourbar(label.position = "bottom",
+                                    title.position = "top",
+                                    title = "Save %",
+           )
+    ) +
+    theme(
+      text = element_text(colour = "white"),
+      title = element_text(size = 14, margin = margin(2.5, 0, 0, 0)),
+
+      plot.background = element_rect(fill = "black"),
+
+      axis.title = element_text(colour = "white", size = 12),
+      axis.title.y = element_text(margin = margin(0, 8, 0, 6)),
+      axis.title.x = element_text(margin = margin(3, 0, 6, 0)),
+      axis.text = element_text(colour = "white"),
+      axis.ticks = element_line(colour = "white", linetype = "longdash"),
+      axis.line = element_line(colour = "white"),
+
+      panel.background = element_rect(colour = "black", fill = "black"),
+      panel.grid = element_blank(),
+
+      legend.position = c(0.175, 0.8),
+      legend.direction = "horizontal",
+      legend.background = element_rect(colour = "white", fill = "black", linetype = "dashed"),
+      legend.text = element_text(colour = "white"),
+      legend.title = element_text(colour = "white"),
+      legend.title.align = 0.5,
+      legend.key.size = unit(0.75, "cm")
+    )}
+gkZoneSweeperPlot <- function(data) {
+  ggplot(data = data, aes(x = AvgDist_Sweeper, y = OPA_Sweeper_per_90, colour = Comp)) +
+    geom_text(aes(x = 18, y = 0.25, label = "Outside of Box", hjust = 1.25), colour = "white") +
+    geom_text(aes(x = 12, y = 1.41, label = "Penalty Spot", hjust = -.25), colour = "white") +
+    geom_vline(xintercept = 12, colour = "white", linetype = "dashed") +
+    geom_vline(xintercept = 18, colour = "white", linetype = "dashed") +
+
+    geom_point_interactive(size = 4, aes(tooltip = paste(Player, " - ", Squad, "\n",
+                                                         "Avg Distance: ", AvgDist_Sweeper, "\n",
+                                                         "Def Actions per 90: ", OPA_Sweeper_per_90, "\n",
+                                                         sep = ""),
+                               data_id = Player)) +
+    scale_x_continuous(expand = c(0,0), limits = c(11, 18.5)) +
+    scale_y_continuous(expand = c(0,0), limits = c(0.1, 1.55)) +
+    labs(title = "Sweeper or Nah?",
+         subtitle = "Distance of Defensive Actions from Goal by Activity Outside of the Penalty Area") +
+
+    ylab("Defensive Actions Outside of Penalty Area per 90") +
+    xlab("Average Distance from Goal of All Defensive Actions (Yards)") +
+
+    theme(
+      panel.grid = element_blank(),
+      panel.background = element_rect(fill = "black"),
+      text = element_text(colour = "white"),
+
+      plot.background = element_rect(fill = "black"),
+
+      axis.line = element_line(colour = "white"),
+      axis.text = element_text(colour = "white"),
+      axis.title = element_text(colour = "white", size = 12),
+      axis.ticks = element_line(colour = "white"),
+      axis.title.y = element_text(margin = margin(0, 7.5, 0, 5)),
+      axis.title.x = element_text(margin = margin(4, 0, 5, 0)),
+
+      title = element_text(size = 14, margin = margin(5, 0, 0, 0))
+    )
+}
+gkZoneCrossPlot <- function(data) {
+  # fill_gradient <- colorRampPalette(c("#6ca3a0", "#002a3a"))
+
+  ggplot(data = data, aes(x = reorder(Player, +Stp_percent_Crosses), y = Stp_percent_Crosses, fill = Comp)) +
+    geom_bar_interactive(stat = "identity", width = .8,
+                         aes(tooltip = paste0(Player, " - ", Squad, "\n",
+                                              "# of Attempted Crosses: ", Opp_Crosses, "\n",
+                                              "# of Stopped Crosses: ", Stp_Crosses, "\n",
+                                              "% of Crosses Stopped: ", Stp_percent_Crosses, "\n",
+                                              "Goals from Corners: ", CK_Goals,
+                                              sep = ""),
+                             data_id = Player)) +
+    coord_flip() +
+    scale_y_continuous(expand = c(0,0), limits = c(0, 15.5), breaks = c(5, 10, 15)) +
+    # scale_fill_gradientn(colours = fill_gradient(10)) +
+
+    ylab("Percentage of Penalty Area Crosses Successfully Stopped") +
+    guides(fill = guide_colorbar(label.position = "bottom",
+                                 title.position = "top",
+                                 title = "Goals from Corners")) +
+
+    labs(title = "Controlling the Box - Cross Stopping Ability of Premier League GK's (> 900 Minutes Played)") +
+
+    theme(
+      title = element_text(colour = "white", hjust = 1),
+
+      axis.title.y = element_blank(),
+      axis.title.x = element_text(colour = "white"),
+      axis.text = element_text(colour = "white"),
+      axis.line = element_line(colour = "white"),
+      axis.ticks = element_line(colour = "white"),
+
+      panel.grid = element_blank(),
+      panel.background = element_rect(fill = "black"),
+
+      plot.background = element_rect(fill = "black"),
+
+      legend.direction = "horizontal",
+      legend.background = element_rect(fill = "black", colour = "white", linetype = "dashed"),
+      legend.title.align = 0.5,
+      legend.text = element_text(colour = "white"),
+      legend.title = element_text(colour = "white"),
+      legend.key.width = unit(20, "pt"),
+      legend.position = c(0.8, 0.25)
+    )
+}
+
 # [GK Zone] - Viz Text(s) ----
 # # gk_model_text <- paste0("This plot, inspired by this wonderful (article) by John Muller, attempts to ")
 
