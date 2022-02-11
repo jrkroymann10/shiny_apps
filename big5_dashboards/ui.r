@@ -61,9 +61,11 @@ shinyUI(
             uiOutput(outputId = "gkZoneComp"),
             uiOutput(outputId = "gkZonePlayer"),
             uiOutput(outputId = "gkZoneText"),
+            tableOutput("gkZoneSelected"),
             width = 3
           ),
-          mainPanel(girafeOutput("gkZonePlot"),
+          mainPanel(br(),
+                    girafeOutput("gkZonePlot"),
                     width = 9
           )
         )

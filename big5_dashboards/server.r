@@ -78,7 +78,7 @@ shinyServer(function(input, output, session) {
   })
 
   output$firstTeam <- renderText({
-    length(input$gkZoneComp)
+    input$gkZonePlot_selected
   })
 
   # [Bump Plot] - Plot Output ----
@@ -134,15 +134,18 @@ shinyServer(function(input, output, session) {
       gkDataCombined %>% dplyr::filter(Min_Playing >= 900)
     }
     else {
-      gkDataCombined %>% dplyr::filter(Comp == input$gkZoneComp & Min_Playing >= 900)
+      gkDataCombined %>% dplyr::filter(Comp %in% input$gkZoneComp & Min_Playing >= 900)
     }
+  })
+  
+  selected_gk <- reactive({
+    input$gkZonePlot_selected
   })
   # [GK Zone] - UI (Viz Selection) ----
   output$gkZoneViz <- renderUI({
     selectizeInput(inputId = "gkZoneViz",
                    label = "Visualizations",
-                   choices = c("Who's Beating the Model?", "Getting Out of the Box",
-                               "Are Crosses Scary?", "Building From the Back"),
+                   choices = c("Who's Beating the Model?", "Getting Out of the Box"),
                    options = list(
                      placeholder = 'Select a Narrative to Investigate',
                      onInitialize = I('function() { this.setValue(); }'))
@@ -158,30 +161,58 @@ shinyServer(function(input, output, session) {
                      placeholder = 'Select Competition(s) to Filter By',
                      onInitialize = I('function() { this.setValue(); }')))
   })
-  # [GK Zone] - UI (Player Selection) ----
+  # [GK Zone] - UI (GK Selection) ----
   output$gkZonePlayer <- renderUI({
-    selectizeInput(inputId = "gkZonePlayer",
-                   label = "Goalkeeper(s)",
-                   choices = sort(gkData()$Player),
-                   multiple = TRUE,
-                   options = list(
-                     placeholder = 'Select Goalkeeper(s) to Track Across Plots',
-                     onInitialize = I('function() { this.setValue(); }'))
-                   )
+    selectizeInput(
+      inputId = "gkZonePlayer",
+      label = "Goalkeeper(s)",
+      choices = sort(gkData()$Player),
+      multiple = TRUE,
+      options = list(
+        placeholder = 'Select Goalkeeper(s) to Track Across Plots',
+        onInitialize = I('function() { this.setValue(); }')
+      )
+    )
   })
+ 
+  # [GK Zone] - UI (Player Selection Showcase) ----
+  # output$gkZoneSelected <- renderTable({
+  #   out <- gkData()[gkData()$Player %in% selected_gk(),]
+  #   if(nrow(out < 1)) {
+  #     return(NULL)
+  #   }
+  #   row.names(out) <- NULL
+  #   
+  #   out
+  # })
   # [GK Zone] - Plot Output ---- 
   output$gkZonePlot <- renderGirafe({
-    # browser()
     req(input$gkZoneViz)
     girafe(
       ggobj = getGkZonePlot(input$gkZoneViz, gkData()),
-      width_svg = 9, height_svg = 5.5,
+      width_svg = 10, height_svg = 5.5,
       options = list(
+        opts_selection(selected = input$gkZonePlayer, type = "multiple",
+                       only_shiny = FALSE),
         opts_tooltip(use_fill = TRUE),
         opts_hover_inv(css = "opacity:0.5;")
         )
       )
     })
+  # [GK Zone] - Updating GK Selection ---- 
+  # observeEvent(input$gkZonePlot_selected, {
+  #   # browser()
+  #   output$gkZonePlayer <- renderUI(
+  #     selectizeInput(
+  #       inputId = "gkZonePlayer",
+  #       label = "Goalkeeper(s)",
+  #       choices = sort(gkData()$Player),
+  #       multiple = TRUE,
+  #       selected = input$gkZonePlot_selected
+  #     )
+  #   )
+  # })
+  
   # [GK Zone] - Text Output ----
   # # # output$gk_text <- renderText(
   # # #   gk_model_text

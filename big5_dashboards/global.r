@@ -103,7 +103,7 @@ serieA_hex <- c("#005395", "#8A1E03", "#742038", "#1B5497", "#00579C",
 # [Bump Plot] - Data Transformation Functions ----
 # finding latest md in which a match was played
 find_lastWeek <- function(df) {
-  cat(file=stderr(), nrow(df), "\n")
+  # cat(file=stderr(), nrow(df), "\n")
   total_wk <- tail(df$Wk, 1)
 
   for (i in 1:total_wk) {
@@ -309,34 +309,45 @@ getGkZonePlot <- function(vizSelected, gkData) {
 
 gkZoneModelPlot <- function(data) {
   ggplot(data = data, aes(x = SoTA, y = PSxG_minus_GA, colour = Comp)) +
-    # xlim(min(data$SoTa) - 1.5, max(data$SoTa + 1.5)) +
     geom_vline(xintercept = mean(data$SoTA), colour = "white", linetype = "dashed") +
     geom_hline(yintercept = mean(data$PSxG_minus_GA), colour = "white", linetype = "dashed") +
-    geom_point_interactive(aes(size = 3, tooltip = paste(Player, " - ", Squad, "\n",
+    geom_point_interactive(aes(size = PSxG_per_SoT_Expected, tooltip = paste(Player, " - ", Squad, "\n",
                                                          "PSxG - GA: ", PSxG_minus_GA, "\n",
                                                          "SoTA: ", SoTA, "\n",
                                                          "GA: ", GA,
-                                                         sep = ),
+                                                         sep = ""),
                                data_id = Player)) +
-    # scale_colour_gradientn(colours = met.brewer("OKeeffe2", n = 5)) +
-    # scale_y_continuous(limits = c(min(data$PSxG_minus_GA) - 1.5, max(data$PSxG_minus_GA) + 1.5)) +
+    scale_size_continuous(range = c(2, 5)) +
+    scale_colour_manual(breaks = c("Bundesliga", "La Liga", "Ligue 1", "Premier League", "Serie A"),
+                        values = c(met.brewer("Isfahan2")[1], met.brewer("Isfahan2")[2], met.brewer("Isfahan2")[3], met.brewer("Isfahan2")[4], met.brewer("Isfahan2")[5])) +
     labs(title = "Who's Beating the Model? (And Does it Matter?)",
          subtitle = "Shot Stopping Ability by Shots on Target for Big 5 GK's (> 900 minutes played)") +
     xlab("Shots on Target Against") +
-    ylab("Post-Shot Expected Goals - Goals Allowed per 90") +
-    guides(size = FALSE,
-           colour = guide_colourbar(label.position = "bottom",
-                                    title.position = "top",
-                                    title = "Save %",
-           )
-    ) +
+    ylab("Post-Shot Expected Goals - Goals Allowed") +
+    guides(
+      size = guide_legend(
+        label.hjust = 0.5,
+        title = "PSxG/SoT",
+        title.theme = element_text(size = 10, colour = 
+                                     "white", hjust = 0.5,
+                                   face = "bold"), 
+        override.aes = list(colour = "white"),
+        reverse = TRUE),
+      colour = guide_legend(
+        override.aes = list(size = 5),
+        reverse = TRUE,
+        title = "Competition",
+        title.theme = element_text(size = 10, colour = 
+                                     "white", hjust = 0.5,
+                                   face = "bold"))
+      ) +
     theme(
       text = element_text(colour = "white"),
       title = element_text(size = 14, margin = margin(2.5, 0, 0, 0)),
 
       plot.background = element_rect(fill = "black"),
 
-      axis.title = element_text(colour = "white", size = 12),
+      axis.title = element_text(colour = "white", size = 12, hjust = 0.5),
       axis.title.y = element_text(margin = margin(0, 8, 0, 6)),
       axis.title.x = element_text(margin = margin(3, 0, 6, 0)),
       axis.text = element_text(colour = "white"),
@@ -346,14 +357,18 @@ gkZoneModelPlot <- function(data) {
       panel.background = element_rect(colour = "black", fill = "black"),
       panel.grid = element_blank(),
 
-      legend.position = c(0.175, 0.8),
-      legend.direction = "horizontal",
-      legend.background = element_rect(colour = "white", fill = "black", linetype = "dashed"),
+      legend.background = element_rect(colour = "white", fill = "black"),
       legend.text = element_text(colour = "white"),
-      legend.title = element_text(colour = "white"),
-      legend.title.align = 0.5,
-      legend.key.size = unit(0.75, "cm")
-    )}
+      legend.key = element_rect(fill = "black"),
+      # legend.title = element_blank(),
+      legend.title.align = 0.5)
+      # legend.margin = margin(c(2,3,2,2)),
+      # legend.spacing.x = unit(0, "mm"),
+      # legend.spacing.y = unit(0, "mm"))
+      # legend.position = c(1.1, 0.25))
+      
+      # legend.key.size = unit(0.75, "cm")
+    }
 gkZoneSweeperPlot <- function(data) {
   ggplot(data = data, aes(x = AvgDist_Sweeper, y = OPA_Sweeper_per_90, colour = Comp)) +
     geom_text(aes(x = 18, y = 0.25, label = "Outside of Box", hjust = 1.25), colour = "white") +
@@ -361,15 +376,25 @@ gkZoneSweeperPlot <- function(data) {
     geom_vline(xintercept = 12, colour = "white", linetype = "dashed") +
     geom_vline(xintercept = 18, colour = "white", linetype = "dashed") +
 
-    geom_point_interactive(size = 4, aes(tooltip = paste(Player, " - ", Squad, "\n",
+    geom_point_interactive(size = 3, aes(tooltip = paste(Player, " - ", Squad, "\n",
                                                          "Avg Distance: ", AvgDist_Sweeper, "\n",
                                                          "Def Actions per 90: ", OPA_Sweeper_per_90, "\n",
                                                          sep = ""),
                                data_id = Player)) +
-    scale_x_continuous(expand = c(0,0), limits = c(11, 18.5)) +
-    scale_y_continuous(expand = c(0,0), limits = c(0.1, 1.55)) +
+    scale_colour_manual(breaks = c("Bundesliga", "La Liga", "Ligue 1", "Premier League", "Serie A"),
+                        values = c(met.brewer("Isfahan2")[1], met.brewer("Isfahan2")[2], met.brewer("Isfahan2")[3], met.brewer("Isfahan2")[4], met.brewer("Isfahan2")[5])) +
+    # scale_x_continuous(expand = c(0,0), limits = c(11, 18.5)) +
+    # scale_y_continuous(expand = c(0,0), limits = c(0.1, 1.55)) +
+    guides(size = "none",
+           colour = guide_legend(
+             title = "Competition",
+             title.theme = element_text(size = 10, colour = 
+                                          "white", hjust = 0.5,
+                                        face = "bold"),
+             override.aes = list(size = 5)
+           )) +
     labs(title = "Sweeper or Nah?",
-         subtitle = "Distance of Defensive Actions from Goal by Activity Outside of the Penalty Area") +
+         subtitle = "Defensive Activity Outside of Penalty Area by Distance From Goal of Defensive Actions") +
 
     ylab("Defensive Actions Outside of Penalty Area per 90") +
     xlab("Average Distance from Goal of All Defensive Actions (Yards)") +
@@ -380,6 +405,13 @@ gkZoneSweeperPlot <- function(data) {
       text = element_text(colour = "white"),
 
       plot.background = element_rect(fill = "black"),
+      
+      legend.background = element_rect(colour = "white", fill = "black"),
+      legend.text = element_text(colour = "white"),
+      legend.key = element_rect(fill = "black"),
+      legend.title = element_blank(),
+      legend.title.align = 0.5,
+      legend.position = c(.875, .3),
 
       axis.line = element_line(colour = "white"),
       axis.text = element_text(colour = "white"),
@@ -429,7 +461,7 @@ gkZoneCrossPlot <- function(data) {
       plot.background = element_rect(fill = "black"),
 
       legend.direction = "horizontal",
-      legend.background = element_rect(fill = "black", colour = "white", linetype = "dashed"),
+      legend.background = element_rect(fill = "black", colour = "white"),
       legend.title.align = 0.5,
       legend.text = element_text(colour = "white"),
       legend.title = element_text(colour = "white"),
@@ -439,6 +471,10 @@ gkZoneCrossPlot <- function(data) {
 }
 
 # [GK Zone] - Viz Text(s) ----
-# # gk_model_text <- paste0("This plot, inspired by this wonderful (article) by John Muller, attempts to ")
+gk_model_text <- paste0("This plot, inspired by this wonderful (article) by John Muller, attempts to showcase how goalkeepers
+                        have performed against Statsbomb's (Post-Shot Expected Goals model) (PSxG). The PSxG model is very similar
+                        to Statsbomb's Expected Goals (xG) Model, but restricts the sample of shots to only those that are saved or scored,
+                        and uses post-shot information, such as shot speed and predicted location to enter the goal, to predict goal probability
+                        (and give us a better idea of save difficulty). ")
 
 # ----------------------------------------------------------------
