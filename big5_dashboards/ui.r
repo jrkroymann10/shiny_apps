@@ -1,5 +1,8 @@
 shinyUI(
   fluidPage(
+    tags$head(
+      tags$style(HTML("hr {margin-top: .25em;}"))
+    ),
     navbarPage(
       "Big 5 Dashboards by Joe",
       
@@ -60,27 +63,39 @@ shinyUI(
             uiOutput(outputId = "gkZoneViz"),
             uiOutput(outputId = "gkZoneComp"),
             uiOutput(outputId = "gkZonePlayer"),
+            h4("Background"),
             uiOutput(outputId = "gkZoneText"),
-            tableOutput("gkZoneSelected"),
-            width = 3
+            width = 4
           ),
-          mainPanel(br(),
-                    girafeOutput("gkZonePlot"),
-                    width = 9
+          mainPanel(girafeOutput("gkZonePlot"),
+                    width = 8
           )
         )
-        # fluidRow(
-        #          # selectInput(inputId = "gk_highlight",
-        #          #             label = "Highlight a Goalkeeper",
-        #          #             choices = pl_gks$Player,
-        #          #             selected = "Aaron Ramsdale"),
-        #          textOutput("gk_text"),
-        #   ),
-        #   column(9,
-        #          girafeOutput("gkPlot")
-        #   )
-        # ),
+      ),
+      tabPanel(
+        "XG Timelines",
+        
+        wellPanel(
+          fluidRow(
+            column(2),
+            column(2,
+                   uiOutput(outputId = "xgViz")
+            ),
+            column(2,
+                   uiOutput(outputId = "xgComp")
+            ),
+            column(2,
+                   uiOutput(outputId = "xgTeam")
+            ),
+            column(2,
+                   uiOutput(outputId = "xgVizText"))
+          )
+        ),
+
+        plotOutput("xgPlot"),
+        hr(style = "border-top: 1px solid #000000;")
       )
       )
     )
   )
+

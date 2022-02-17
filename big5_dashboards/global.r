@@ -1,4 +1,4 @@
-# [Loading] - Libraries -----------------------------------------------------------------
+# [Loading] - Libraries, Fonts -----------------------------------------------------------------
 library(readr)
 library(shiny)
 library(devtools)
@@ -10,40 +10,46 @@ library(ggplot2)
 library(ggiraph)
 library(MetBrewer)
 library(worldfootballR)
+library(zoo)
+library(showtext)
+
+# font_add_google("Roboto Mono", "Roboto")
+# showtext_auto()
+
 # 
 # [Loading] - Data ----
-big5 <- data.frame(get_match_results(country = c("ENG", "ESP", "ITA", "GER", "FRA"), gender = "M", season_end_year = "2022", tier = "1st") %>%
-                     mutate(Home = ifelse(Home == "M'Gladbach", "Gladbach",
-                                          ifelse(Home == "Manchester Utd", "Man Utd",
-                                                 ifelse(Home == "Manchester City", "Man City",
-                                                        ifelse(Home == "Rayo Vallecano", "Rayo",
-                                                                      Home)))),
-                            Away = ifelse(Away == "M'Gladbach", "Gladbach",
-                                          ifelse(Away == "Manchester Utd", "Man Utd",
-                                                 ifelse(Away == "Manchester City", "Man City",
-                                                               ifelse(Away == "Rayo Vallecano", "Rayo",
-                                                                      Away)))),
-                            Competition_Name = ifelse(Competition_Name != "Premier League" & Competition_Name != "La Liga" & Competition_Name != "Ligue 1" & Competition_Name != "Serie A", "Bundesliga", Competition_Name))) # weird work around for unicode reading on shiny apps
-
-gkData <- fb_big5_advanced_season_stats(season_end_year = 2022,
-                                         stat_type = "keepers",
-                                         team_or_player = "player")
-
-gkAdvData <- fb_big5_advanced_season_stats(season_end_year = 2022,
-                                           stat_type = "keepers_adv",
-                                           team_or_player = "player")
-
-colnames(gkAdvData)[colnames(gkAdvData) == "#OPA_Sweeper"] <- "OPA_Sweeper"
-colnames(gkAdvData)[colnames(gkAdvData) == "#OPA_per_90_Sweeper"] <- "OPA_Sweeper_per_90"
-
-
-passingData <- fb_big5_advanced_season_stats(season_end_year = 2022,
-                                             stat_type = "passing",
-                                             team_or_player = "player")
-
-gkDataCombined <- data.frame(merge(merge(gkData,
-                                         gkAdvData),  
-                                   passingData))
+# big5 <- data.frame(get_match_results(country = c("ENG", "ESP", "ITA", "GER", "FRA"), gender = "M", season_end_year = "2022", tier = "1st") %>%
+#                      mutate(Home = ifelse(Home == "M'Gladbach", "Gladbach",
+#                                           ifelse(Home == "Manchester Utd", "Man Utd",
+#                                                  ifelse(Home == "Manchester City", "Man City",
+#                                                         ifelse(Home == "Rayo Vallecano", "Rayo",
+#                                                                       Home)))),
+#                             Away = ifelse(Away == "M'Gladbach", "Gladbach",
+#                                           ifelse(Away == "Manchester Utd", "Man Utd",
+#                                                  ifelse(Away == "Manchester City", "Man City",
+#                                                                ifelse(Away == "Rayo Vallecano", "Rayo",
+#                                                                       Away)))),
+#                             Competition_Name = ifelse(Competition_Name != "Premier League" & Competition_Name != "La Liga" & Competition_Name != "Ligue 1" & Competition_Name != "Serie A", "Bundesliga", Competition_Name))) # weird work around for unicode reading on shiny apps
+# 
+# gkData <- fb_big5_advanced_season_stats(season_end_year = 2022,
+#                                          stat_type = "keepers",
+#                                          team_or_player = "player")
+# 
+# gkAdvData <- fb_big5_advanced_season_stats(season_end_year = 2022,
+#                                            stat_type = "keepers_adv",
+#                                            team_or_player = "player")
+# 
+# colnames(gkAdvData)[colnames(gkAdvData) == "#OPA_Sweeper"] <- "OPA_Sweeper"
+# colnames(gkAdvData)[colnames(gkAdvData) == "#OPA_per_90_Sweeper"] <- "OPA_Sweeper_per_90"
+# 
+# 
+# passingData <- fb_big5_advanced_season_stats(season_end_year = 2022,
+#                                              stat_type = "passing",
+#                                              team_or_player = "player")
+# 
+# gkDataCombined <- data.frame(merge(merge(gkData,
+#                                          gkAdvData),  
+#                                    passingData))
 
 
 colnames(gkDataCombined)[colnames(gkDataCombined) == "X_per_90_Expected"] <- "per_90"
@@ -241,10 +247,10 @@ getBumpPlot <- function(df, md_start, md_end, teams, sel_teams, league_palette, 
                   label_params = list(colour = "black", size = 10),
                   unhighlighted_params = list(alpha = 0.1)) +
       scale_y_reverse() +
-      # labs(title = paste("Premier League Table Progression (Matchday ", start_md, " - ", end_md, ")",
-      #                    sep = "")) +
       theme_minimal() +
       theme(
+        text = element_text(family = "Roboto"),
+        
         legend.position = "none",
         
         panel.grid = element_blank(),
@@ -279,6 +285,7 @@ getBumpPlot <- function(df, md_start, md_end, teams, sel_teams, league_palette, 
       #                    sep = "")) +
       theme_minimal() +
       theme(
+        text = element_text(family = "Roboto"),
         legend.position = "none",
         
         panel.grid = element_blank(),
@@ -294,7 +301,7 @@ getBumpPlot <- function(df, md_start, md_end, teams, sel_teams, league_palette, 
   }
 }
 # ----------------------------------------------------------------
-# [GK Zone] - Plot Outputs ----
+# [GK Zone] - Plot Output(s) ----
 getGkZonePlot <- function(vizSelected, gkData) {
   if (vizSelected == "Who's Beating the Model?") {
     gkZoneModelPlot(gkData)
@@ -309,16 +316,18 @@ getGkZonePlot <- function(vizSelected, gkData) {
 
 gkZoneModelPlot <- function(data) {
   ggplot(data = data, aes(x = SoTA, y = PSxG_minus_GA, colour = Comp)) +
-    geom_vline(xintercept = mean(data$SoTA), colour = "white", linetype = "dashed") +
-    geom_hline(yintercept = mean(data$PSxG_minus_GA), colour = "white", linetype = "dashed") +
+    geom_vline(xintercept = median(data$SoTA), colour = "white", linetype = "dashed") +
+    geom_hline(yintercept = 0, colour = "white", linetype = "dashed") +
     geom_point_interactive(aes(size = PSxG_per_SoT_Expected, tooltip = paste(Player, " - ", Squad, "\n",
                                                          "PSxG - GA: ", PSxG_minus_GA, "\n",
+                                                         "PSxG: ", PSxG_Expected, "\n",
+                                                         "GA: ", GA, "\n",
                                                          "SoTA: ", SoTA, "\n",
-                                                         "GA: ", GA,
+                                                         "PSxG/SoTA: ", PSxG_per_SoT_Expected,
                                                          sep = ""),
                                data_id = Player)) +
     scale_size_continuous(range = c(2, 5)) +
-    scale_colour_manual(breaks = c("Bundesliga", "La Liga", "Ligue 1", "Premier League", "Serie A"),
+    scale_colour_manual_interactive(breaks = c("Bundesliga", "La Liga", "Ligue 1", "Premier League", "Serie A"),
                         values = c(met.brewer("Isfahan2")[1], met.brewer("Isfahan2")[2], met.brewer("Isfahan2")[3], met.brewer("Isfahan2")[4], met.brewer("Isfahan2")[5])) +
     labs(title = "Who's Beating the Model? (And Does it Matter?)",
          subtitle = "Shot Stopping Ability by Shots on Target for Big 5 GK's (> 900 minutes played)") +
@@ -327,29 +336,30 @@ gkZoneModelPlot <- function(data) {
     guides(
       size = guide_legend(
         label.hjust = 0.5,
-        title = "PSxG/SoT",
+        title = "PSxG/SoTA",
         title.theme = element_text(size = 10, colour = 
                                      "white", hjust = 0.5,
-                                   face = "bold"), 
-        override.aes = list(colour = "white"),
-        reverse = TRUE),
+                                   face = "bold"),
+        title.position = "top",
+        override.aes = list(colour = "white")
+        ),
       colour = guide_legend(
         override.aes = list(size = 5),
-        reverse = TRUE,
         title = "Competition",
         title.theme = element_text(size = 10, colour = 
                                      "white", hjust = 0.5,
                                    face = "bold"))
       ) +
     theme(
-      text = element_text(colour = "white"),
-      title = element_text(size = 14, margin = margin(2.5, 0, 0, 0)),
+      text = element_text(colour = "white", family = "Roboto"),
+      title = element_text(size = 14, margin = margin(2.5, 0, 0, 0), face = "bold"),
 
       plot.background = element_rect(fill = "black"),
+      plot.subtitle = element_text(face = "plain"),
 
       axis.title = element_text(colour = "white", size = 12, hjust = 0.5),
-      axis.title.y = element_text(margin = margin(0, 8, 0, 6)),
-      axis.title.x = element_text(margin = margin(3, 0, 6, 0)),
+      axis.title.y = element_text(margin = margin(0, 15, 0, 15)),
+      axis.title.x = element_text(margin = margin(20, 0, 10, 0)),
       axis.text = element_text(colour = "white"),
       axis.ticks = element_line(colour = "white", linetype = "longdash"),
       axis.line = element_line(colour = "white"),
@@ -358,21 +368,21 @@ gkZoneModelPlot <- function(data) {
       panel.grid = element_blank(),
 
       legend.background = element_rect(colour = "white", fill = "black"),
-      legend.text = element_text(colour = "white"),
+      legend.text = element_text(colour = "white", family = "Roboto"),
       legend.key = element_rect(fill = "black"),
       # legend.title = element_blank(),
       legend.title.align = 0.5)
       # legend.margin = margin(c(2,3,2,2)),
       # legend.spacing.x = unit(0, "mm"),
       # legend.spacing.y = unit(0, "mm"))
-      # legend.position = c(1.1, 0.25))
+      # legend.position = "bottom")
       
       # legend.key.size = unit(0.75, "cm")
     }
 gkZoneSweeperPlot <- function(data) {
   ggplot(data = data, aes(x = AvgDist_Sweeper, y = OPA_Sweeper_per_90, colour = Comp)) +
-    geom_text(aes(x = 18, y = 0.25, label = "Outside of Box", hjust = 1.25), colour = "white") +
-    geom_text(aes(x = 12, y = 1.41, label = "Penalty Spot", hjust = -.25), colour = "white") +
+    annotate(geom = "text", x = 18, y = 0.25, label = "Edge of Box ->", hjust = 1.075, colour = "white", family = "Roboto", fontface = "bold") +
+    annotate(geom = "text", x = 12, y = 1.41, label = "<- Penalty Spot", hjust = -.075, colour = "white", family = "Roboto", fontface = "bold") +
     geom_vline(xintercept = 12, colour = "white", linetype = "dashed") +
     geom_vline(xintercept = 18, colour = "white", linetype = "dashed") +
 
@@ -381,10 +391,13 @@ gkZoneSweeperPlot <- function(data) {
                                                          "Def Actions per 90: ", OPA_Sweeper_per_90, "\n",
                                                          sep = ""),
                                data_id = Player)) +
+    # geom_label_repel(data = data %>% filter(Player == "Manuel Neuer"), aes(label = Player), show.legend = FALSE,
+    #                  color = met.brewer("Isfahan2")[1], fill = "black", fontface = "bold", nudge_x = -.65, nudge_y = -.2) +
+    scale_y_continuous(expand = c(0,0), limits = c(0, 2), breaks = c(0, 0.5, 1, 1.5, 2)) +
+    scale_x_continuous(breaks = c(12, 14, 16, 18, 20)) +
+  
     scale_colour_manual(breaks = c("Bundesliga", "La Liga", "Ligue 1", "Premier League", "Serie A"),
                         values = c(met.brewer("Isfahan2")[1], met.brewer("Isfahan2")[2], met.brewer("Isfahan2")[3], met.brewer("Isfahan2")[4], met.brewer("Isfahan2")[5])) +
-    # scale_x_continuous(expand = c(0,0), limits = c(11, 18.5)) +
-    # scale_y_continuous(expand = c(0,0), limits = c(0.1, 1.55)) +
     guides(size = "none",
            colour = guide_legend(
              title = "Competition",
@@ -394,87 +407,164 @@ gkZoneSweeperPlot <- function(data) {
              override.aes = list(size = 5)
            )) +
     labs(title = "Sweeper or Nah?",
-         subtitle = "Defensive Activity Outside of Penalty Area by Distance From Goal of Defensive Actions") +
+         subtitle = "Sweeper Activity by Distance From Goal of Defensive Actions for Big 5 GKs",
+         tag = "@biglake402 - data: StatsBomb via fbref.com (GK's with > 900 minutes played in 21/22 season)") +
 
-    ylab("Defensive Actions Outside of Penalty Area per 90") +
+    ylab("Actions Beyond Penalty Area per 90") +
     xlab("Average Distance from Goal of All Defensive Actions (Yards)") +
 
     theme(
+      text = element_text(family = "Roboto", colour = "white"),
+      
       panel.grid = element_blank(),
       panel.background = element_rect(fill = "black"),
-      text = element_text(colour = "white"),
 
-      plot.background = element_rect(fill = "black"),
+      plot.background = element_rect(fill = "black", colour = "black"),
+      plot.title = element_text(margin = margin(6.25,0,3.75,0), face = "bold", size = 18),
+      plot.subtitle = element_text(margin = margin(0,0,10,0), face = "plain", size = 14),
+      plot.tag = element_text(face = "plain", size = 10),
+      plot.tag.position = c(0.3875, 0.0075),
       
       legend.background = element_rect(colour = "white", fill = "black"),
-      legend.text = element_text(colour = "white"),
       legend.key = element_rect(fill = "black"),
-      legend.title = element_blank(),
+      legend.title = element_text(family = "Roboto"),
       legend.title.align = 0.5,
       legend.position = c(.875, .3),
 
-      axis.line = element_line(colour = "white"),
-      axis.text = element_text(colour = "white"),
-      axis.title = element_text(colour = "white", size = 12),
-      axis.ticks = element_line(colour = "white"),
-      axis.title.y = element_text(margin = margin(0, 7.5, 0, 5)),
-      axis.title.x = element_text(margin = margin(4, 0, 5, 0)),
-
-      title = element_text(size = 14, margin = margin(5, 0, 0, 0))
-    )
-}
-gkZoneCrossPlot <- function(data) {
-  # fill_gradient <- colorRampPalette(c("#6ca3a0", "#002a3a"))
-
-  ggplot(data = data, aes(x = reorder(Player, +Stp_percent_Crosses), y = Stp_percent_Crosses, fill = Comp)) +
-    geom_bar_interactive(stat = "identity", width = .8,
-                         aes(tooltip = paste0(Player, " - ", Squad, "\n",
-                                              "# of Attempted Crosses: ", Opp_Crosses, "\n",
-                                              "# of Stopped Crosses: ", Stp_Crosses, "\n",
-                                              "% of Crosses Stopped: ", Stp_percent_Crosses, "\n",
-                                              "Goals from Corners: ", CK_Goals,
-                                              sep = ""),
-                             data_id = Player)) +
-    coord_flip() +
-    scale_y_continuous(expand = c(0,0), limits = c(0, 15.5), breaks = c(5, 10, 15)) +
-    # scale_fill_gradientn(colours = fill_gradient(10)) +
-
-    ylab("Percentage of Penalty Area Crosses Successfully Stopped") +
-    guides(fill = guide_colorbar(label.position = "bottom",
-                                 title.position = "top",
-                                 title = "Goals from Corners")) +
-
-    labs(title = "Controlling the Box - Cross Stopping Ability of Premier League GK's (> 900 Minutes Played)") +
-
-    theme(
-      title = element_text(colour = "white", hjust = 1),
-
-      axis.title.y = element_blank(),
-      axis.title.x = element_text(colour = "white"),
       axis.text = element_text(colour = "white"),
       axis.line = element_line(colour = "white"),
+      axis.title = element_text(colour = "white", size = 12, face = "bold"),
       axis.ticks = element_line(colour = "white"),
-
-      panel.grid = element_blank(),
-      panel.background = element_rect(fill = "black"),
-
-      plot.background = element_rect(fill = "black"),
-
-      legend.direction = "horizontal",
-      legend.background = element_rect(fill = "black", colour = "white"),
-      legend.title.align = 0.5,
-      legend.text = element_text(colour = "white"),
-      legend.title = element_text(colour = "white"),
-      legend.key.width = unit(20, "pt"),
-      legend.position = c(0.8, 0.25)
+      axis.title.y = element_text(margin = margin(0, 16.25, 0, 15)),
+      axis.title.x = element_text(margin = margin(15, 0, 25, 0)),
     )
 }
 
 # [GK Zone] - Viz Text(s) ----
-gk_model_text <- paste0("This plot, inspired by this wonderful (article) by John Muller, attempts to showcase how goalkeepers
-                        have performed against Statsbomb's (Post-Shot Expected Goals model) (PSxG). The PSxG model is very similar
-                        to Statsbomb's Expected Goals (xG) Model, but restricts the sample of shots to only those that are saved or scored,
-                        and uses post-shot information, such as shot speed and predicted location to enter the goal, to predict goal probability
-                        (and give us a better idea of save difficulty). ")
+getGkZoneText <- function(vizSelected) {
+  if (vizSelected == "Who's Beating the Model?") {
+    gkModelText
+  }
+  else {
+    gkSweeperText
+  }
+}
+
+gkModelText <- HTML("<p>This plot, inspired by <a href = 'https://fivethirtyeight.com/features/the-most-valuable-soccer-player-in-america-is-a-goalkeeper/'> John Muller</a>,
+                    attempts to showcase how goalkeepers have performed against Statsbomb's <a href = 'https://statsbomb.com/2018/11/a-new-way-to-measure-keepers-s
+                    hot-stopping-post-shot-expected-goals/'> Post-Shot Expected Goals Model</a> (PSxG). The PSxG Model is similar to Statsbomb's Expected Goals Model, but 
+                    is designed to evaluate goalkeepers rather than shooters. This change in focus is accomplished by restricting the shot sample to those on target, and using 
+                    post-shot information, such as shot speed and trajectory, to train the model. This plot's main statistic, PSxG - Goals Allowed, allows us to evaluate goalkeeper's 
+                    shot-stopping ability. Positive values suggest an above average shot-stopping ability (or better luck). Another useful statistic for analysis, PSxG
+                    per Shot on Target (PSxG/SoTa), is represented in the size of each point, and can be used to compare the quality of shots keeper's have faced.</p>")
+
+gkSweeperText <- paste0("Hi, here's some text")
 
 # ----------------------------------------------------------------
+# [XG Time] - Data Transformation ----
+# transforming big 5 data (calculating rolling xG averages for and against + adding gameNum column)
+big5ToXG <- function(df, team, rollN = 6) {
+  df_trans <- df %>%
+    filter(Home == team | Away == team) %>%
+    select(Wk, Date, Home, HomeGoals, Home_xG, Away, AwayGoals, Away_xG) %>%
+    drop_na() %>%
+    mutate(HomeAway = if_else(Home == team, "Home", "Away"),
+           xgFor = if_else(Home == team, Home_xG, Away_xG),
+           xgAgainst = if_else(Home == team, Away_xG, Home_xG),
+           rollFor = round(rollmean(x = xgFor, k = rollN, na.pad = TRUE, align = "right"),2),
+           rollAgainst = round(rollmean(x = xgAgainst, k = rollN, na.pad = TRUE, align = "right"),2),
+           selOpp = "Selected")
+  
+  for (i in 1:(rollN-1)) {
+    df_trans[i,]$rollFor = round(mean(df_trans[1:i,]$xgFor), 2)
+    df_trans[i,]$rollAgainst = round(mean(df_trans[1:i,]$xgAgainst), 2)
+  }
+  
+  return(df_trans %>%
+           arrange(Date) %>%
+           mutate(gameNum = 1:nrow(df_trans)))
+}
+
+# adding a row for each week to prepare for interpolation
+tidyXGData <- function(df) {
+  df %>%
+    group_by(Wk) %>%
+    summarise(Date = last(Date), Home = last(Home), HomeGoals = last(HomeGoals), Home_xG = last(Home_xG), Away = last(Away),
+              AwayGoals = last(AwayGoals), Away_xG = last(Away_xG), HomeAway = last(HomeAway), xgFor = last(xgFor),
+              xgAgainst = last(xgAgainst), gameNum = last(gameNum), rollFor = last(rollFor), rollAgainst = last(rollAgainst)) %>%
+    mutate(selOpp = "Opposition") %>%
+    bind_rows(df, .) %>%
+    arrange(Wk)
+}
+
+# interpolating along both rollFor + rollAgainst line segments to make geom_ribbon() gaps indistinguishable
+XGDataInterp <- function(df) {
+  df %>%
+    split(.$selOpp) %>%
+    map_df(~data.frame(sel = approx(.x$gameNum, .x$rollFor, n = 80),
+                       opp = approx(.x$gameNum, .x$rollAgainst, n = 80),
+                       team = .x$selOpp[1]))
+}
+
+# [XG Time] - Plot Output(s) ----
+xgRollPlot <- function(df, team, comp, bund) {
+  colGrid <- rgb(235, 235, 235, 225, maxColorValue = 255)
+  
+  return(
+    ggplot(data = df, aes(x = sel.x, y = max(sel.y, opp.y))) +
+      annotate(geom = "rect", xmin = 1.05, xmax = 6, ymin = -Inf, ymax = max(df$sel.y, df$opp.y) + 0.24,
+               fill = "#ECECEC", alpha = 0.85) +
+      geom_ribbon(aes(ymin = sel.y, ymax = pmin(sel.y, opp.y)), fill = "#5E1208", alpha = 0.5) + 
+      geom_ribbon(aes(ymin = opp.y, ymax = pmin(sel.y, opp.y)), fill = "#009782", alpha = 0.5) +
+      geom_line(aes(y = sel.y, colour = "#009782"), size = 1.25) +
+      geom_line(aes(y = opp.y, colour = "#5E1208"), size = 1.25) +
+      annotate(geom = "text", label = paste("Partial", "\n", "Average", sep = ""),
+               x = 3.5, y = min(df$sel.y, df$opp.y), size = 4.5, family = "Roboto", fontface = "bold") + 
+      scale_x_continuous(
+        expand = c(0,0), 
+        limits = c(1, if_else(bund == TRUE, 36, 38)),
+        breaks = seq(5, 35, by = 5)) +
+      scale_y_continuous(
+        expand = c(0,0),
+        limits = c((min(df$sel.y, df$opp.y) - 0.25), (max(df$sel.y, df$opp.y) + 0.25)), 
+        breaks = seq(0, (max(df$sel.y, df$opp.y) + 1), by = 0.2)) +
+      
+      labs(title = paste(team, "'s Underlying Expected Performance", sep = ""),
+           subtitle = paste("6 game rolling average of ", team, "'s expected goals for and expected goals against in the ", comp, 
+                            " for 2021/2022", sep = ""),
+           caption = "Data from Statsbomb via fbref.com. This data includes penalties. The first six games shown are a partial average. Recreation of a @petermckeever viz using R by @biglake402.") +
+      xlab("Matchday") + ylab("Rolling xG") +
+      guides(
+        colour = guide_legend(
+          title = element_blank(),
+          override.aes = list(size = 6)
+        )) +
+      scale_color_manual(labels = c(paste("xG for ", team, sep = ""), paste("xG against ", team, sep = "")),
+                         values = c("#5E1208", "#009782")) +
+      
+      
+      theme(
+        panel.background = element_rect(fill = "white", colour = "black"),
+        panel.grid = element_line(colour = colGrid),
+        panel.grid.minor = element_blank(),
+        
+        title = element_text(family = "Roboto", colour = "black"),
+        plot.title = element_text(face = "bold", size = 20),
+        plot.subtitle = element_text(face = "plain", size = 16, lineheight = 0.625),
+        plot.caption = element_text(hjust = 0, size = 12.5, margin = margin(0,0,0,0)),
+
+        axis.ticks = element_blank(),
+        axis.text = element_text(family = "Roboto", colour = "black", size = 12.5),
+        axis.title = element_text(face = "bold", size = 18),
+        axis.title.y = element_text(margin = margin(0, 20, 0, 0)),
+        axis.title.x = element_text(margin = margin(20, 0, 20, 0)),
+        
+        legend.text = element_text(family = "Roboto", colour = "black", face = "bold", size = 12, margin = margin(0, 5, 0, 0)),
+        legend.background = element_rect(colour = "black"),
+        legend.key = element_rect(fill = colGrid),
+        legend.position = c(.925, .1375),
+        # legend.spacing.x = unit(0, "mm"),
+        legend.spacing.y = unit(0, "mm")
+      )
+  )
+}

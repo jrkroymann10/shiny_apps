@@ -175,16 +175,10 @@ shinyServer(function(input, output, session) {
     )
   })
  
-  # [GK Zone] - UI (Player Selection Showcase) ----
-  # output$gkZoneSelected <- renderTable({
-  #   out <- gkData()[gkData()$Player %in% selected_gk(),]
-  #   if(nrow(out < 1)) {
-  #     return(NULL)
-  #   }
-  #   row.names(out) <- NULL
-  #   
-  #   out
-  # })
+  # [GK Zone] - UI (Text Output) ----
+  output$gkZoneText <- renderText(
+    getGkZoneText(input$gkZoneViz)
+  )
   # [GK Zone] - Plot Output ---- 
   output$gkZonePlot <- renderGirafe({
     req(input$gkZoneViz)
@@ -213,9 +207,49 @@ shinyServer(function(input, output, session) {
   #   )
   # })
   
-  # [GK Zone] - Text Output ----
-  # # # output$gk_text <- renderText(
-  # # #   gk_model_text
-  # # # )
   # ------------------------------------------------------------------------
+  # [XG Time] - Reactive Data ----
+  xgData <- reactive({
+    req(input$xgTeam)
+    
+    big5ToXG(big5[big5$Home == input$xgTeam | big5$Away == input$xgTeam,], input$xgTeam)
+  })
+  
+  xgDataInterp <- reactive({
+    req(input$xgTeam)
+    
+    XGDataInterp(tidyXGData(big5ToXG(big5[big5$Home == input$xgTeam | big5$Away == input$xgTeam,], input$xgTeam)))
+  })
+  # [XG Time] - UI (Viz Selection) ----
+  output$xgViz <- renderUI({
+    selectizeInput(inputId = "xgVix",
+                   label = "Visualization",
+                   choices = c("Six Game Rolling Average"),
+                   selected = "Six Game Rolling Average"
+                   )
+  })
+  # [XG Time] - UI (Competition Selection) ----
+  output$xgComp <- renderUI({
+    selectizeInput(inputId = "xgComp",
+                   label = "Competition",
+                   choices = sort(unique(big5$Competition_Name)),
+                   selected = "Premier League")
+  })
+  # [XG Time] - UI (Team Selection) ----
+  output$xgTeam <- renderUI({
+    req(input$xgComp)
+    
+    selectizeInput(inputId = "xgTeam",
+                   label = "Team",
+                   choices = sort(unique(big5[big5$Competition_Name == input$xgComp,]$Home)),
+                   selected = "Liverpool")
+  })
+  # [XG Time] - UI (Text Output) ----
+  # [XG Time] - Plot Output ----
+  output$xgPlot <- renderPlot({
+    req(input$xgTeam)
+    req(input$xgComp)
+    
+    xgRollPlot(xgDataInterp(), input$xgTeam, input$xgComp, if_else(input$xgComp == "Bundesliga", TRUE, FALSE))
+  })
 })
