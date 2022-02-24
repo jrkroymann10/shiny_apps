@@ -1,7 +1,13 @@
 shinyUI(
   fluidPage(
     tags$head(
-      tags$style(HTML("hr {margin-top: .25em;}"))
+      tags$style(HTML("hr {
+                      }
+                      
+                      * {
+                        font-family: Roboto Mono;
+                      }"
+                      ))
     ),
     navbarPage(
       "Big 5 Dashboards by Joe",
@@ -38,7 +44,7 @@ shinyUI(
                  column(
                    width = 6,
                    align = "center",
-                   actionButton(inputId = "resetBumpTeams", "Reset Team Input(s)", width = 150)),
+                   actionButton(inputId = "resetBumpTeams", "Reset Teams", width = 150)),
                  column(
                    width = 6,
                    align = "center",
@@ -72,13 +78,14 @@ shinyUI(
           )
         )
       ),
+      
+      # XG Timelines Tab ----
       tabPanel(
         "XG Timelines",
         
         wellPanel(
           fluidRow(
-            column(2),
-            column(2,
+            column(3,
                    uiOutput(outputId = "xgViz")
             ),
             column(2,
@@ -91,9 +98,8 @@ shinyUI(
                    uiOutput(outputId = "xgVizText"))
           )
         ),
-
-        plotOutput("xgPlot"),
-        hr(style = "border-top: 1px solid #000000;")
+        
+        girafeOutput("xgPlot"),
       )
       )
     )

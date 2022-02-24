@@ -29,7 +29,7 @@ shinyServer(function(input, output, session) {
   })
   # [Bump Plot] - UI Slider (MD Range) ----
   output$md_range <- renderUI({
-    req(last_wk())
+    # req(input$competition)
     sliderInput(inputId = "md_range",
                   label = "Matchday Range",
                   value = c(1, last_wk()),
@@ -44,7 +44,7 @@ shinyServer(function(input, output, session) {
     req(input$competition)
     selectizeInput(inputId = "teams",
                    label = "Teams",
-                   choices = get_team_choices(input$competition),
+                   choices = sort(unique(bump_data()$Team)),
                    multiple = TRUE,
                    options = list(
                      placeholder = 'Select Team(s) below',
@@ -76,10 +76,12 @@ shinyServer(function(input, output, session) {
     req(input$competition)
     get_leaguePalette(input$competition)
   })
-
-  output$firstTeam <- renderText({
-    input$gkZonePlot_selected
-  })
+  
+  df <- reactive(bump_data() %>% filter(Matchday >= input$md_range[1] & Matchday <= input$md_range[2]))
+  
+  # output$firstTeam <- renderText({
+  #   input$md_range[2]
+  # })
 
   # [Bump Plot] - Plot Output ----
   output$bumpPlot <- renderGirafe({
@@ -90,8 +92,6 @@ shinyServer(function(input, output, session) {
       need(input$md_range[2] <= last_wk(), "wait a second!")
     )
     
-    df <- reactive(bump_data() %>% filter(Matchday >= input$md_range[1] & Matchday <= input$md_range[2]))
-
     girafe(
       ggobj = getBumpPlot(df(), input$md_range[1], input$md_range[2], teams(), input$teams, league_palette(),
                           input$bump_rank, input$back_color),
@@ -110,7 +110,7 @@ shinyServer(function(input, output, session) {
 
     updateSelectizeInput(inputId = "teams",
                          label = "Teams",
-                         choices = get_team_choices(input$competition),
+                         choices = sort(unique(bump_data()$Team)),
                          options = list(
                            placeholder = 'Select team(s) below',
                            onInitialize = I('function() { this.setValue(); }')
@@ -224,8 +224,8 @@ shinyServer(function(input, output, session) {
   output$xgViz <- renderUI({
     selectizeInput(inputId = "xgVix",
                    label = "Visualization",
-                   choices = c("Six Game Rolling Average"),
-                   selected = "Six Game Rolling Average"
+                   choices = c("6 Game Rolling Average"),
+                   selected = "6 Game Rolling Average"
                    )
   })
   # [XG Time] - UI (Competition Selection) ----
@@ -246,10 +246,15 @@ shinyServer(function(input, output, session) {
   })
   # [XG Time] - UI (Text Output) ----
   # [XG Time] - Plot Output ----
-  output$xgPlot <- renderPlot({
+  output$xgPlot <- renderGirafe({
     req(input$xgTeam)
     req(input$xgComp)
     
-    xgRollPlot(xgDataInterp(), input$xgTeam, input$xgComp, if_else(input$xgComp == "Bundesliga", TRUE, FALSE))
+    girafe(
+      ggobj = xgRollPlot(xgDataInterp(), input$xgTeam, input$xgComp, if_else(input$xgComp == "Bundesliga", TRUE, FALSE)),
+      
+      width_svg = 20,
+      height_svg = 6
+    )
   })
 })

@@ -11,24 +11,52 @@ library(ggiraph)
 library(MetBrewer)
 library(worldfootballR)
 library(zoo)
-library(showtext)
+library(stringr)
 
-# font_add_google("Roboto Mono", "Roboto")
-# showtext_auto()
+colGrid <- rgb(235, 235, 235, 225, maxColorValue = 255)
 
-# 
-# [Loading] - Data ----
+# # [Loading] - Data ----
 # big5 <- data.frame(get_match_results(country = c("ENG", "ESP", "ITA", "GER", "FRA"), gender = "M", season_end_year = "2022", tier = "1st") %>%
 #                      mutate(Home = ifelse(Home == "M'Gladbach", "Gladbach",
-#                                           ifelse(Home == "Manchester Utd", "Man Utd",
-#                                                  ifelse(Home == "Manchester City", "Man City",
-#                                                         ifelse(Home == "Rayo Vallecano", "Rayo",
-#                                                                       Home)))),
+#                                           ifelse(Home == "Union Berlin", "Berlin",
+#                                                  ifelse(Home == "Bayern Munich", "Bayern",
+#                                                         ifelse(Home == "Greuther Fürth", "Fürth",
+#                                                                ifelse(Home == "Eint Frankfurt", "Frankfurt",
+#                                                                       ifelse(Home == "Atlético Madrid", "Atleti",
+#                                                                              ifelse(Home == "Athletic Club", "Athletic",
+#                                                                                     ifelse(Home == "Rayo Vallecano", "Rayo",
+#                                                                                            ifelse(Home == "Real Sociedad", "La Real",
+#                                                                                                   ifelse(Home == "Clermont Foot", "Clermont",
+#                                                                                                          ifelse(Home == "Saint-Étienne", "Étienne",
+#                                                                                                                 ifelse(Home == "Manchester Utd", "Man Utd",
+#                                                                                                                        ifelse(Home == "Manchester City", "Man City",
+#                                                                                                                               ifelse(Home == "Leicester City", "Leicester",
+#                                                                                                                                      ifelse(Home == "Leeds United", "Leeds",
+#                                                                                                                                             ifelse(Home == "Norwich City", "Norwich",
+#                                                                                                                                                    ifelse(Home == "Crystal Palace", "Palace",
+#                                                                                                                                                           ifelse(Home == "Newcastle Utd", "Newcastle",
+#                                                                                                                                                                  ifelse(Home == "Hellas Verona", "Verona",
+#                                                                                                                                                                         Home))))))))))))))))))),
 #                             Away = ifelse(Away == "M'Gladbach", "Gladbach",
-#                                           ifelse(Away == "Manchester Utd", "Man Utd",
-#                                                  ifelse(Away == "Manchester City", "Man City",
-#                                                                ifelse(Away == "Rayo Vallecano", "Rayo",
-#                                                                       Away)))),
+#                                           ifelse(Away == "Union Berlin", "Berlin",
+#                                                  ifelse(Away == "Bayern Munich", "Bayern",
+#                                                         ifelse(Away == "Greuther Fürth", "Fürth",
+#                                                                ifelse(Away == "Eint Frankfurt", "Frankfurt",
+#                                                                       ifelse(Away == "Atlético Madrid", "Atleti",
+#                                                                              ifelse(Away == "Athletic Club", "Athletic",
+#                                                                                     ifelse(Away == "Rayo Vallecano", "Rayo",
+#                                                                                            ifelse(Away == "Real Sociedad", "La Real",
+#                                                                                                   ifelse(Away == "Clermont Foot", "Clermont",
+#                                                                                                          ifelse(Away == "Saint-Étienne", "Étienne",
+#                                                                                                                 ifelse(Away == "Manchester Utd", "Man Utd",
+#                                                                                                                        ifelse(Away == "Manchester City", "Man City",
+#                                                                                                                               ifelse(Away == "Leicester City", "Leicester",
+#                                                                                                                                      ifelse(Away == "Leeds United", "Leeds",
+#                                                                                                                                             ifelse(Away == "Norwich City", "Norwich",
+#                                                                                                                                                    ifelse(Away == "Crystal Palace", "Palace",
+#                                                                                                                                                           ifelse(Away == "Newcastle Utd", "Newcastle",
+#                                                                                                                                                                  ifelse(Away == "Hellas Verona", "Verona",
+#                                                                                                                                                                         Away))))))))))))))))))),
 #                             Competition_Name = ifelse(Competition_Name != "Premier League" & Competition_Name != "La Liga" & Competition_Name != "Ligue 1" & Competition_Name != "Serie A", "Bundesliga", Competition_Name))) # weird work around for unicode reading on shiny apps
 # 
 # gkData <- fb_big5_advanced_season_stats(season_end_year = 2022,
@@ -48,38 +76,12 @@ library(showtext)
 #                                              team_or_player = "player")
 # 
 # gkDataCombined <- data.frame(merge(merge(gkData,
-#                                          gkAdvData),  
+#                                          gkAdvData),
 #                                    passingData))
-
-
-colnames(gkDataCombined)[colnames(gkDataCombined) == "X_per_90_Expected"] <- "per_90"
-colnames(gkDataCombined)[colnames(gkDataCombined) == "PSxG._per__minus__Expected"] <- "PSxG_minus_GA"
+# 
+# colnames(gkDataCombined)[colnames(gkDataCombined) == "X_per_90_Expected"] <- "per_90"
+# colnames(gkDataCombined)[colnames(gkDataCombined) == "PSxG._per__minus__Expected"] <- "PSxG_minus_GA"
 # ---------------------------------------------------------------------------------------------------
-# {Bump Plot] - Teams ----
-bund_teams <- c("Arminia", "Augsburg", "Bayern Munich", "Bochum", "Dortmund", "Eint Frankfurt",
-                "Freiburg", "Gladbach", "Greuther Fürth", "Hertha BSC", "Hoffenheim", "Köln",
-                "Leverkusen", "Mainz 05", "RB Leipzig", "Stuttgart", "Union Berlin", "Wolfsburg")
-
-laLiga_teams <- c("Alavés", "Athletic Club", "Atlético Madrid", "Barcelona", "Betis",
-                  "Cádiz", "Celta Vigo", "Elche", "Espanyol", "Getafe",
-                  "Granada", "Levante", "Mallorca", "Osasuna", "Rayo",
-                  "Real Madrid", "Real Sociedad", "Sevilla", "Valencia", "Villarreal")
-
-ligue1_teams <- c("Angers", "Bordeaux", "Brest", "Clermont Foot", "Lens", "Lille",
-                  "Lorient", "Lyon", "Marseille", "Metz", "Monaco", "Montpellier",
-                  "Nantes", "Nice", "Paris S-G", "Reims", "Rennes", "Saint-Étienne",
-                  "Strasbourg", "Troyes")
-
-pl_teams <- c("Arsenal", "Aston Villa", "Brentford", "Brighton", "Burnley", 
-              "Chelsea", "Crystal Palace", "Everton", "Leeds United", "Leicester City", 
-              "Liverpool", "Man City", "Man Utd", "Newcastle Utd", "Norwich City", 
-              "Southampton", "Tottenham", "Watford", "West Ham", "Wolves")
-
-serieA_teams <- c("Atalanta", "Bologna", "Cagliari", "Empoli", "Fiorentina",
-                  "Genoa", "Hellas Verona", "Inter", "Juventus", "Lazio", 
-                  "Milan", "Napoli", "Roma", "Salernitana", "Sampdoria", 
-                  "Sassuolo", "Spezia", "Torino", "Udinese", "Venezia", "Verona")
-#
 # [Bump Plot] - Team Hex Codes ----
 bund_hex <- c("#005CA9", "#DE023F", "#005CA9", "#E1000F", "#46714d", "#009932",
               "#FFFFFF", "#DC052D", "#FDDC02", "#E32221", "#004E95", "#000000",
@@ -197,7 +199,7 @@ get_bumpData <- function(match_data, last_week) {
 }
 
 # [Bump Plot] - Functions ----
-get_leaguePalette <- function(comp = "Fußball-Bundesliga") {
+get_leaguePalette <- function(comp) {
   if (comp == "La Liga") {
     return(laLiga_hex)
   } else if (comp == "Ligue 1") {
@@ -211,19 +213,6 @@ get_leaguePalette <- function(comp = "Fußball-Bundesliga") {
   }
 }
 
-get_team_choices <- function(comp = "Fußball-Bundesliga") {
-  if (comp == "La Liga") {
-    return(laLiga_teams)
-  } else if (comp == "Ligue 1") {
-    return(ligue1_teams)
-  } else if (comp == "Premier League") {
-    return(pl_teams)
-  } else if (comp == "Serie A") {
-    return(serieA_teams)
-  } else {
-    return(bund_teams)
-  }
-}
 # [Bump Plot] - Plot Output ----
 getBumpPlot <- function(df, md_start, md_end, teams, sel_teams, league_palette, bump_rank, background) {
   if (length(sel_teams) >= 1) {
@@ -236,21 +225,19 @@ getBumpPlot <- function(df, md_start, md_end, teams, sel_teams, league_palette, 
         values = league_palette
       ) +
       geom_text(data = df %>%
-                  dplyr::filter(Matchday == md_start),
-                aes(label = Team, md_start - 1), fontface = "bold", hjust = 0.45, size = 11) +
+                  dplyr::filter(Matchday == md_start), aes(label = str_trim(Team, "both"), md_start - .35), 
+                fontface = "bold", size = 11, hjust = 0) +
       geom_text(data = df %>%
-                  dplyr::filter(Matchday == md_end),
-                aes(label = Team, x = md_end + 1), fontface = "bold", hjust = 0.35, size = 11) +
+                  dplyr::filter(Matchday == md_end), aes(label = Team, x = md_end + .35),
+                fontface = "bold", size = 11, hjust = 0) +
       gghighlight(any(Team == sel_teams),
                   use_direct_label = bump_rank,
                   label_key = Rank,
                   label_params = list(colour = "black", size = 10),
                   unhighlighted_params = list(alpha = 0.1)) +
       scale_y_reverse() +
-      theme_minimal() +
+      scale_x_continuous(limits = c(md_start - 1.25, md_end + 1.25)) +
       theme(
-        text = element_text(family = "Roboto"),
-        
         legend.position = "none",
         
         panel.grid = element_blank(),
@@ -266,26 +253,22 @@ getBumpPlot <- function(df, md_start, md_end, teams, sel_teams, league_palette, 
   }
   else {
     df %>%
-      ggplot(aes(x = Matchday, y = Rank, colour = Team, data_id = Team)) +
-      geom_path_interactive(size = 3, lineend = "round") + 
-      geom_point_interactive(size = 5) + 
-      #xlim(input$md_range[1] - 1, input$md_range[2] + 1) +
+      ggplot(aes(x = Matchday, y = Rank, colour = Team)) +
+      geom_path_interactive(size = 3, lineend = "round", aes(data_id = Team)) + 
+      geom_point_interactive(size = 5, aes(data_id = Team)) + 
+      geom_text_interactive(data = df %>% dplyr::filter(Matchday == md_start), 
+                            aes(label = Team, x = md_start - .4, data_id = Team),
+                            fontface = "bold", size = 11, hjust = 1) +
+      geom_text_interactive(data = df %>% dplyr::filter(Matchday == md_end), 
+                            aes(label = Team, x = md_end + .4, data_id = Team), 
+                            fontface = "bold", size = 11, hjust = 0) + 
       scale_colour_manual(
         breaks = teams,
         values = league_palette
       ) +
-      geom_text_interactive(data = df %>%
-                              dplyr::filter(Matchday == md_start),
-                            aes(label = Team, x = md_start - 1), fontface = "bold", hjust = 0.45, size = 11) +
-      geom_text_interactive(data = df %>%
-                              dplyr::filter(Matchday == md_end),
-                            aes(label = Team, x = md_end + 1), fontface = "bold", hjust = 0.35, size = 11) +
       scale_y_reverse() +
-      # labs(title = paste("Premier League Table Progression (Matchday ", start_md, " - ", end_md, ")",
-      #                    sep = "")) +
-      theme_minimal() +
+      scale_x_continuous(limits = c(md_start - 1.5, md_end + 1.5)) +
       theme(
-        text = element_text(family = "Roboto"),
         legend.position = "none",
         
         panel.grid = element_blank(),
@@ -330,7 +313,8 @@ gkZoneModelPlot <- function(data) {
     scale_colour_manual_interactive(breaks = c("Bundesliga", "La Liga", "Ligue 1", "Premier League", "Serie A"),
                         values = c(met.brewer("Isfahan2")[1], met.brewer("Isfahan2")[2], met.brewer("Isfahan2")[3], met.brewer("Isfahan2")[4], met.brewer("Isfahan2")[5])) +
     labs(title = "Who's Beating the Model? (And Does it Matter?)",
-         subtitle = "Shot Stopping Ability by Shots on Target for Big 5 GK's (> 900 minutes played)") +
+         subtitle = "Shot Stopping Ability by Shots on Target for Big 5 GKs (> 900 minutes played)",
+         tag = "Data: StatsBomb via fbref.com (GK's with > 900 minutes played in 21/22 season)") +
     xlab("Shots on Target Against") +
     ylab("Post-Shot Expected Goals - Goals Allowed") +
     guides(
@@ -351,15 +335,18 @@ gkZoneModelPlot <- function(data) {
                                    face = "bold"))
       ) +
     theme(
-      text = element_text(colour = "white", family = "Roboto"),
+      text = element_text(colour = "white"),
       title = element_text(size = 14, margin = margin(2.5, 0, 0, 0), face = "bold"),
 
       plot.background = element_rect(fill = "black"),
-      plot.subtitle = element_text(face = "plain"),
+      plot.title = element_text(margin = margin(6.25, 0, 3.75, 0)),
+      plot.subtitle = element_text(face = "plain", margin = margin(0, 0, 10, 0)),
+      plot.tag = element_text(face = "plain", size = 10),
+      plot.tag.position = c(0.2875, 0.00875),
 
       axis.title = element_text(colour = "white", size = 12, hjust = 0.5),
       axis.title.y = element_text(margin = margin(0, 15, 0, 15)),
-      axis.title.x = element_text(margin = margin(20, 0, 10, 0)),
+      axis.title.x = element_text(margin = margin(15, 0, 25, 0)),
       axis.text = element_text(colour = "white"),
       axis.ticks = element_line(colour = "white", linetype = "longdash"),
       axis.line = element_line(colour = "white"),
@@ -368,21 +355,15 @@ gkZoneModelPlot <- function(data) {
       panel.grid = element_blank(),
 
       legend.background = element_rect(colour = "white", fill = "black"),
-      legend.text = element_text(colour = "white", family = "Roboto"),
+      legend.text = element_text(colour = "white"),
       legend.key = element_rect(fill = "black"),
-      # legend.title = element_blank(),
       legend.title.align = 0.5)
-      # legend.margin = margin(c(2,3,2,2)),
-      # legend.spacing.x = unit(0, "mm"),
-      # legend.spacing.y = unit(0, "mm"))
-      # legend.position = "bottom")
-      
-      # legend.key.size = unit(0.75, "cm")
-    }
+}
+
 gkZoneSweeperPlot <- function(data) {
   ggplot(data = data, aes(x = AvgDist_Sweeper, y = OPA_Sweeper_per_90, colour = Comp)) +
-    annotate(geom = "text", x = 18, y = 0.25, label = "Edge of Box ->", hjust = 1.075, colour = "white", family = "Roboto", fontface = "bold") +
-    annotate(geom = "text", x = 12, y = 1.41, label = "<- Penalty Spot", hjust = -.075, colour = "white", family = "Roboto", fontface = "bold") +
+    annotate(geom = "text", x = 18, y = 0.25, label = "Edge of Box ->", hjust = 1.075, colour = "white", fontface = "bold") +
+    annotate(geom = "text", x = 12, y = 1.41, label = "<- Penalty Spot", hjust = -.075, colour = "white", fontface = "bold") +
     geom_vline(xintercept = 12, colour = "white", linetype = "dashed") +
     geom_vline(xintercept = 18, colour = "white", linetype = "dashed") +
 
@@ -408,13 +389,13 @@ gkZoneSweeperPlot <- function(data) {
            )) +
     labs(title = "Sweeper or Nah?",
          subtitle = "Sweeper Activity by Distance From Goal of Defensive Actions for Big 5 GKs",
-         tag = "@biglake402 - data: StatsBomb via fbref.com (GK's with > 900 minutes played in 21/22 season)") +
+         tag = "Data: StatsBomb via fbref.com (GK's with > 900 minutes played in 21/22 season)") +
 
     ylab("Actions Beyond Penalty Area per 90") +
     xlab("Average Distance from Goal of All Defensive Actions (Yards)") +
 
     theme(
-      text = element_text(family = "Roboto", colour = "white"),
+      text = element_text(colour = "white"),
       
       panel.grid = element_blank(),
       panel.background = element_rect(fill = "black"),
@@ -423,11 +404,10 @@ gkZoneSweeperPlot <- function(data) {
       plot.title = element_text(margin = margin(6.25,0,3.75,0), face = "bold", size = 18),
       plot.subtitle = element_text(margin = margin(0,0,10,0), face = "plain", size = 14),
       plot.tag = element_text(face = "plain", size = 10),
-      plot.tag.position = c(0.3875, 0.0075),
+      plot.tag.position = c(0.2875, 0.00875),
       
       legend.background = element_rect(colour = "white", fill = "black"),
       legend.key = element_rect(fill = "black"),
-      legend.title = element_text(family = "Roboto"),
       legend.title.align = 0.5,
       legend.position = c(.875, .3),
 
@@ -456,7 +436,7 @@ gkModelText <- HTML("<p>This plot, inspired by <a href = 'https://fivethirtyeigh
                     is designed to evaluate goalkeepers rather than shooters. This change in focus is accomplished by restricting the shot sample to those on target, and using 
                     post-shot information, such as shot speed and trajectory, to train the model. This plot's main statistic, PSxG - Goals Allowed, allows us to evaluate goalkeeper's 
                     shot-stopping ability. Positive values suggest an above average shot-stopping ability (or better luck). Another useful statistic for analysis, PSxG
-                    per Shot on Target (PSxG/SoTa), is represented in the size of each point, and can be used to compare the quality of shots keeper's have faced.</p>")
+                    per Shot on Target (PSxG/SoTa), is represented in the size of each point, and can be used to compare the quality of shots keepers have faced.</p>")
 
 gkSweeperText <- paste0("Hi, here's some text")
 
@@ -508,18 +488,15 @@ XGDataInterp <- function(df) {
 
 # [XG Time] - Plot Output(s) ----
 xgRollPlot <- function(df, team, comp, bund) {
-  colGrid <- rgb(235, 235, 235, 225, maxColorValue = 255)
-  
-  return(
-    ggplot(data = df, aes(x = sel.x, y = max(sel.y, opp.y))) +
+  ggplot(data = df, aes(x = sel.x, y = max(sel.y, opp.y))) +
       annotate(geom = "rect", xmin = 1.05, xmax = 6, ymin = -Inf, ymax = max(df$sel.y, df$opp.y) + 0.24,
                fill = "#ECECEC", alpha = 0.85) +
       geom_ribbon(aes(ymin = sel.y, ymax = pmin(sel.y, opp.y)), fill = "#5E1208", alpha = 0.5) + 
       geom_ribbon(aes(ymin = opp.y, ymax = pmin(sel.y, opp.y)), fill = "#009782", alpha = 0.5) +
       geom_line(aes(y = sel.y, colour = "#009782"), size = 1.25) +
       geom_line(aes(y = opp.y, colour = "#5E1208"), size = 1.25) +
-      annotate(geom = "text", label = paste("Partial", "\n", "Average", sep = ""),
-               x = 3.5, y = min(df$sel.y, df$opp.y), size = 4.5, family = "Roboto", fontface = "bold") + 
+      # annotate(geom = "text", label = paste0("Partial", "\n", "Average"),
+      #          x = 3.5, y = min(df$sel.y, df$opp.y), size = 4.5, fontface = "bold") + 
       scale_x_continuous(
         expand = c(0,0), 
         limits = c(1, if_else(bund == TRUE, 36, 38)),
@@ -542,29 +519,28 @@ xgRollPlot <- function(df, team, comp, bund) {
       scale_color_manual(labels = c(paste("xG for ", team, sep = ""), paste("xG against ", team, sep = "")),
                          values = c("#5E1208", "#009782")) +
       
-      
       theme(
         panel.background = element_rect(fill = "white", colour = "black"),
         panel.grid = element_line(colour = colGrid),
         panel.grid.minor = element_blank(),
         
-        title = element_text(family = "Roboto", colour = "black"),
-        plot.title = element_text(face = "bold", size = 20),
+        title = element_text(colour = "black"),
+        plot.title = element_text(face = "bold", size = 20, margin = margin(6.25, 0, 3.75, 0)),
         plot.subtitle = element_text(face = "plain", size = 16, lineheight = 0.625),
         plot.caption = element_text(hjust = 0, size = 12.5, margin = margin(0,0,0,0)),
 
         axis.ticks = element_blank(),
-        axis.text = element_text(family = "Roboto", colour = "black", size = 12.5),
+        axis.text = element_text(colour = "black", size = 12.5),
+        axis.text.y = element_text(margin = margin(0, 7.5, 0, 0)),
         axis.title = element_text(face = "bold", size = 18),
         axis.title.y = element_text(margin = margin(0, 20, 0, 0)),
         axis.title.x = element_text(margin = margin(20, 0, 20, 0)),
         
-        legend.text = element_text(family = "Roboto", colour = "black", face = "bold", size = 12, margin = margin(0, 5, 0, 0)),
+        legend.text = element_text(colour = "black", face = "bold", size = 12, margin = margin(0, 10, 0, 0)),
         legend.background = element_rect(colour = "black"),
-        legend.key = element_rect(fill = colGrid),
-        legend.position = c(.925, .1375),
+        legend.key = element_rect(fill = "white"),
+        legend.position = c(.925, .15),
         # legend.spacing.x = unit(0, "mm"),
         legend.spacing.y = unit(0, "mm")
       )
-  )
 }
