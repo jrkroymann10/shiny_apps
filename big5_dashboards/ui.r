@@ -36,10 +36,17 @@ shinyUI(
                uiOutput(outputId = "md_range"),
                uiOutput(outputId = "back_color"),
                textOutput(outputId = "firstTeam"),
-               checkboxInput(
-                 inputId = "bump_rank",
-                 label = "See Weekly Ranks of Selected Team(s)",
-                 value = FALSE),
+               fluidRow(
+                 column(
+                   width = 12,
+                   align = "center",
+                   checkboxInput(
+                     inputId = "bump_rank",
+                     label = "See Weekly Ranks of Selected Team(s)",
+                     value = FALSE),
+                   style = 'padding-bottom:5px;'
+                 )
+               ),
                fluidRow(
                  column(
                    width = 6,

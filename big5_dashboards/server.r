@@ -23,8 +23,7 @@ shinyServer(function(input, output, session) {
                    multiple = FALSE,
                    options = list(
                      placeholder = 'Select a Competition',
-                     onInitialize = I('function() { this.setValue("Premier League"); }')),
-                   width = 300
+                     onInitialize = I('function() { this.setValue("Premier League"); }'))
     )
   })
   # [Bump Plot] - UI Slider (MD Range) ----
@@ -36,8 +35,7 @@ shinyServer(function(input, output, session) {
                   min = 1,
                   max = last_wk(),
                   round = TRUE,
-                  step = 1,
-                  width = 300)
+                  step = 1)
   })
   # [Bump Plot] - UI (Teams) ----
   output$teams <- renderUI({
@@ -49,8 +47,7 @@ shinyServer(function(input, output, session) {
                    options = list(
                      placeholder = 'Select Team(s) below',
                      onInitialize = I('function() { this.setValue(); }')
-                     ),
-                   width = 300)
+                     ))
   })
   # [Bump Plot] - UI (Background Color) ----
   output$back_color <- renderUI({
@@ -58,12 +55,12 @@ shinyServer(function(input, output, session) {
         "back_color",
         "Plot Background Color",
         choices = c("#D3D3D3 (Gray)",
-                    "#000000 (Black)"),
+                    "#000000 (Black)",
+                    "#FFFFFF (White)"),
         options = list(
           placeholder = 'Select a Background Color',
           onInitialize = I('function() { this.setValue("#D3D3D3 (Gray)"); }')
-        ),
-        width = 300
+        )
     )
   })
   # [Bump Plot] - Building Bump Data + Other Values Needed for Output ----
