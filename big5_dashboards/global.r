@@ -459,6 +459,11 @@ big5ToXG <- function(df, team, rollN = 6) {
     mutate(HomeAway = if_else(Home == team, "Home", "Away"),
            xgFor = if_else(Home == team, Home_xG, Away_xG),
            xgAgainst = if_else(Home == team, Away_xG, Home_xG),
+           goalsFor = if_else(Home == team, HomeGoals, AwayGoals),
+           goalsAgainst = if_else(Home == team, AwayGoals, HomeGoals),
+           outcome = if_else(goalsFor > goalsAgainst, "win",
+                             if_else(goalsFor < goalsAgainst, "loss",
+                                     "tie")),
            rollFor = round(rollmean(x = xgFor, k = rollN, na.pad = TRUE, align = "right"),2),
            rollAgainst = round(rollmean(x = xgAgainst, k = rollN, na.pad = TRUE, align = "right"),2),
            selOpp = "Selected")
@@ -489,38 +494,49 @@ tidyXGData <- function(df) {
 XGDataInterp <- function(df) {
   df %>%
     split(.$selOpp) %>%
-    map_df(~data.frame(sel = approx(.x$gameNum, .x$rollFor, n = 80),
-                       opp = approx(.x$gameNum, .x$rollAgainst, n = 80),
+    map_df(~data.frame(selRoll = approx(.x$gameNum, .x$rollFor, n = 100),
+                       oppRoll = approx(.x$gameNum, .x$rollAgainst, n = 100),
+                       selXG = approx(.x$gameNum, .x$xgFor, n = 100),
+                       oppXG = approx(.x$gameNum, .x$xgAgainst, n = 100),
                        team = .x$selOpp[1]))
 }
 
 # [XG Time] - Plot Output(s) ----
+getXGPlot <- function(viz, df_int, df, team, comp, bund) {
+  if (viz == "6 Game Rolling Average") {
+    xgRollPlot(df_int, team, comp, bund)
+  }
+  else if (viz == "Game By Game") {
+    gbgXGPlot(df, team, comp, bund)
+  }
+}
+
 xgRollPlot <- function(df, team, comp, bund) {
-  ggplot(data = df, aes(x = sel.x, y = max(sel.y, opp.y))) +
-      annotate(geom = "rect", xmin = 1.05, xmax = 6, ymin = -Inf, ymax = max(df$sel.y, df$opp.y) + 0.24,
+  ggplot(data = df, aes(x = selRoll.x, y = max(selRoll.y, oppRoll.y))) +
+      annotate(geom = "rect", xmin = 1.05, xmax = 6, ymin = min(df$selRoll.y, df$oppRoll.y) - 0.24, ymax = max(df$selRoll.y, df$oppRoll.y) + 0.24,
                fill = "#ECECEC", alpha = 0.85) +
-      geom_ribbon(aes(ymin = sel.y, ymax = pmin(sel.y, opp.y)), fill = "#5E1208", alpha = 0.5) + 
-      geom_ribbon(aes(ymin = opp.y, ymax = pmin(sel.y, opp.y)), fill = "#009782", alpha = 0.5) +
-      geom_line(aes(y = sel.y, colour = "#009782"), size = 1.5) +
-      geom_line(aes(y = opp.y, colour = "#5E1208"), size = 1.5) +
+      geom_ribbon(aes(ymin = selRoll.y, ymax = pmin(selRoll.y, oppRoll.y)), fill = "#5E1208", alpha = 0.5) + 
+      geom_ribbon(aes(ymin = oppRoll.y, ymax = pmin(selRoll.y, oppRoll.y)), fill = "#009782", alpha = 0.5) +
+      geom_line(aes(y = selRoll.y, colour = "#009782"), size = 1.5) +
+      geom_line(aes(y = oppRoll.y, colour = "#5E1208"), size = 1.5) +
       scale_x_continuous(
         expand = c(0,0), 
         limits = c(1, if_else(bund == TRUE, 36, 38)),
         breaks = seq(5, 35, by = 5)) +
       scale_y_continuous(
         expand = c(0,0),
-        limits = c((min(df$sel.y, df$opp.y) - 0.25), (max(df$sel.y, df$opp.y) + 0.25)), 
-        breaks = seq(0, (max(df$sel.y, df$opp.y) + 1), by = 0.2)) +
+        limits = c((min(df$selRoll.y, df$oppRoll.y) - 0.25), (max(df$selRoll.y, df$oppRoll.y) + 0.25)), 
+        breaks = seq(0, (max(df$selRoll.y, df$oppRoll.y) + 1), by = 0.2)) +
       
       labs(title = paste(team, "'s Underlying Expected Performance", sep = ""),
            subtitle = glue("<span>6 game rolling average of {team}'s
-                            <span style = 'color:#5E1208'>**expected goals for**</span> and 
+                            <span style = 'color:#D01317'>**expected goals for**</span> and 
                             <span style = 'color:#009782'>**expected goals against**</span>
                             in the {comp} for 2021/2022</span>"),
            caption = "Data from Statsbomb via fbref.com. This data includes penalties. The first six games shown are a partial average. Recreation of a @petermckeever viz using R by @biglake402.") +
       xlab("Matchday") + ylab("Rolling xG") +
       scale_color_manual(labels = c(paste("xG for ", team, sep = ""), paste("xG against ", team, sep = "")),
-                         values = c("#5E1208", "#009782")) +
+                         values = c("#D01317", "#009782")) +
       
       theme(
         panel.background = element_rect(fill = "white", colour = "black"),
@@ -543,4 +559,70 @@ xgRollPlot <- function(df, team, comp, bund) {
         
         legend.position = "none"
       )
+}
+gbgXGPlot <- function(df, team, comp, bund) {
+  ggplot(df, aes(gameNum, xgFor - xgAgainst)) +
+    geom_hline(aes(yintercept = 0)) +
+    # geom_line() +
+    geom_segment(aes(x = gameNum, xend = gameNum, y = 0, yend = xgFor - xgAgainst), 
+                 linetype = "dashed", size = 0.625) +
+    geom_point_interactive(aes(shape = HomeAway, fill = outcome, 
+                               tooltip = paste0(team, if_else(HomeAway == "Home", " vs. ", " at "), if_else(HomeAway == "Home", Away, Home),
+                                                "\n", "Actual (xG): ", ifelse(HomeAway == "Home", HomeGoals, AwayGoals), "(",
+                                                ifelse(HomeAway == "Home", Home_xG, Away_xG), ") - ", ifelse(HomeAway == "Home", AwayGoals, HomeGoals),
+                                                "(", ifelse(HomeAway == "Home", Away_xG, Home_xG), ")")
+                               ), 
+                           size = 4.5, stroke = 1) +
+    labs(title = paste0(team, "'s Match By Match Expected and Actual Performance"),
+         subtitle = glue("<span>Expected Goal Difference + Outcome (<span style = 'color:#D01317'>**win**</span>,
+                         <span style = 'color:#009782'>**loss**</span>,
+                         <span style = 'color:#FFEE46'>**draw**</span>)
+                         of {team}'s matches in the {comp} for 2021/2022</span>"),
+         caption = "Data from Statsbomb via fbref.com (xG includes penalites).",
+         x = "Matchday", y = "xG For - xG Against") +
+    scale_shape_manual(
+      values = c(24, 21)
+    ) +
+    scale_x_continuous(
+      limits = c(1, if_else(bund == FALSE, 38, 36)), 
+      expand = c(0,.9),
+      breaks = seq(5, 35, by = 5)
+    ) +
+    scale_y_continuous(
+      limits = c(min(df$xgFor - df$xgAgainst) - 0.25, max(df$xgFor - df$xgAgainst) + 0.25),
+      expand = c(0,0),
+      breaks = seq(-5, 5, by = 0.5)
+    ) +
+    scale_fill_manual(
+      values = c("#009782","#FFEE46","#D01317")
+    ) +
+    guides(
+      fill = "none",
+      shape = guide_legend(
+        override.aes = list(fill = "black")
+      )
+    ) +
+    theme(
+      text = element_text(family = "Roboto"),
+      
+      panel.background = element_rect(colour = "black"),
+      panel.grid.minor = element_blank(),
+      panel.ontop = FALSE,
+      
+      plot.title = element_text(face = "bold", size = 20, margin = margin(6.25, 0, 3.75, 0)),
+      plot.subtitle = element_markdown(size = 16),
+      plot.caption = element_text(hjust = 0, size = 12.5, margin = margin(0,0,0,0)),
+      
+      legend.position = c(0.9525, 1.05), 
+      legend.direction = "horizontal", 
+      legend.title = element_blank(),
+      legend.key = element_rect(fill = "white"),
+      legend.background = element_rect(colour = "black", fill = "white", linetype = "dashed"),
+      legend.text = element_text(size = 12.5),
+      
+      axis.title = element_text(face = "bold", size = 18),
+      axis.title.y = element_text(margin = margin(0, 20, 0, 0)),
+      axis.title.x = element_text(margin = margin(20, 0, 20, 0)),
+      axis.text = element_text(colour = "black", size = 12.5)
+    )
 }

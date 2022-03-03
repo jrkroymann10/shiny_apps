@@ -212,16 +212,16 @@ shinyServer(function(input, output, session) {
     big5ToXG(big5[big5$Home == input$xgTeam | big5$Away == input$xgTeam,], input$xgTeam)
   })
   
-  xgDataInterp <- reactive({
+  xgDataInt <- reactive({
     req(input$xgTeam)
     
     XGDataInterp(tidyXGData(big5ToXG(big5[big5$Home == input$xgTeam | big5$Away == input$xgTeam,], input$xgTeam)))
   })
   # [XG Time] - UI (Viz Selection) ----
   output$xgViz <- renderUI({
-    selectizeInput(inputId = "xgVix",
+    selectizeInput(inputId = "xgViz",
                    label = "Visualization",
-                   choices = c("6 Game Rolling Average"),
+                   choices = c("6 Game Rolling Average", "Game By Game"),
                    selected = "6 Game Rolling Average"
                    )
   })
@@ -248,10 +248,16 @@ shinyServer(function(input, output, session) {
     req(input$xgComp)
     
     girafe(
-      ggobj = xgRollPlot(xgDataInterp(), input$xgTeam, input$xgComp, if_else(input$xgComp == "Bundesliga", TRUE, FALSE)),
+      ggobj = getXGPlot(viz = input$xgViz, df_int = xgDataInt(), df = xgData(), team = input$xgTeam, comp = input$xgComp,
+                        bund = if_else(input$xgComp == "Bundesliga", TRUE, FALSE)),
       
       width_svg = 20,
-      height_svg = 6
+      height_svg = 6,
+      options = list(
+        opts_hover_inv(css = "opacity:0.5;"),
+        opts_hover(css = "size:2;"),
+        opts_selection(type = "none")
+      )
     )
   })
 })
