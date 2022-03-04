@@ -180,30 +180,16 @@ shinyServer(function(input, output, session) {
   output$gkZonePlot <- renderGirafe({
     req(input$gkZoneViz)
     girafe(
-      ggobj = getGkZonePlot(input$gkZoneViz, gkData()),
+      ggobj = getGkZonePlot(input$gkZoneViz, gkData(), input$gkZonePlayer),
       width_svg = 10, height_svg = 5.5,
       options = list(
-        opts_selection(selected = input$gkZonePlayer, type = "multiple",
-                       only_shiny = FALSE),
+        opts_selection(css = NULL,
+                       type = "none"),
         opts_tooltip(use_fill = TRUE),
         opts_hover_inv(css = "opacity:0.5;")
         )
       )
     })
-  # [GK Zone] - Updating GK Selection ---- 
-  # observeEvent(input$gkZonePlot_selected, {
-  #   # browser()
-  #   output$gkZonePlayer <- renderUI(
-  #     selectizeInput(
-  #       inputId = "gkZonePlayer",
-  #       label = "Goalkeeper(s)",
-  #       choices = sort(gkData()$Player),
-  #       multiple = TRUE,
-  #       selected = input$gkZonePlot_selected
-  #     )
-  #   )
-  # })
-  
   # ------------------------------------------------------------------------
   # [XG Time] - Reactive Data ----
   xgData <- reactive({
@@ -249,13 +235,14 @@ shinyServer(function(input, output, session) {
     
     girafe(
       ggobj = getXGPlot(viz = input$xgViz, df_int = xgDataInt(), df = xgData(), team = input$xgTeam, comp = input$xgComp,
-                        bund = if_else(input$xgComp == "Bundesliga", TRUE, FALSE)),
+                        bund = if_else(input$xgComp == "Bundesliga", TRUE, FALSE), 
+                        the = if_else(input$xgComp == "Bundesliga" | input$xgComp == "Premier League", TRUE, FALSE)),
       
       width_svg = 20,
       height_svg = 6,
       options = list(
-        opts_hover_inv(css = "opacity:0.5;"),
-        opts_hover(css = "size:2;"),
+        opts_hover_inv(css = "opacity:0.25;"),
+        opts_hover(css = "stroke-width:2;"),
         opts_selection(type = "none")
       )
     )

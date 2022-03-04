@@ -88,7 +88,7 @@ shinyUI(
       
       # XG Timelines Tab ----
       tabPanel(
-        "XG Timelines",
+        "xG Timelines",
         
         wellPanel(
           fluidRow(
