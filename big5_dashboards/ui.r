@@ -80,7 +80,7 @@ shinyUI(
             uiOutput(outputId = "gkZoneText"),
             width = 4
           ),
-          mainPanel(girafeOutput("gkZonePlot"),
+          mainPanel(uiOutput("gkZonePlot"),
                     width = 8
           )
         )
@@ -93,7 +93,7 @@ shinyUI(
         wellPanel(
           fluidRow(
             column(3,
-                   uiOutput(outputId = "xgViz")
+                   uiOutput(outputId = "xgViz"),
             ),
             column(2,
                    uiOutput(outputId = "xgComp")
@@ -102,11 +102,14 @@ shinyUI(
                    uiOutput(outputId = "xgTeam")
             ),
             column(2,
+                   uiOutput(outputId = "xgPalette")
+            ),
+            column(3,
                    uiOutput(outputId = "xgVizText"))
           )
         ),
         
-        girafeOutput("xgPlot"),
+        uiOutput("xgPlot"),
       )
       )
     )

@@ -1,94 +1,94 @@
-# # [Loading] - Libraries -----------------------------------------------------------------
-# library(readr)
-# library(shiny)
-# library(devtools)
-# library(tidyverse)
-# library(ggbump)
-# library(readr)
-# library(gghighlight)
-# library(ggplot2)
-# library(ggiraph)
-# library(MetBrewer)
-# library(worldfootballR)
-# library(zoo)
-# library(stringr)
-# library(DescTools)
-# library(ggtext)
-# library(glue)
-# library(showtext)
-# library(ggrepel)
-# #
-# font_add_google("Roboto Mono", "Roboto")
-# showtext_auto()
-# 
-# colGrid <- rgb(235, 235, 235, 225, maxColorValue = 255)
-# 
-# # [Loading] - Data ----
-# big5 <- data.frame(get_match_results(country = c("ENG", "ESP", "ITA", "GER", "FRA"), gender = "M", season_end_year = "2022", tier = "1st") %>%
-#                      mutate(Home = ifelse(Home == "M'Gladbach", "Gladbach",
-#                                           ifelse(Home == "Union Berlin", "Berlin",
-#                                                  ifelse(Home == "Bayern Munich", "Bayern",
-#                                                         ifelse(Home == "Greuther Fürth", "Fürth",
-#                                                                ifelse(Home == "Eint Frankfurt", "Frankfurt",
-#                                                                       ifelse(Home == "Atlético Madrid", "Atleti",
-#                                                                              ifelse(Home == "Athletic Club", "Athletic",
-#                                                                                     ifelse(Home == "Rayo Vallecano", "Rayo",
-#                                                                                            ifelse(Home == "Real Sociedad", "La Real",
-#                                                                                                   ifelse(Home == "Clermont Foot", "Clermont",
-#                                                                                                          ifelse(Home == "Saint-Étienne", "Étienne",
-#                                                                                                                 ifelse(Home == "Manchester Utd", "Man Utd",
-#                                                                                                                        ifelse(Home == "Manchester City", "Man City",
-#                                                                                                                               ifelse(Home == "Leicester City", "Leicester",
-#                                                                                                                                      ifelse(Home == "Leeds United", "Leeds",
-#                                                                                                                                             ifelse(Home == "Norwich City", "Norwich",
-#                                                                                                                                                    ifelse(Home == "Crystal Palace", "Palace",
-#                                                                                                                                                           ifelse(Home == "Newcastle Utd", "Newcastle",
-#                                                                                                                                                                  ifelse(Home == "Hellas Verona", "Verona",
-#                                                                                                                                                                         Home))))))))))))))))))),
-#                             Away = ifelse(Away == "M'Gladbach", "Gladbach",
-#                                           ifelse(Away == "Union Berlin", "Berlin",
-#                                                  ifelse(Away == "Bayern Munich", "Bayern",
-#                                                         ifelse(Away == "Greuther Fürth", "Fürth",
-#                                                                ifelse(Away == "Eint Frankfurt", "Frankfurt",
-#                                                                       ifelse(Away == "Atlético Madrid", "Atleti",
-#                                                                              ifelse(Away == "Athletic Club", "Athletic",
-#                                                                                     ifelse(Away == "Rayo Vallecano", "Rayo",
-#                                                                                            ifelse(Away == "Real Sociedad", "La Real",
-#                                                                                                   ifelse(Away == "Clermont Foot", "Clermont",
-#                                                                                                          ifelse(Away == "Saint-Étienne", "Étienne",
-#                                                                                                                 ifelse(Away == "Manchester Utd", "Man Utd",
-#                                                                                                                        ifelse(Away == "Manchester City", "Man City",
-#                                                                                                                               ifelse(Away == "Leicester City", "Leicester",
-#                                                                                                                                      ifelse(Away == "Leeds United", "Leeds",
-#                                                                                                                                             ifelse(Away == "Norwich City", "Norwich",
-#                                                                                                                                                    ifelse(Away == "Crystal Palace", "Palace",
-#                                                                                                                                                           ifelse(Away == "Newcastle Utd", "Newcastle",
-#                                                                                                                                                                  ifelse(Away == "Hellas Verona", "Verona",
-#                                                                                                                                                                         Away))))))))))))))))))),
-#                             Competition_Name = ifelse(Competition_Name != "Premier League" & Competition_Name != "La Liga" & Competition_Name != "Ligue 1" & Competition_Name != "Serie A", "Bundesliga", Competition_Name))) # weird work around for unicode reading on shiny apps
-# 
-# gkData <- fb_big5_advanced_season_stats(season_end_year = 2022,
-#                                          stat_type = "keepers",
-#                                          team_or_player = "player")
-# 
-# gkAdvData <- fb_big5_advanced_season_stats(season_end_year = 2022,
-#                                            stat_type = "keepers_adv",
-#                                            team_or_player = "player")
-# 
-# colnames(gkAdvData)[colnames(gkAdvData) == "#OPA_Sweeper"] <- "OPA_Sweeper"
-# colnames(gkAdvData)[colnames(gkAdvData) == "#OPA_per_90_Sweeper"] <- "OPA_Sweeper_per_90"
-# 
-# 
-# passingData <- fb_big5_advanced_season_stats(season_end_year = 2022,
-#                                              stat_type = "passing",
-#                                              team_or_player = "player")
-# 
-# gkDataCombined <- data.frame(merge(merge(gkData,
-#                                          gkAdvData),
-#                                    passingData))
-# 
-# colnames(gkDataCombined)[colnames(gkDataCombined) == "X_per_90_Expected"] <- "per_90"
-# colnames(gkDataCombined)[colnames(gkDataCombined) == "PSxG._per__minus__Expected"] <- "PSxG_minus_GA"
+# [Loading] - Libraries -----------------------------------------------------------------
+library(readr)
+library(shiny)
+library(devtools)
+library(tidyverse)
+library(ggbump)
+library(readr)
+library(gghighlight)
+library(ggplot2)
+library(ggiraph)
+library(MetBrewer)
+library(worldfootballR)
+library(zoo)
+library(stringr)
+library(DescTools)
+library(ggtext)
+library(glue)
+library(showtext)
+library(ggrepel)
+#
+font_add_google("Roboto Mono", "Roboto")
+showtext_auto()
+
+colGrid <- rgb(235, 235, 235, 225, maxColorValue = 255)
+
+# [Loading] - Data ----
+big5 <- data.frame(get_match_results(country = c("ENG", "ESP", "ITA", "GER", "FRA"), gender = "M", season_end_year = "2022", tier = "1st") %>%
+                     mutate(Home = ifelse(Home == "M'Gladbach", "Gladbach",
+                                          ifelse(Home == "Union Berlin", "Berlin",
+                                                 ifelse(Home == "Bayern Munich", "Bayern",
+                                                        ifelse(Home == "Greuther Fürth", "Fürth",
+                                                               ifelse(Home == "Eint Frankfurt", "Frankfurt",
+                                                                      ifelse(Home == "Atlético Madrid", "Atleti",
+                                                                             ifelse(Home == "Athletic Club", "Athletic",
+                                                                                    ifelse(Home == "Rayo Vallecano", "Rayo",
+                                                                                           ifelse(Home == "Real Sociedad", "La Real",
+                                                                                                  ifelse(Home == "Clermont Foot", "Clermont",
+                                                                                                         ifelse(Home == "Saint-Étienne", "Étienne",
+                                                                                                                ifelse(Home == "Manchester Utd", "Man Utd",
+                                                                                                                       ifelse(Home == "Manchester City", "Man City",
+                                                                                                                              ifelse(Home == "Leicester City", "Leicester",
+                                                                                                                                     ifelse(Home == "Leeds United", "Leeds",
+                                                                                                                                            ifelse(Home == "Norwich City", "Norwich",
+                                                                                                                                                   ifelse(Home == "Crystal Palace", "Palace",
+                                                                                                                                                          ifelse(Home == "Newcastle Utd", "Newcastle",
+                                                                                                                                                                 ifelse(Home == "Hellas Verona", "Verona",
+                                                                                                                                                                        Home))))))))))))))))))),
+                            Away = ifelse(Away == "M'Gladbach", "Gladbach",
+                                          ifelse(Away == "Union Berlin", "Berlin",
+                                                 ifelse(Away == "Bayern Munich", "Bayern",
+                                                        ifelse(Away == "Greuther Fürth", "Fürth",
+                                                               ifelse(Away == "Eint Frankfurt", "Frankfurt",
+                                                                      ifelse(Away == "Atlético Madrid", "Atleti",
+                                                                             ifelse(Away == "Athletic Club", "Athletic",
+                                                                                    ifelse(Away == "Rayo Vallecano", "Rayo",
+                                                                                           ifelse(Away == "Real Sociedad", "La Real",
+                                                                                                  ifelse(Away == "Clermont Foot", "Clermont",
+                                                                                                         ifelse(Away == "Saint-Étienne", "Étienne",
+                                                                                                                ifelse(Away == "Manchester Utd", "Man Utd",
+                                                                                                                       ifelse(Away == "Manchester City", "Man City",
+                                                                                                                              ifelse(Away == "Leicester City", "Leicester",
+                                                                                                                                     ifelse(Away == "Leeds United", "Leeds",
+                                                                                                                                            ifelse(Away == "Norwich City", "Norwich",
+                                                                                                                                                   ifelse(Away == "Crystal Palace", "Palace",
+                                                                                                                                                          ifelse(Away == "Newcastle Utd", "Newcastle",
+                                                                                                                                                                 ifelse(Away == "Hellas Verona", "Verona",
+                                                                                                                                                                        Away))))))))))))))))))),
+                            Competition_Name = ifelse(Competition_Name != "Premier League" & Competition_Name != "La Liga" & Competition_Name != "Ligue 1" & Competition_Name != "Serie A", "Bundesliga", Competition_Name))) # weird work around for unicode reading on shiny apps
+
+gkData <- fb_big5_advanced_season_stats(season_end_year = 2022,
+                                         stat_type = "keepers",
+                                         team_or_player = "player")
+
+gkAdvData <- fb_big5_advanced_season_stats(season_end_year = 2022,
+                                           stat_type = "keepers_adv",
+                                           team_or_player = "player")
+
+colnames(gkAdvData)[colnames(gkAdvData) == "#OPA_Sweeper"] <- "OPA_Sweeper"
+colnames(gkAdvData)[colnames(gkAdvData) == "#OPA_per_90_Sweeper"] <- "OPA_Sweeper_per_90"
+
+
+passingData <- fb_big5_advanced_season_stats(season_end_year = 2022,
+                                             stat_type = "passing",
+                                             team_or_player = "player")
+
+gkDataCombined <- data.frame(merge(merge(gkData,
+                                         gkAdvData),
+                                   passingData))
+
+colnames(gkDataCombined)[colnames(gkDataCombined) == "X_per_90_Expected"] <- "per_90"
+colnames(gkDataCombined)[colnames(gkDataCombined) == "PSxG._per__minus__Expected"] <- "PSxG_minus_GA"
 # ---------------------------------------------------------------------------------------------------
 # [Bump Plot] - Team Hex Codes ----
 bund_hex <- c("#005CA9", "#DE023F", "#005CA9", "#E1000F", "#46714d", "#009932",
@@ -515,16 +515,16 @@ XGDataInterp <- function(df) {
 }
 
 # [XG Time] - Plot Output(s) ----
-getXGPlot <- function(viz, df_int, df, team, comp, bund, the) {
+getXGPlot <- function(viz, df_int, df, team, comp, bund, the, pal) {
   if (viz == "6 Game Rolling Average") {
-    xgRollPlot(df_int, team, comp, bund, the)
+    xgRollPlot(df_int, team, comp, bund, the, pal)
   }
   else if (viz == "Game By Game") {
-    gbgXGPlot(df, team, comp, bund, the)
+    gbgXGPlot(df, team, comp, bund, the, pal)
   }
 }
 
-xgRollPlot <- function(df, team, comp, bund, the) {
+xgRollPlot <- function(df, team, comp, bund, the, pal) {
   if (the == TRUE) {
     phrase = "in the"
   }
@@ -533,12 +533,10 @@ xgRollPlot <- function(df, team, comp, bund, the) {
   }
   
   ggplot(data = df, aes(x = selRoll.x, y = max(selRoll.y, oppRoll.y))) +
-      annotate(geom = "rect", xmin = 1.05, xmax = 6, ymin = min(df$selRoll.y, df$oppRoll.y) - 0.24, ymax = max(df$selRoll.y, df$oppRoll.y) + 0.24,
-               fill = "#ECECEC", alpha = 0.85) +
-      geom_ribbon(aes(ymin = selRoll.y, ymax = pmin(selRoll.y, oppRoll.y)), fill = "#5E1208", alpha = 0.5) + 
-      geom_ribbon(aes(ymin = oppRoll.y, ymax = pmin(selRoll.y, oppRoll.y)), fill = "#009782", alpha = 0.5) +
-      geom_line(aes(y = selRoll.y, colour = "#009782"), size = 1.5) +
-      geom_line(aes(y = oppRoll.y, colour = "#5E1208"), size = 1.5) +
+      geom_ribbon(aes(ymin = selRoll.y, ymax = pmin(selRoll.y, oppRoll.y)), fill = pal[1], alpha = 0.5) + 
+      geom_ribbon(aes(ymin = oppRoll.y, ymax = pmin(selRoll.y, oppRoll.y)), fill = pal[2], alpha = 0.5) +
+      geom_line(aes(y = selRoll.y), colour = pal[1], size = 1.5) +
+      geom_line(aes(y = oppRoll.y), colour = pal[2], size = 1.5) +
       scale_x_continuous(
         expand = c(0,0), 
         limits = c(1, if_else(bund == TRUE, 36, 38)),
@@ -550,15 +548,12 @@ xgRollPlot <- function(df, team, comp, bund, the) {
       
       labs(title = paste(team, "'s Underlying Expected Performance", sep = ""),
            subtitle = glue("<span>6 game rolling average of {team}'s
-                            <span style = 'color:#D01317'>**expected goals for**</span> and 
-                            <span style = 'color:#009782'>**expected goals against**</span>
+                            <span style = 'color:{pal[1]}'>**expected goals for**</span> and 
+                            <span style = 'color:{pal[2]}'>**expected goals against**</span>
                             {phrase} {comp} for 2021/2022</span>"),
            caption = "Data from Statsbomb via fbref.com. This data includes penalties. The first six games shown are a partial average. Recreation of a @petermckeever viz using R by @biglake402.") +
       xlab("Matchday") + ylab("Rolling xG") +
-      scale_color_manual(labels = c(paste("xG for ", team, sep = ""), paste("xG against ", team, sep = "")),
-                         values = c("#D01317", "#009782")) +
-      
-      theme(
+    theme(
         panel.background = element_rect(fill = "white", colour = "black"),
         panel.grid = element_line(colour = colGrid),
         panel.grid.minor = element_blank(),
@@ -580,7 +575,7 @@ xgRollPlot <- function(df, team, comp, bund, the) {
         legend.position = "none"
       )
 }
-gbgXGPlot <- function(df, team, comp, bund, the) {
+gbgXGPlot <- function(df, team, comp, bund, the, pal) {
   if (the == TRUE) {
     phrase = "in the"
   }
@@ -602,11 +597,11 @@ gbgXGPlot <- function(df, team, comp, bund, the) {
                                                 ifelse(HomeAway == "Home", Home_xG, Away_xG), ") - ", ifelse(HomeAway == "Home", AwayGoals, HomeGoals),
                                                 "(", ifelse(HomeAway == "Home", Away_xG, Home_xG), ")")
                                ), 
-                           size = 4.5, stroke = 1) +
+                           size = 5, stroke = 1) +
     labs(title = paste0(team, "'s Match By Match Expected and Actual Performance"),
-         subtitle = glue("<span>Expected Goal Difference + Outcome (<span style = 'color:#D01317'>**win**</span>,
-                         <span style = 'color:#009782'>**loss**</span>,
-                         <span style = 'color:#FFEE46'>**draw**</span>)
+         subtitle = glue("<span>Expected Goal Difference + Outcome (<span style = 'color:{pal[1]}'>**win**</span>,
+                         <span style = 'color:{pal[2]}'>**loss**</span>,
+                         <span style = 'color:{pal[3]}'>**draw**</span>)
                          of {team}'s matches {phrase} {comp} for 2021/2022</span>"),
          caption = "Data from Statsbomb via fbref.com (xG includes penalites)",
          x = "Matchday", y = "xG For - xG Against") +
@@ -619,12 +614,12 @@ gbgXGPlot <- function(df, team, comp, bund, the) {
       breaks = seq(5, 35, by = 5)
     ) +
     scale_y_continuous(
-      limits = c(min(df$xgFor - df$xgAgainst) - 0.5, max(df$xgFor - df$xgAgainst) + 0.5),
+      limits = c(-max(abs(min(df$xgFor - df$xgAgainst)), max(df$xgFor - df$xgAgainst)) - 0.5, max(abs(min(df$xgFor - df$xgAgainst)), max(df$xgFor - df$xgAgainst)) + 0.5),
       expand = c(0,0),
       breaks = seq(-5, 5, by = 0.5)
     ) +
     scale_fill_manual(
-      values = c("#009782","#FFEE46","#D01317")
+      values = c(pal[2],pal[3],pal[1])
     ) +
     guides(
       fill = "none",
@@ -655,4 +650,16 @@ gbgXGPlot <- function(df, team, comp, bund, the) {
       axis.title.x = element_text(margin = margin(20, 0, 20, 0)),
       axis.text = element_text(colour = "black", size = 12.5)
     )
+}
+# [XG Time] - Palettes
+getXGPalette <- function(input) {
+  if (input == "Liverpool") {
+    c("#D01317", "#009782", "#FFEE46") # lava, paolo veronese green, lemon yellow
+  }
+  else if (input == "Venezia") {
+    c("#D8703D", "#3C6131", "#94CFDF")
+  }
+  else if (input == "Real Betis") {
+    c("#0BB363", "#E7A614", "#D62550")
+  }
 }

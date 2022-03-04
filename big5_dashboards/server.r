@@ -177,19 +177,26 @@ shinyServer(function(input, output, session) {
     getGkZoneText(input$gkZoneViz)
   )
   # [GK Zone] - Plot Output ---- 
-  output$gkZonePlot <- renderGirafe({
-    req(input$gkZoneViz)
-    girafe(
-      ggobj = getGkZonePlot(input$gkZoneViz, gkData(), input$gkZonePlayer),
-      width_svg = 10, height_svg = 5.5,
-      options = list(
-        opts_selection(css = NULL,
-                       type = "none"),
-        opts_tooltip(use_fill = TRUE),
-        opts_hover_inv(css = "opacity:0.5;")
+  output$gkZonePlot <- renderUI({
+    if (input$gkZoneViz == "") {
+      tags$img(src = "kepaPkMiss.jpeg", height = 500, width = 1000)
+    }
+    else {
+      renderGirafe({
+        req(input$gkZoneViz)
+        girafe(
+          ggobj = getGkZonePlot(input$gkZoneViz, gkData(), input$gkZonePlayer),
+          width_svg = 10, height_svg = 5.5,
+          options = list(
+            opts_selection(css = NULL,
+                           type = "none"),
+            opts_tooltip(use_fill = TRUE),
+            opts_hover_inv(css = "opacity:0.5;")
+          )
         )
-      )
-    })
+      })
+    }
+  })
   # ------------------------------------------------------------------------
   # [XG Time] - Reactive Data ----
   xgData <- reactive({
@@ -227,24 +234,34 @@ shinyServer(function(input, output, session) {
                    choices = sort(unique(big5[big5$Competition_Name == input$xgComp,]$Home)),
                    selected = "Liverpool")
   })
+  # [XG Time] - UI (Palette Selection) ----
+  output$xgPalette <- renderUI({
+    selectizeInput(inputId = "xgPalette",
+                   label = "Palette",
+                   choices = sort(c("Liverpool", "Venezia", "Real Betis")),
+                   selected = "Liverpool")
+  })
   # [XG Time] - UI (Text Output) ----
   # [XG Time] - Plot Output ----
-  output$xgPlot <- renderGirafe({
-    req(input$xgTeam)
-    req(input$xgComp)
-    
-    girafe(
-      ggobj = getXGPlot(viz = input$xgViz, df_int = xgDataInt(), df = xgData(), team = input$xgTeam, comp = input$xgComp,
-                        bund = if_else(input$xgComp == "Bundesliga", TRUE, FALSE), 
-                        the = if_else(input$xgComp == "Bundesliga" | input$xgComp == "Premier League", TRUE, FALSE)),
+  output$xgPlot <- renderUI(
+    renderGirafe({
+      req(input$xgTeam)
+      req(input$xgComp)
       
-      width_svg = 20,
-      height_svg = 6,
-      options = list(
-        opts_hover_inv(css = "opacity:0.25;"),
-        opts_hover(css = "stroke-width:2;"),
-        opts_selection(type = "none")
+      girafe(
+        ggobj = getXGPlot(viz = input$xgViz, df_int = xgDataInt(), df = xgData(), team = input$xgTeam, comp = input$xgComp,
+                          bund = if_else(input$xgComp == "Bundesliga", TRUE, FALSE), 
+                          the = if_else(input$xgComp == "Bundesliga" | input$xgComp == "Premier League", TRUE, FALSE),
+                          getXGPalette(input$xgPalette)),
+        
+        width_svg = 20,
+        height_svg = 6,
+        options = list(
+          opts_hover_inv(css = "opacity:0.25;"),
+          opts_hover(css = "stroke-width:2;"),
+          opts_selection(type = "none")
+        )
       )
+    })
     )
-  })
 })
