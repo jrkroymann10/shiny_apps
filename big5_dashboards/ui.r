@@ -69,7 +69,7 @@ shinyUI(
       tabPanel(
         "GK Zone",
 
-        titlePanel("Pick the Visualization you'd like to view (Or the one the makes you feel best about your team's keeper)"),
+        titlePanel(uiOutput(outputId = "gkZoneTitleText")),
         br(),
         sidebarLayout(
           sidebarPanel(
@@ -92,7 +92,7 @@ shinyUI(
         
         wellPanel(
           fluidRow(
-            column(3,
+            column(2,
                    uiOutput(outputId = "xgViz"),
             ),
             column(2,

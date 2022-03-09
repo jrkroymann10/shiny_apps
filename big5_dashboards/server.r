@@ -138,11 +138,21 @@ shinyServer(function(input, output, session) {
   selected_gk <- reactive({
     input$gkZonePlot_selected
   })
+  # {GK Zone] - UI Title Text
+  output$gkZoneTitleText <- renderUI({
+    # req(input$gkZoneViz)
+    if (input$gkZoneViz == "") {
+      h1("Select A Vizualization To Begin Your Investigation!", align = "center")
+    }
+    else {
+      h5("Hover over plot points to discover who they represent, and utilize the Competition(s) and Goalkeeper(s) selections to redefine and track keepers across the plots", align = "center")
+    }
+  })
   # [GK Zone] - UI (Viz Selection) ----
   output$gkZoneViz <- renderUI({
     selectizeInput(inputId = "gkZoneViz",
                    label = "Visualizations",
-                   choices = c("Who's Beating the Model?", "Getting Out of the Box"),
+                   choices = c("Who's Beating the Model?", "Getting Out of the Box", "Distribution Drop-off"),
                    options = list(
                      placeholder = 'Select a Narrative to Investigate',
                      onInitialize = I('function() { this.setValue(); }'))
@@ -214,7 +224,7 @@ shinyServer(function(input, output, session) {
   output$xgViz <- renderUI({
     selectizeInput(inputId = "xgViz",
                    label = "Visualization",
-                   choices = c("6 Game Rolling Average", "Game By Game"),
+                   choices = c("6 Game Rolling Avg", "Game By Game"),
                    selected = "6 Game Rolling Average"
                    )
   })
