@@ -138,9 +138,12 @@ shinyServer(function(input, output, session) {
   selected_gk <- reactive({
     input$gkZonePlot_selected
   })
-  # {GK Zone] - UI Title Text
+  # {GK Zone] - UI Title Text ----
   output$gkZoneTitleText <- renderUI({
-    # req(input$gkZoneViz)
+    validate(
+      need(!is.na(input$gkZoneViz), "")
+    )
+    
     if (input$gkZoneViz == "") {
       h1("Select A Vizualization To Begin Your Investigation!", align = "center")
     }
@@ -177,7 +180,8 @@ shinyServer(function(input, output, session) {
       multiple = TRUE,
       options = list(
         placeholder = 'Select Goalkeeper(s) to Track Across Plots',
-        onInitialize = I('function() { this.setValue(); }')
+        onInitialize = I('function() { this.setValue(); }'),
+        maxItems = 10
       )
     )
   })
@@ -188,6 +192,10 @@ shinyServer(function(input, output, session) {
   )
   # [GK Zone] - Plot Output ---- 
   output$gkZonePlot <- renderUI({
+    validate(
+      need(!is.na(input$gkZoneViz), "")
+    )
+    
     if (input$gkZoneViz == "") {
       tags$img(src = "kepaPkMiss.jpeg", height = 500, width = 1000)
     }
