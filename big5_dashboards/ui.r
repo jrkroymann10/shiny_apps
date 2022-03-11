@@ -21,7 +21,9 @@ shinyUI(
       navbarMenu(
          "League Table",
          tabPanel(
-           "Standard Table"
+           "Standard Table",
+           
+           reactableOutput(outputId = "standTable")
          ),
          tabPanel(
            "Interactive Bump Plot",

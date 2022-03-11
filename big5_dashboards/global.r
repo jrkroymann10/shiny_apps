@@ -67,6 +67,13 @@
 #                                                                                                                                                                         Away))))))))))))))))))),
 #                             Competition_Name = ifelse(Competition_Name != "Premier League" & Competition_Name != "La Liga" & Competition_Name != "Ligue 1" & Competition_Name != "Serie A", "Bundesliga", Competition_Name))) # weird work around for unicode reading on shiny apps
 # 
+# big5_table <- get_season_team_stats(country = c("ENG", "ESP", "ITA", "GER", "FRA"), gender = "M", season_end_year = "2022",
+#                                     tier = "1st", stat_type = "league_table") %>%
+#   mutate(Competition_Name = ifelse(Competition_Name != "Premier League" & Competition_Name != "La Liga" & 
+#                                      Competition_Name != "Ligue 1" & Competition_Name != "Serie A",
+#                                    "Bundesliga", Competition_Name),
+#          Last.5 = trimws(Last.5))
+# 
 # gkData <- fb_big5_advanced_season_stats(season_end_year = 2022,
 #                                          stat_type = "keepers",
 #                                          team_or_player = "player")
@@ -90,6 +97,47 @@
 # colnames(gkDataCombined)[colnames(gkDataCombined) == "X_per_90_Expected"] <- "per_90"
 # colnames(gkDataCombined)[colnames(gkDataCombined) == "PSxG._per__minus__Expected"] <- "PSxG_minus_GA"
 # ---------------------------------------------------------------------------------------------------
+# [Table] - Table Theme ----
+standTheme <- reactableTheme(
+  backgroundColor = "black",
+  color = "white"
+)
+# [Table] - Table Output ----
+standTable <- reactable(
+  big5_table %>%
+    # filter(Competition_Name == "Serie A") %>%
+    select(Rk, Squad, MP, W, D, L, GF, GA, GD, Pts, Last.5),
+  
+  defaultSorted = "Rk",
+  
+  defaultColDef = colDef(
+    width = 50, 
+    align = "center",
+    
+    # vAlign = "center" - hopefully will be in next version of package
+  ),
+  
+  columns = list(
+    Squad = colDef(name = "Club", width = 250, align = "left", 
+                   style = list(borderRight = "1px solid rgba(255, 255, 255, 1)"),
+                   cell = function(value) {
+                     imgSrc <- sprintf("%s_fuzz2.png", value)
+                     image <- img(src = imgSrc, height = "35px", width = "35px", alt = value)
+                     tagList(
+                       div(style = list(display = "inline-block", width = "45px"), image),
+                       value
+                     )
+                   }),
+    Rk = colDef(name = "", width = 45, align = "center"),
+    Last.5 = colDef(name = "Form", width = 125, align = "center",
+                    style = list(borderLeft = "1px solid rgba(255, 255, 255, 1)",
+                                 borderRight = "1px solid rgba(255, 255, 255, 1)"))
+  ),
+  
+  pagination = FALSE,
+  bordered = FALSE,
+  theme = standTheme
+  )
 # [Bump Plot] - Team Hex Codes ----
 bund_hex <- c("#005CA9", "#DE023F", "#005CA9", "#E1000F", "#46714d", "#009932",
               "#FFFFFF", "#DC052D", "#FDDC02", "#E32221", "#004E95", "#000000",

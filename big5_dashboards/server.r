@@ -1,6 +1,10 @@
 # shinyServer ----
 # ----
 shinyServer(function(input, output, session) {
+  # [Table] - Plot Output ----
+  output$standTable <- renderReactable({
+    standTable
+  })
   # [Bump Plot] - Reactive Data ----
   matches <- reactive({
     req(input$competition)
