@@ -1,4 +1,5 @@
 # # [Loading] - Libraries -----------------------------------------------------------------
+# library(shinyWidgets)
 # library(readr)
 # library(shiny)
 # library(devtools)
@@ -17,7 +18,9 @@
 # library(glue)
 # library(showtext)
 # library(ggrepel)
-# #
+# library(reactable)
+# library(reactablefmtr)
+# 
 # font_add_google("Roboto Mono", "Roboto")
 # showtext_auto()
 # 
@@ -69,7 +72,7 @@
 # 
 # big5_table <- get_season_team_stats(country = c("ENG", "ESP", "ITA", "GER", "FRA"), gender = "M", season_end_year = "2022",
 #                                     tier = "1st", stat_type = "league_table") %>%
-#   mutate(Competition_Name = ifelse(Competition_Name != "Premier League" & Competition_Name != "La Liga" & 
+#   mutate(Competition_Name = ifelse(Competition_Name != "Premier League" & Competition_Name != "La Liga" &
 #                                      Competition_Name != "Ligue 1" & Competition_Name != "Serie A",
 #                                    "Bundesliga", Competition_Name),
 #          Last.5 = trimws(Last.5))
@@ -97,47 +100,102 @@
 # colnames(gkDataCombined)[colnames(gkDataCombined) == "X_per_90_Expected"] <- "per_90"
 # colnames(gkDataCombined)[colnames(gkDataCombined) == "PSxG._per__minus__Expected"] <- "PSxG_minus_GA"
 # ---------------------------------------------------------------------------------------------------
+# [Table] - Image Helper (unicode workaround) ----
+value_helper <- function(value) {
+  if (value == "Alavés") {
+    return("Alaves")
+  }
+  else if (value == "Atlético Madrid") {
+    return("Athletico Madrid")
+  }
+  else if (value == "Cádiz") {
+    return("Cadiz")
+  }
+  else if (value == "Greuther Fürth") {
+    return("Greuther Furth")
+  }
+  else if (value == "Köln") {
+    return("Koln")
+  }
+  else if (value == "Saint-Étienne") {
+    return("Saint-Etienne")
+  }
+  else {
+    return(value)
+  }
+}
 # [Table] - Table Theme ----
 standTheme <- reactableTheme(
-  backgroundColor = "black",
-  color = "white"
+  backgroundColor = "#202124",
+  color = "white",
+  style = list(fontSize = 16),
+  cellStyle = list(display = "flex", flexDirection = "column", justifyContent = "center")
 )
 # [Table] - Table Output ----
-standTable <- reactable(
-  big5_table %>%
-    # filter(Competition_Name == "Serie A") %>%
-    select(Rk, Squad, MP, W, D, L, GF, GA, GD, Pts, Last.5),
-  
-  defaultSorted = "Rk",
-  
-  defaultColDef = colDef(
-    width = 50, 
-    align = "center",
+redgreen_pal <- function(x) rgb(colorRamp(c("#ea4335", "#3aa757"))(x), maxColorValue = 255)
+
+form_unicode <- function(val) {
+  if (val == "W") {
+    return("\uD83D\uDFE2")
+  } else if (val == "L") {
+    return("\uD83D\uDD34") 
+  } else {
+    return("\u25EF")
+  }
+}
+standTable <- function(data) {
+  reactable(
+    data %>%
+      mutate(squad_copy = Squad) %>%
+      select(Rk, Squad, squad_copy, MP, W, D, L, GF, GA, GD, Pts, Last.5),
     
-    # vAlign = "center" - hopefully will be in next version of package
-  ),
-  
-  columns = list(
-    Squad = colDef(name = "Club", width = 250, align = "left", 
-                   style = list(borderRight = "1px solid rgba(255, 255, 255, 1)"),
-                   cell = function(value) {
-                     imgSrc <- sprintf("%s_fuzz2.png", value)
-                     image <- img(src = imgSrc, height = "35px", width = "35px", alt = value)
-                     tagList(
-                       div(style = list(display = "inline-block", width = "45px"), image),
-                       value
-                     )
-                   }),
-    Rk = colDef(name = "", width = 45, align = "center"),
-    Last.5 = colDef(name = "Form", width = 125, align = "center",
-                    style = list(borderLeft = "1px solid rgba(255, 255, 255, 1)",
-                                 borderRight = "1px solid rgba(255, 255, 255, 1)"))
-  ),
-  
-  pagination = FALSE,
-  bordered = FALSE,
-  theme = standTheme
-  )
+    defaultSorted = "Rk",
+    
+    defaultColDef = colDef(
+      width = 50, 
+      align = "center",
+      
+      # vAlign = "center" - hopefully will be in next version of package
+    ),
+    
+    columns = list(
+      Squad = colDef(name = "", width = 52.5, align = "left", 
+                     cell = function(value) {
+                       val_mod <- value_helper(value)
+                       imgSrc <- sprintf("%s.png", val_mod)
+                       image <- img(src = imgSrc, height = "32px", width = "32px", alt = value)
+                       tagList(
+                         div(style = list(display = "inline-block", width = "45px"), image)
+                       )
+                     }),
+      squad_copy = colDef(name = "Club", width = 197.5, align = "left",
+                          style = list(borderRight = "1px solid rgba(255, 255, 255, 1)"),),
+      Rk = colDef(name = "RK", width = 50, align = "center"),
+      Last.5 = colDef(name = "Form", width = 175, align = "center", sortable = FALSE,
+                      style = list(borderLeft = "1px solid rgba(255, 255, 255, 1)"),
+                      cell = function(value) {
+                        paste(form_unicode(substr(value, 1, 1)), form_unicode(substr(value, 3, 3)), form_unicode(substr(value, 5, 5)), form_unicode(substr(value, 7, 7)), form_unicode(substr(value, 9, 9)))
+                      }),
+      Pts = colDef(width = 60),
+
+      GD = colDef(style = function(value) {
+        normalized = ((value + (abs(min(data$GD)))) - (min(data$GD) + (abs(min(data$GD))))) / (((max(data$GD)) + abs(min(data$GD))) - ((min(data$GD)) + abs(min(data$GD))))
+        color <- redgreen_pal(normalized)
+        list(background = color)
+      })
+    ),
+    
+    outlined = TRUE,
+    highlight = TRUE,
+    pagination = FALSE,
+    bordered = FALSE,
+    theme = standTheme
+    )
+}
+
+min_max_norm <- function(value, x) {
+  (value - min(x)) / (max(x) - min(x))
+}
 # [Bump Plot] - Team Hex Codes ----
 bund_hex <- c("#005CA9", "#DE023F", "#005CA9", "#E1000F", "#46714d", "#009932",
               "#FFFFFF", "#DC052D", "#FDDC02", "#E32221", "#004E95", "#000000",
@@ -292,7 +350,7 @@ getBumpPlot <- function(df, md_start, md_end, teams, sel_teams, league_palette, 
                   label_params = list(colour = "black", size = 10),
                   unhighlighted_params = list(alpha = 0.25)) +
       scale_y_reverse() +
-      scale_x_continuous(limits = c(md_start - 1.5, md_end + 1.5)) +
+      scale_x_continuous(limits = c(md_start - 1.75, md_end + 1.75)) +
       theme(
         legend.position = "none",
         
@@ -323,7 +381,7 @@ getBumpPlot <- function(df, md_start, md_end, teams, sel_teams, league_palette, 
         values = league_palette
       ) +
       scale_y_reverse() +
-      scale_x_continuous(limits = c(md_start - 1.5, md_end + 1.5), expand = c(0.01, 1)) +
+      scale_x_continuous(limits = c(md_start - 1.75, md_end + 1.75), expand = c(0.01, 1)) +
       theme(
         legend.position = "none",
         

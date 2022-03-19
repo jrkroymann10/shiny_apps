@@ -1,11 +1,31 @@
 # shinyServer ----
 # ----
-shinyServer(function(input, output, session) {
+function(input, output, session) {
+  # [Message Handler] - Background Color of Tab Panels ----
+  observeEvent(input$navbarID, {
+    if (input$navbarID == "Standard Table") {
+      session$sendCustomMessage("background-color", "#303134")
+    }
+    else {
+      session$sendCustomMessage("background-color", "white")
+    }
+  })
   # [Table] - Plot Output ----
   output$standTable <- renderReactable({
-    standTable
+    req(input$standTableComp)
+    standTable(table_data() %>% filter(Competition_Name == input$standTableComp))
   })
-  # [Bump Plot] - Reactive Data ----
+  # [Table] - UI (Competition) ----
+  output$standTableComp <- renderUI({
+    selectizeInput(inputId = "standTableComp",
+                   label = "Competition",
+                   choices = sort(unique(big5_table$Competition_Name)),
+                   selected = "Premier League")
+  })
+  # [Table + Bump Plot] - Reactive Data ----
+  table_data <- reactive({
+    big5_table
+  })
   matches <- reactive({
     req(input$competition)
     big5 %>% dplyr::filter(Competition_Name == input$competition) %>%
@@ -32,12 +52,14 @@ shinyServer(function(input, output, session) {
   })
   # [Bump Plot] - UI Slider (MD Range) ----
   output$md_range <- renderUI({
-    # req(input$competition)
+    req(input$competition)
     sliderInput(inputId = "md_range",
                   label = "Matchday Range",
                   value = c(1, last_wk()),
                   min = 1,
-                  max = last_wk(),
+                  max = max(table_data() %>% 
+                              filter(Competition_Name == input$competition) %>%
+                              pull(MP)),
                   round = TRUE,
                   step = 1)
   })
@@ -80,9 +102,9 @@ shinyServer(function(input, output, session) {
   
   df <- reactive(bump_data() %>% filter(Matchday >= input$md_range[1] & Matchday <= input$md_range[2]))
   
-  # output$firstTeam <- renderText({
-  #   input$md_range[2]
-  # })
+  output$firstTeam <- renderText({
+    input$navbarID
+  })
 
   # [Bump Plot] - Plot Output ----
   output$bumpPlot <- renderGirafe({
@@ -286,4 +308,4 @@ shinyServer(function(input, output, session) {
       )
     })
     )
-})
+}
