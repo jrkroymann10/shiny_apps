@@ -18,7 +18,7 @@ function(input, output, session) {
   # [Table] - UI (Competition) ----
   output$standTableComp <- renderUI({
     selectizeInput(inputId = "standTableComp",
-                   label = "Competition",
+                   label = HTML("<p style = 'color: white'>Competition</p>"),
                    choices = sort(unique(big5_table$Competition_Name)),
                    selected = "Premier League")
   })
@@ -174,7 +174,7 @@ function(input, output, session) {
       h1("Select A Vizualization To Begin Your Investigation!", align = "center")
     }
     else {
-      h5("Hover over plot points to discover who they represent, and utilize the Competition(s) and Goalkeeper(s) selections to redefine and track keepers across the plots", align = "center")
+      h5("Hover over plot points to discover who they represent, and utilize the Competition(s) and Goalkeeper(s) selections to redefine plots and track keepers across them!", align = "center")
     }
   })
   # [GK Zone] - UI (Viz Selection) ----
@@ -213,9 +213,9 @@ function(input, output, session) {
   })
  
   # [GK Zone] - UI (Text Output) ----
-  output$gkZoneText <- renderText(
+  output$gkZoneText <- renderText({
     getGkZoneText(input$gkZoneViz)
-  )
+  })
   # [GK Zone] - Plot Output ---- 
   output$gkZonePlot <- renderUI({
     validate(

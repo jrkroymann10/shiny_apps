@@ -1,104 +1,35 @@
-# # [Loading] - Libraries -----------------------------------------------------------------
-# library(shinyWidgets)
-# library(readr)
-# library(shiny)
-# library(devtools)
-# library(tidyverse)
-# library(ggbump)
-# library(readr)
-# library(gghighlight)
-# library(ggplot2)
-# library(ggiraph)
-# library(MetBrewer)
-# library(worldfootballR)
-# library(zoo)
-# library(stringr)
-# library(DescTools)
-# library(ggtext)
-# library(glue)
-# library(showtext)
-# library(ggrepel)
-# library(reactable)
-# library(reactablefmtr)
-# 
-# font_add_google("Roboto Mono", "Roboto")
-# showtext_auto()
-# 
-# colGrid <- rgb(235, 235, 235, 225, maxColorValue = 255)
-# 
-# # [Loading] - Data ----
-# big5 <- data.frame(get_match_results(country = c("ENG", "ESP", "ITA", "GER", "FRA"), gender = "M", season_end_year = "2022", tier = "1st") %>%
-#                      mutate(Home = ifelse(Home == "M'Gladbach", "Gladbach",
-#                                           ifelse(Home == "Union Berlin", "Berlin",
-#                                                  ifelse(Home == "Bayern Munich", "Bayern",
-#                                                         ifelse(Home == "Greuther Fürth", "Fürth",
-#                                                                ifelse(Home == "Eint Frankfurt", "Frankfurt",
-#                                                                       ifelse(Home == "Atlético Madrid", "Atleti",
-#                                                                              ifelse(Home == "Athletic Club", "Athletic",
-#                                                                                     ifelse(Home == "Rayo Vallecano", "Rayo",
-#                                                                                            ifelse(Home == "Real Sociedad", "La Real",
-#                                                                                                   ifelse(Home == "Clermont Foot", "Clermont",
-#                                                                                                          ifelse(Home == "Saint-Étienne", "Étienne",
-#                                                                                                                 ifelse(Home == "Manchester Utd", "Man Utd",
-#                                                                                                                        ifelse(Home == "Manchester City", "Man City",
-#                                                                                                                               ifelse(Home == "Leicester City", "Leicester",
-#                                                                                                                                      ifelse(Home == "Leeds United", "Leeds",
-#                                                                                                                                             ifelse(Home == "Norwich City", "Norwich",
-#                                                                                                                                                    ifelse(Home == "Crystal Palace", "Palace",
-#                                                                                                                                                           ifelse(Home == "Newcastle Utd", "Newcastle",
-#                                                                                                                                                                  ifelse(Home == "Hellas Verona", "Verona",
-#                                                                                                                                                                         Home))))))))))))))))))),
-#                             Away = ifelse(Away == "M'Gladbach", "Gladbach",
-#                                           ifelse(Away == "Union Berlin", "Berlin",
-#                                                  ifelse(Away == "Bayern Munich", "Bayern",
-#                                                         ifelse(Away == "Greuther Fürth", "Fürth",
-#                                                                ifelse(Away == "Eint Frankfurt", "Frankfurt",
-#                                                                       ifelse(Away == "Atlético Madrid", "Atleti",
-#                                                                              ifelse(Away == "Athletic Club", "Athletic",
-#                                                                                     ifelse(Away == "Rayo Vallecano", "Rayo",
-#                                                                                            ifelse(Away == "Real Sociedad", "La Real",
-#                                                                                                   ifelse(Away == "Clermont Foot", "Clermont",
-#                                                                                                          ifelse(Away == "Saint-Étienne", "Étienne",
-#                                                                                                                 ifelse(Away == "Manchester Utd", "Man Utd",
-#                                                                                                                        ifelse(Away == "Manchester City", "Man City",
-#                                                                                                                               ifelse(Away == "Leicester City", "Leicester",
-#                                                                                                                                      ifelse(Away == "Leeds United", "Leeds",
-#                                                                                                                                             ifelse(Away == "Norwich City", "Norwich",
-#                                                                                                                                                    ifelse(Away == "Crystal Palace", "Palace",
-#                                                                                                                                                           ifelse(Away == "Newcastle Utd", "Newcastle",
-#                                                                                                                                                                  ifelse(Away == "Hellas Verona", "Verona",
-#                                                                                                                                                                         Away))))))))))))))))))),
-#                             Competition_Name = ifelse(Competition_Name != "Premier League" & Competition_Name != "La Liga" & Competition_Name != "Ligue 1" & Competition_Name != "Serie A", "Bundesliga", Competition_Name))) # weird work around for unicode reading on shiny apps
-# 
-# big5_table <- get_season_team_stats(country = c("ENG", "ESP", "ITA", "GER", "FRA"), gender = "M", season_end_year = "2022",
-#                                     tier = "1st", stat_type = "league_table") %>%
-#   mutate(Competition_Name = ifelse(Competition_Name != "Premier League" & Competition_Name != "La Liga" &
-#                                      Competition_Name != "Ligue 1" & Competition_Name != "Serie A",
-#                                    "Bundesliga", Competition_Name),
-#          Last.5 = trimws(Last.5))
-# 
-# gkData <- fb_big5_advanced_season_stats(season_end_year = 2022,
-#                                          stat_type = "keepers",
-#                                          team_or_player = "player")
-# 
-# gkAdvData <- fb_big5_advanced_season_stats(season_end_year = 2022,
-#                                            stat_type = "keepers_adv",
-#                                            team_or_player = "player")
-# 
-# colnames(gkAdvData)[colnames(gkAdvData) == "#OPA_Sweeper"] <- "OPA_Sweeper"
-# colnames(gkAdvData)[colnames(gkAdvData) == "#OPA_per_90_Sweeper"] <- "OPA_Sweeper_per_90"
-# 
-# 
-# passingData <- fb_big5_advanced_season_stats(season_end_year = 2022,
-#                                              stat_type = "passing",
-#                                              team_or_player = "player")
-# 
-# gkDataCombined <- data.frame(merge(merge(gkData,
-#                                          gkAdvData),
-#                                    passingData))
-# 
-# colnames(gkDataCombined)[colnames(gkDataCombined) == "X_per_90_Expected"] <- "per_90"
-# colnames(gkDataCombined)[colnames(gkDataCombined) == "PSxG._per__minus__Expected"] <- "PSxG_minus_GA"
+# [Loading] - Libraries -----------------------------------------------------------------
+library(shinyWidgets)
+library(readr)
+library(shiny)
+library(devtools)
+library(tidyverse)
+library(ggbump)
+library(readr)
+library(gghighlight)
+library(ggplot2)
+library(ggiraph)
+library(MetBrewer)
+library(worldfootballR)
+library(zoo)
+library(stringr)
+library(DescTools)
+library(ggtext)
+library(glue)
+library(showtext)
+library(ggrepel)
+library(reactable)
+library(reactablefmtr)
+
+font_add_google("Roboto Mono", "Roboto")
+showtext_auto()
+
+colGrid <- rgb(235, 235, 235, 225, maxColorValue = 255)
+
+# [Loading] - Reading in Data ----
+big5 <- read.csv('data/big5.csv')
+big5_table <- read.csv('data/big5_table.csv')
+gkDataCombined <- read.csv('data/big5_GK.csv')
 # ---------------------------------------------------------------------------------------------------
 # [Table] - Image Helper (unicode workaround) ----
 value_helper <- function(value) {
@@ -636,7 +567,12 @@ gkModelText <- HTML("<p>This plot, inspired by <a href = 'https://fivethirtyeigh
                     shot-stopping ability. Positive values suggest an above average shot-stopping ability (or better luck). Another useful statistic for analysis, PSxG
                     per Shot on Target (PSxG/SoTa), is represented in the size of each point, and can be used to compare the quality of shots keepers have faced.</p>")
 
-gkSweeperText <- paste0("Hi, here's some text")
+gkSweeperText <- HTML("<p>This visualization is the place for determining whether or not a goalkeeper is a sweeper keeper or not. Not only does the plot show us how often big 5 keepers
+                       are defensively active beyond the penalty area per 90, but it also gives us an idea of how far away from goal their defensive actions usually take place. This plot allows
+                       us to appreciate the unique behavior of players such as Manuel Neuer, but also informs us on an important facet of goalkeeping play. How does one respond to breakaway one-on-one
+                       situations? How does one suppress attacks right before they're about to become dangerous? These are the sorts of questions that can start to be answered here. The plot tells us nothing
+                       about how goalkeepers perform in defensive situations further away from goal, but it does give us an idea of how often they get themselves into these situations, or if they 
+                       even care to in the first place.</p>")
 
 gkPassingText <- HTML("<p>There aren't a lot of statistics that can be used to distinctly show differences in passing ability and performance at a group level. Most goalkeepers 
                        complete 90-100% of their short and medium passes, have similar numbers for progessive pass distance on a per 90 basis, and random stats, such as throws attempted,

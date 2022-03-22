@@ -17,12 +17,20 @@ navbarPage(title = "Big 5 Dashboards by Joe", id = "navbarID",
   # Standings Tab (regular, bump) ---- 
   navbarMenu("League Table",
              tabPanel("Standard Table",
-               uiOutput(outputId = "standTableComp"),
-               reactableOutput(outputId = "standTable", width = 'auto')
+               column(3,
+                 wellPanel(
+                   uiOutput(outputId = "standTableComp", style = ""),
+                   style = "background-color:#202124;"
+                 )
+               ),
+               column(9,
+                 reactableOutput(outputId = "standTable", width = "78.15%")
+                )
                ),
              tabPanel("Interactive Bump Plot",
-                titlePanel("View your team's journey up and down the table!"),
-                p("Hover over a team's name to view their path, or select a team in the sidebar for a smoother, detailed view"),
+                # h1("View your team's journey up and down the table!", align = "center"),
+                h3("Hover over a team's path to highlight it, or select team(s) in the sidebar for a smoother view", align = "center"),
+                br(),
                 sidebarLayout(
                   sidebarPanel(
                     uiOutput(outputId = "competition"),
