@@ -75,6 +75,6 @@ colnames(gkDataCombined)[colnames(gkDataCombined) == "X_per_90_Expected"] <- "pe
 colnames(gkDataCombined)[colnames(gkDataCombined) == "PSxG._per__minus__Expected"] <- "PSxG_minus_GA"
 
 # Writing Dataframes to data/ ----
-write.csv(big5, '~/R/shiny_applications/big5_dashboards/data/big5.csv', row.names = FALSE)
-write.csv(big5_table, "~/R/shiny_applications/big5_dashboards/data/big5_table.csv", row.names = FALSE)
-write.csv(gkDataCombined, "~/R/shiny_applications/big5_dashboards/data/big5_GK.csv", row.names = FALSE)
+write.csv(big5, "~/R/shiny_applications/big5_dashboards/data/big5.csv", row.names = FALSE, fileEncoding = "UTF-8")
+write.csv(big5_table, "~/R/shiny_applications/big5_dashboards/data/big5_table.csv", row.names = FALSE, fileEncoding = "UTF-8")
+write.csv(gkDataCombined, "~/R/shiny_applications/big5_dashboards/data/big5_GK.csv", row.names = FALSE, fileEncoding = "UTF-8")

@@ -1,8 +1,8 @@
 "Competition_Name","Gender","Country","Season_End_Year","Squad","Team_or_Opponent","Rk","MP","W","D","L","GF","GA","GD","Pts","xG","xGA","xGD","xGD.90","Last.5","Attendance","Top.Team.Scorer","Goalkeeper","Notes"
 "Premier League","M","ENG",2022,"Arsenal","team",4,28,17,3,8,44,31,13,54,43,34.2,8.8,0.32,"W W W L W",59533,"Emile Smith Rowe, Bukayo Saka - 9","Aaron Ramsdale",NA
-"Premier League","M","ENG",2022,"Aston Villa","team",9,29,11,3,15,41,40,1,36,32.6,36.6,-4,-0.14,"W W W L L",41869,"Ollie Watkins - 7","Emiliano MartÌnez",NA
+"Premier League","M","ENG",2022,"Aston Villa","team",9,29,11,3,15,41,40,1,36,32.6,36.6,-4,-0.14,"W W W L L",41869,"Ollie Watkins - 7","Emiliano Mart√≠nez",NA
 "Premier League","M","ENG",2022,"Brentford","team",15,30,8,6,16,33,47,-14,30,35.4,39.4,-4,-0.13,"L L W W L",16889,"Ivan Toney - 11","David Raya",NA
-"Premier League","M","ENG",2022,"Brighton","team",13,29,7,12,10,26,36,-10,33,31,37.4,-6.5,-0.22,"L L L L L",30814,"Neal Maupay - 8","Robert S·nchez",NA
+"Premier League","M","ENG",2022,"Brighton","team",13,29,7,12,10,26,36,-10,33,31,37.4,-6.5,-0.22,"L L L L L",30814,"Neal Maupay - 8","Robert S√°nchez",NA
 "Premier League","M","ENG",2022,"Burnley","team",19,27,3,12,12,22,38,-16,21,24.1,39.2,-15.1,-0.56,"W D L L L",18948,"Maxwel Cornet - 6","Nick Pope",NA
 "Premier League","M","ENG",2022,"Chelsea","team",3,28,17,8,3,57,19,38,59,46.7,24.8,21.9,0.78,"W W W W W",37932,"Mason Mount - 8","Edouard Mendy",NA
 "Premier League","M","ENG",2022,"Crystal Palace","team",12,29,7,13,9,39,38,1,34,34.9,34.4,0.5,0.02,"L W D W D",24440,"Wilfried Zaha - 9","Vicente Guaita",NA
@@ -12,51 +12,51 @@
 "Premier League","M","ENG",2022,"Liverpool","team",2,29,21,6,2,75,20,55,69,72,27.6,44.4,1.53,"W W W W W",53459,"Mohamed Salah - 20","Alisson",NA
 "Premier League","M","ENG",2022,"Manchester City","team",1,29,22,4,3,68,18,50,70,67,21.2,45.8,1.58,"W L W W D",52681,"Riyad Mahrez, Raheem Sterling - 10","Ederson",NA
 "Premier League","M","ENG",2022,"Manchester Utd","team",6,29,14,8,7,48,40,8,50,44.8,41.3,3.6,0.12,"W W D L W",73066,"Cristiano Ronaldo - 12","David de Gea",NA
-"Premier League","M","ENG",2022,"Newcastle Utd","team",14,29,7,10,12,32,49,-17,31,28.8,42.6,-13.8,-0.47,"W W W L L",51249,"Callum Wilson - 6","Martin D˙bravka",NA
+"Premier League","M","ENG",2022,"Newcastle Utd","team",14,29,7,10,12,32,49,-17,31,28.8,42.6,-13.8,-0.47,"W W W L L",51249,"Callum Wilson - 6","Martin D√∫bravka",NA
 "Premier League","M","ENG",2022,"Norwich City","team",20,29,4,5,20,18,63,-45,17,24.8,55.5,-30.8,-1.06,"L L L L L",26878,"Teemu Pukki - 8","Tim Krul",NA
 "Premier League","M","ENG",2022,"Southampton","team",11,29,8,11,10,36,45,-9,35,39.3,41.4,-2,-0.07,"W W L L L",29784,"Che Adams - 7","Alex McCarthy",NA
 "Premier League","M","ENG",2022,"Tottenham","team",5,29,16,3,10,47,36,11,51,48.5,32.7,15.8,0.55,"W W L W W",55319,"Son Heung-min - 13","Hugo Lloris",NA
 "Premier League","M","ENG",2022,"Watford","team",18,29,6,4,19,29,55,-26,22,30.9,49.6,-18.7,-0.65,"L D L L W",20573,"Emmanuel Dennis - 9","Ben Foster",NA
 "Premier League","M","ENG",2022,"West Ham","team",7,30,14,6,10,49,39,10,48,40.6,38.6,2,0.07,"D W L W L",57945,"Jarrod Bowen, Michail Antonio - 8","Lukasz Fabianski",NA
-"Premier League","M","ENG",2022,"Wolves","team",8,30,14,4,12,31,26,5,46,28.7,42.7,-14,-0.47,"L L W W L",30700,"Ra˙l JimÈnez - 6","JosÈ S·",NA
-"La Liga","M","ESP",2022,"AlavÈs","team",19,29,5,7,17,23,48,-25,22,29,43.2,-14.2,-0.49,"L D D L L",10765,"Joselu - 12","Fernando Pacheco",NA
-"La Liga","M","ESP",2022,"Athletic Club","team",8,29,10,11,8,33,28,5,41,39,29.3,9.7,0.33,"W L W L D",30968,"IÒaki Williams - 7","Unai SimÛn",NA
-"La Liga","M","ESP",2022,"AtlÈtico Madrid","team",4,29,16,6,7,53,36,17,54,39.8,25.8,14,0.48,"W W W W W",45839,"¡ngel Correa - 11","Jan Oblak",NA
-"La Liga","M","ESP",2022,"Barcelona","team",3,28,15,9,4,56,29,27,54,50.5,25,25.5,0.91,"W W W W W",50883,"Memphis Depay - 10","Marc-AndrÈ ter Stegen",NA
+"Premier League","M","ENG",2022,"Wolves","team",8,30,14,4,12,31,26,5,46,28.7,42.7,-14,-0.47,"L L W W L",30700,"Ra√∫l Jim√©nez - 6","Jos√© S√°",NA
+"La Liga","M","ESP",2022,"Alav√©s","team",19,29,5,7,17,23,48,-25,22,29,43.2,-14.2,-0.49,"L D D L L",10765,"Joselu - 12","Fernando Pacheco",NA
+"La Liga","M","ESP",2022,"Athletic Club","team",8,29,10,11,8,33,28,5,41,39,29.3,9.7,0.33,"W L W L D",30968,"I√±aki Williams - 7","Unai Sim√≥n",NA
+"La Liga","M","ESP",2022,"Atl√©tico Madrid","team",4,29,16,6,7,53,36,17,54,39.8,25.8,14,0.48,"W W W W W",45839,"√Ångel Correa - 11","Jan Oblak",NA
+"La Liga","M","ESP",2022,"Barcelona","team",3,28,15,9,4,56,29,27,54,50.5,25,25.5,0.91,"W W W W W",50883,"Memphis Depay - 10","Marc-Andr√© ter Stegen",NA
 "La Liga","M","ESP",2022,"Betis","team",5,29,15,5,9,50,35,15,50,42.5,35.9,6.6,0.23,"W L L W D",40649,"Juanmi - 12","Rui Silva",NA
-"La Liga","M","ESP",2022,"C·diz","team",17,29,5,12,12,25,41,-16,27,26.8,42.9,-16,-0.55,"D D W L W",12958,"¡lvaro Negredo - 6","JeremÌas Ledesma",NA
-"La Liga","M","ESP",2022,"Celta Vigo","team",11,29,9,9,11,33,32,1,36,32.5,36.6,-4.1,-0.14,"D L W L D",9551,"Iago Aspas - 13","MatÌas Dituro",NA
-"La Liga","M","ESP",2022,"Elche","team",14,29,8,8,13,30,40,-10,32,27.5,44.9,-17.3,-0.6,"W L L W L",14642,"Pere Milla, Lucas BoyÈ - 7","…dgar BadÌa",NA
-"La Liga","M","ESP",2022,"Espanyol","team",12,29,9,9,11,35,41,-6,36,31.4,37.8,-6.4,-0.22,"D L W D W",17710,"Ra˙l de Tom·s - 14","Diego LÛpez",NA
-"La Liga","M","ESP",2022,"Getafe","team",15,29,6,11,12,27,33,-6,29,21.9,30.3,-8.4,-0.29,"D D L D D",8116,"Enes ‹nal - 14","David Soria",NA
-"La Liga","M","ESP",2022,"Granada","team",16,29,6,10,13,31,46,-15,28,30.6,46.5,-15.9,-0.55,"L D L L W",12838,"Jorge Molina, Luis Javier Su·rez - 7","LuÌs Maximiano",NA
-"La Liga","M","ESP",2022,"Levante","team",20,29,3,10,16,31,58,-27,19,35.2,40.8,-5.6,-0.19,"D W L D L",14411,"JosÈ Luis Morales - 7","C·rdenas",NA
+"La Liga","M","ESP",2022,"C√°diz","team",17,29,5,12,12,25,41,-16,27,26.8,42.9,-16,-0.55,"D D W L W",12958,"√Ålvaro Negredo - 6","Jerem√≠as Ledesma",NA
+"La Liga","M","ESP",2022,"Celta Vigo","team",11,29,9,9,11,33,32,1,36,32.5,36.6,-4.1,-0.14,"D L W L D",9551,"Iago Aspas - 13","Mat√≠as Dituro",NA
+"La Liga","M","ESP",2022,"Elche","team",14,29,8,8,13,30,40,-10,32,27.5,44.9,-17.3,-0.6,"W L L W L",14642,"Pere Milla, Lucas Boy√© - 7","√âdgar Bad√≠a",NA
+"La Liga","M","ESP",2022,"Espanyol","team",12,29,9,9,11,35,41,-6,36,31.4,37.8,-6.4,-0.22,"D L W D W",17710,"Ra√∫l de Tom√°s - 14","Diego L√≥pez",NA
+"La Liga","M","ESP",2022,"Getafe","team",15,29,6,11,12,27,33,-6,29,21.9,30.3,-8.4,-0.29,"D D L D D",8116,"Enes √únal - 14","David Soria",NA
+"La Liga","M","ESP",2022,"Granada","team",16,29,6,10,13,31,46,-15,28,30.6,46.5,-15.9,-0.55,"L D L L W",12838,"Jorge Molina, Luis Javier Su√°rez - 7","Lu√≠s Maximiano",NA
+"La Liga","M","ESP",2022,"Levante","team",20,29,3,10,16,31,58,-27,19,35.2,40.8,-5.6,-0.19,"D W L D L",14411,"Jos√© Luis Morales - 7","C√°rdenas",NA
 "La Liga","M","ESP",2022,"Mallorca","team",18,29,6,8,15,26,49,-23,26,31.1,37.8,-6.7,-0.23,"L L L L L",11629,"Salva Sevilla - 4","Manolo Reina",NA
-"La Liga","M","ESP",2022,"Osasuna","team",10,29,10,8,11,29,36,-7,38,27.9,30.4,-2.5,-0.09,"L L W L W",16516,"Ezequiel ¡vila, Kike - 5","Sergio Herrera",NA
-"La Liga","M","ESP",2022,"Rayo Vallecano","team",13,28,9,5,14,29,34,-5,32,33.4,35.6,-2.2,-0.08,"L L L D L",7430,"Radamel Falcao, ¡lvaro GarcÌa - 5","Stole Dimitrievski",NA
+"La Liga","M","ESP",2022,"Osasuna","team",10,29,10,8,11,29,36,-7,38,27.9,30.4,-2.5,-0.09,"L L W L W",16516,"Ezequiel √Åvila, Kike - 5","Sergio Herrera",NA
+"La Liga","M","ESP",2022,"Rayo Vallecano","team",13,28,9,5,14,29,34,-5,32,33.4,35.6,-2.2,-0.08,"L L L D L",7430,"Radamel Falcao, √Ålvaro Garc√≠a - 5","Stole Dimitrievski",NA
 "La Liga","M","ESP",2022,"Real Madrid","team",1,29,20,6,3,59,25,34,66,53.4,32.9,20.5,0.71,"W W W W L",38892,"Karim Benzema - 22","Thibaut Courtois",NA
-"La Liga","M","ESP",2022,"Real Sociedad","team",6,29,13,9,7,29,29,0,48,37.6,30.4,7.2,0.25,"W W L W D",26568,"Mikel Oyarzabal - 9","¡lex Remiro",NA
+"La Liga","M","ESP",2022,"Real Sociedad","team",6,29,13,9,7,29,29,0,48,37.6,30.4,7.2,0.25,"W W L W D",26568,"Mikel Oyarzabal - 9","√Ålex Remiro",NA
 "La Liga","M","ESP",2022,"Sevilla","team",2,29,15,12,2,40,19,21,57,32.2,26.4,5.8,0.2,"D W D D D",27826,"Rafa Mir - 8","Yassine Bounou",NA
-"La Liga","M","ESP",2022,"Valencia","team",9,29,10,10,9,42,43,-1,40,31.9,37.1,-5.2,-0.18,"L W W D W",26610,"GonÁalo Guedes - 11","Jasper Cillessen",NA
-"La Liga","M","ESP",2022,"Villarreal","team",7,29,12,9,8,48,27,21,45,48.8,33.3,15.4,0.53,"W W L W L",13816,"Gerard Moreno, Arnaut Groeneveld - 8","GerÛnimo Rulli",NA
+"La Liga","M","ESP",2022,"Valencia","team",9,29,10,10,9,42,43,-1,40,31.9,37.1,-5.2,-0.18,"L W W D W",26610,"Gon√ßalo Guedes - 11","Jasper Cillessen",NA
+"La Liga","M","ESP",2022,"Villarreal","team",7,29,12,9,8,48,27,21,45,48.8,33.3,15.4,0.53,"W W L W L",13816,"Gerard Moreno, Arnaut Groeneveld - 8","Ger√≥nimo Rulli",NA
 "Ligue 1","M","FRA",2022,"Angers","team",14,29,8,8,13,32,41,-9,32,33.1,36.3,-3.3,-0.11,"L L L L W",6867,"Sofiane Boufal, Thomas Mangani - 6","Danijel Petkovic",""
-"Ligue 1","M","FRA",2022,"Bordeaux","team",20,29,4,10,15,38,70,-32,22,32.1,53.7,-21.6,-0.74,"D D L L L",20919,"Hwang Ui-jo - 10","BenoÓt Costil",""
+"Ligue 1","M","FRA",2022,"Bordeaux","team",20,29,4,10,15,38,70,-32,22,32.1,53.7,-21.6,-0.74,"D D L L L",20919,"Hwang Ui-jo - 10","Beno√Æt Costil",""
 "Ligue 1","M","FRA",2022,"Brest","team",13,29,9,8,12,36,43,-7,35,33.9,43.2,-9.3,-0.32,"D L W L L",11424,"Franck Honorat - 9","Marco Bizot",""
 "Ligue 1","M","FRA",2022,"Clermont Foot","team",17,29,7,7,15,28,51,-23,28,31.6,38.3,-6.7,-0.23,"W D L L L",10117,"Mohamed Bayo - 10","Ouparine Djoco",""
 "Ligue 1","M","FRA",2022,"Lens","team",8,29,12,8,9,45,39,6,44,41,31.3,9.7,0.33,"D W L D W",26842,"Seko Fofana, Arnaud Kalimuendo - 7","Jean-Louis Leca",""
 "Ligue 1","M","FRA",2022,"Lille","team",6,29,12,10,7,38,35,3,46,41,31.3,9.7,0.33,"D W W D W",32760,"Jonathan David - 13","Ivo Grbic",""
 "Ligue 1","M","FRA",2022,"Lorient","team",16,29,6,10,13,24,43,-19,28,32.8,39.2,-6.4,-0.22,"L W L W D",12108,"Terem Moffi, Armand Lauriente - 4","Paul Nardi",""
-"Ligue 1","M","FRA",2022,"Lyon","team",10,29,11,10,8,40,37,3,42,50.4,39,11.4,0.39,"D L W L D",29344,"Moussa DembÈlÈ - 10","Anthony Lopes","1-point deduction 2"
-"Ligue 1","M","FRA",2022,"Marseille","team",2,29,15,8,6,45,27,18,53,41.5,31.5,9.9,0.34,"L D L W W",49578,"Dimitri Payet - 9","Pau LÛpez",""
-"Ligue 1","M","FRA",2022,"Metz","team",19,29,4,11,14,26,52,-26,23,22.7,44.2,-21.5,-0.74,"D D L D L",13643,"Fabien Centonze, Nicolas de PrÈville - 4","Alexandre Oukidja",""
-"Ligue 1","M","FRA",2022,"Monaco","team",7,29,12,8,9,43,30,13,44,40.8,30.7,10,0.35,"D L W L W",5734,"Wissam Ben Yedder - 17","Alexander N¸bel",""
+"Ligue 1","M","FRA",2022,"Lyon","team",10,29,11,10,8,40,37,3,42,50.4,39,11.4,0.39,"D L W L D",29344,"Moussa Demb√©l√© - 10","Anthony Lopes","1-point deduction 2"
+"Ligue 1","M","FRA",2022,"Marseille","team",2,29,15,8,6,45,27,18,53,41.5,31.5,9.9,0.34,"L D L W W",49578,"Dimitri Payet - 9","Pau L√≥pez",""
+"Ligue 1","M","FRA",2022,"Metz","team",19,29,4,11,14,26,52,-26,23,22.7,44.2,-21.5,-0.74,"D D L D L",13643,"Fabien Centonze, Nicolas de Pr√©ville - 4","Alexandre Oukidja",""
+"Ligue 1","M","FRA",2022,"Monaco","team",7,29,12,8,9,43,30,13,44,40.8,30.7,10,0.35,"D L W L W",5734,"Wissam Ben Yedder - 17","Alexander N√ºbel",""
 "Ligue 1","M","FRA",2022,"Montpellier","team",11,29,12,5,12,43,40,3,41,32.4,40.8,-8.5,-0.29,"W L L D W",10158,"Sepe Elye Wahi, Stephy Mavididi - 8","Jonas Omlin",""
 "Ligue 1","M","FRA",2022,"Nantes","team",9,29,12,6,11,36,31,5,42,29.4,38.1,-8.7,-0.3,"W D W L L",19011,"Randal Kolo Muani - 10","Alban Lafont",""
-"Ligue 1","M","FRA",2022,"Nice","team",4,29,15,6,8,39,23,16,50,43,35.8,7.2,0.25,"W D W D L",14625,"Amine Gouiri - 10","Walter BenÌtez","1-point deduction 1"
-"Ligue 1","M","FRA",2022,"Paris S-G","team",1,29,20,5,4,59,27,32,65,55.2,29.7,25.5,0.88,"L W L W L",40513,"Kylian MbappÈ - 15","Keylor Navas",""
+"Ligue 1","M","FRA",2022,"Nice","team",4,29,15,6,8,39,23,16,50,43,35.8,7.2,0.25,"W D W D L",14625,"Amine Gouiri - 10","Walter Ben√≠tez","1-point deduction 1"
+"Ligue 1","M","FRA",2022,"Paris S-G","team",1,29,20,5,4,59,27,32,65,55.2,29.7,25.5,0.88,"L W L W L",40513,"Kylian Mbapp√© - 15","Keylor Navas",""
 "Ligue 1","M","FRA",2022,"Reims","team",12,29,8,12,9,32,31,1,36,27.9,36,-8.1,-0.28,"D W D W D",9914,"Hugo Ekitike - 9","Predrag Rajkovic",""
 "Ligue 1","M","FRA",2022,"Rennes","team",3,29,16,4,9,63,28,35,52,49.2,28.5,20.8,0.72,"W W W W W",24767,"Martin Terrier - 16","Alfred Gomis",""
-"Ligue 1","M","FRA",2022,"Saint-…tienne","team",18,29,6,9,14,29,51,-22,27,30.8,42.3,-11.5,-0.4,"D L W D D",21052,"Wahbi Khazri - 9","Etienne Green",""
+"Ligue 1","M","FRA",2022,"Saint-√âtienne","team",18,29,6,9,14,29,51,-22,27,30.8,42.3,-11.5,-0.4,"D L W D D",21052,"Wahbi Khazri - 9","Etienne Green",""
 "Ligue 1","M","FRA",2022,"Strasbourg","team",5,29,13,9,7,50,32,18,48,44.5,31.5,13,0.45,"D D D W D",22788,"Ludovic Ajorque - 10","Matz Sels",""
 "Ligue 1","M","FRA",2022,"Troyes","team",15,29,7,8,14,27,42,-15,29,28.8,40.5,-11.7,-0.4,"L D W W D",8825,"Xavier Chavalerin - 5","Gauthier Gallon",""
 "Bundesliga","M","GER",2022,"Arminia","team",17,27,5,10,12,22,38,-16,25,23,47.8,-24.9,-0.92,"W L L L L",14151,"Masaya Okugawa - 8","Stefan Ortega",NA
@@ -64,32 +64,32 @@
 "Bundesliga","M","GER",2022,"Bayern Munich","team",1,27,20,3,4,81,28,53,63,73.1,27.4,45.7,1.69,"W W D D W",24214,"Robert Lewandowski - 31","Manuel Neuer",NA
 "Bundesliga","M","GER",2022,"Bochum","team",11,26,9,5,12,28,37,-9,32,31.6,41.3,-9.6,-0.36,"W D L W L",12962,"Sebastian Polter - 8","Manuel Riemann",NA
 "Bundesliga","M","GER",2022,"Dortmund","team",2,27,18,3,6,67,38,29,57,48.4,33.9,14.5,0.54,"W D W W D",29859,"Erling Haaland - 16","Gregor Kobel",NA
-"Bundesliga","M","GER",2022,"Eint Frankfurt","team",8,27,10,8,9,39,38,1,38,36.7,42.8,-6,-0.22,"L L W W D",18438,"Rafael BorrÈ - 7","Kevin Trapp",NA
+"Bundesliga","M","GER",2022,"Eint Frankfurt","team",8,27,10,8,9,39,38,1,38,36.7,42.8,-6,-0.22,"L L W W D",18438,"Rafael Borr√© - 7","Kevin Trapp",NA
 "Bundesliga","M","GER",2022,"Freiburg","team",5,27,12,9,6,43,29,14,45,39.6,33.9,5.7,0.21,"W W D W D",13885,"Vincenzo Grifo - 7","Mark Flekken",NA
-"Bundesliga","M","GER",2022,"Greuther F¸rth","team",18,27,3,6,18,24,70,-46,15,26.5,48.3,-21.8,-0.81,"L D L L D",6311,"Branimir Hrgota - 8","Sascha Burchert",NA
+"Bundesliga","M","GER",2022,"Greuther F√ºrth","team",18,27,3,6,18,24,70,-46,15,26.5,48.3,-21.8,-0.81,"L D L L D",6311,"Branimir Hrgota - 8","Sascha Burchert",NA
 "Bundesliga","M","GER",2022,"Hertha BSC","team",16,27,7,5,15,29,60,-31,26,27.2,47,-19.8,-0.73,"L L L L W",14193,"Stevan Jovetic - 6","Alexander Schwolow",NA
 "Bundesliga","M","GER",2022,"Hoffenheim","team",6,27,13,5,9,49,40,9,44,46,38.2,7.8,0.29,"W W W D L",8929,"Ihlas Bebou - 7","Oliver Baumann",NA
-"Bundesliga","M","GER",2022,"Kˆln","team",7,27,10,10,7,38,40,-2,40,38.2,39.8,-1.6,-0.06,"W D L W D",28114,"Anthony Modeste - 15","Marvin Schw‰be",NA
-"Bundesliga","M","GER",2022,"Leverkusen","team",3,27,14,6,7,66,41,25,48,50,36.8,13.1,0.49,"L W D L W",14514,"Patrik Schick - 20","Luk·ö Hr·deck˝",NA
+"Bundesliga","M","GER",2022,"K√∂ln","team",7,27,10,10,7,38,40,-2,40,38.2,39.8,-1.6,-0.06,"W D L W D",28114,"Anthony Modeste - 15","Marvin Schw√§be",NA
+"Bundesliga","M","GER",2022,"Leverkusen","team",3,27,14,6,7,66,41,25,48,50,36.8,13.1,0.49,"L W D L W",14514,"Patrik Schick - 20","Luk√°≈° Hr√°deck√Ω",NA
 "Bundesliga","M","GER",2022,"M'Gladbach","team",13,26,8,6,12,36,51,-15,30,43.7,43.9,-0.2,-0.01,"W L D L W",19714,"Jonas Hofmann - 8","Yann Sommer",NA
 "Bundesliga","M","GER",2022,"Mainz 05","team",10,26,11,4,11,39,30,9,37,38.5,31.6,6.8,0.26,"D W L L W",14943,"Jonathan Burkardt - 9","Robin Zentner",NA
-"Bundesliga","M","GER",2022,"RB Leipzig","team",4,27,13,6,8,57,30,27,45,52.4,35.4,17,0.63,"W W D W D",18443,"Christopher Nkunku - 15","PÈter Gul·csi",NA
-"Bundesliga","M","GER",2022,"Stuttgart","team",14,27,6,8,13,35,50,-15,26,34.1,42.4,-8.3,-0.31,"D L W D W",21029,"Konstantinos Mavropanos - 4","Florian M¸ller",NA
+"Bundesliga","M","GER",2022,"RB Leipzig","team",4,27,13,6,8,57,30,27,45,52.4,35.4,17,0.63,"W W D W D",18443,"Christopher Nkunku - 15","P√©ter Gul√°csi",NA
+"Bundesliga","M","GER",2022,"Stuttgart","team",14,27,6,8,13,35,50,-15,26,34.1,42.4,-8.3,-0.31,"D L W D W",21029,"Konstantinos Mavropanos - 4","Florian M√ºller",NA
 "Bundesliga","M","GER",2022,"Union Berlin","team",9,27,10,8,9,33,38,-5,38,37.4,36.9,0.5,0.02,"L W L D L",11596,"Taiwo Awoniyi - 11","Andreas Luthe",NA
 "Bundesliga","M","GER",2022,"Wolfsburg","team",12,27,9,4,14,29,42,-13,31,37.5,39.1,-1.6,-0.06,"L D W L L",9481,"Lukas Nmecha, Wout Weghorst - 6","Koen Casteels",NA
-"Serie A","M","ITA",2022,"Atalanta","team",6,29,14,9,6,51,31,20,51,47.4,31.7,15.7,0.54,"L W L D W",9350,"Mario Paöalic, Duv·n Zapata - 9","Juan Musso",NA
+"Serie A","M","ITA",2022,"Atalanta","team",6,29,14,9,6,51,31,20,51,47.4,31.7,15.7,0.54,"L W L D W",9350,"Mario Pa≈°alic, Duv√°n Zapata - 9","Juan Musso",NA
 "Serie A","M","ITA",2022,"Bologna","team",14,29,9,6,14,32,44,-12,33,30.3,38.8,-8.5,-0.29,"W D D L L",13275,"Marko Arnautovic - 9","Lukasz Skorupski",NA
-"Serie A","M","ITA",2022,"Cagliari","team",17,30,5,10,15,28,54,-26,25,32.5,49.4,-16.9,-0.56,"D W L L L",7817,"Jo„o Pedro - 10","Alessio Cragno",NA
+"Serie A","M","ITA",2022,"Cagliari","team",17,30,5,10,15,28,54,-26,25,32.5,49.4,-16.9,-0.56,"D W L L L",7817,"Jo√£o Pedro - 10","Alessio Cragno",NA
 "Serie A","M","ITA",2022,"Empoli","team",12,30,8,9,13,41,55,-14,33,38,49.5,-11.5,-0.38,"L L D L D",5577,"Andrea Pinamonti - 9","Guglielmo Vicario",NA
-"Serie A","M","ITA",2022,"Fiorentina","team",8,29,14,5,10,48,38,10,47,45.6,35.6,10,0.34,"W L D W D",17866,"Duöan Vlahovic - 17","Pietro Terracciano",NA
+"Serie A","M","ITA",2022,"Fiorentina","team",8,29,14,5,10,48,38,10,47,45.6,35.6,10,0.34,"W L D W D",17866,"Du≈°an Vlahovic - 17","Pietro Terracciano",NA
 "Serie A","M","ITA",2022,"Genoa","team",18,30,2,16,12,23,47,-24,22,28.9,41.4,-12.5,-0.42,"D D D D W",9954,"Mattia Destro - 9","Salvatore Sirigu",NA
-"Serie A","M","ITA",2022,"Hellas Verona","team",10,30,11,9,10,55,47,8,42,41,36.2,4.8,0.16,"D W D L D",11197,"Giovanni Simeone - 15","Lorenzo MontipÚ",NA
-"Serie A","M","ITA",2022,"Inter","team",3,29,17,9,3,62,24,38,60,60.2,30.8,29.4,1.01,"L D W D D",36644,"Lautaro MartÌnez - 14","Samir Handanovic",NA
-"Serie A","M","ITA",2022,"Juventus","team",4,30,17,8,5,47,26,21,59,40.3,28.4,11.9,0.4,"D W W W W",16786,"¡lvaro Morata, Paulo Dybala - 8","Wojciech Szczesny",NA
+"Serie A","M","ITA",2022,"Hellas Verona","team",10,30,11,9,10,55,47,8,42,41,36.2,4.8,0.16,"D W D L D",11197,"Giovanni Simeone - 15","Lorenzo Montip√≤",NA
+"Serie A","M","ITA",2022,"Inter","team",3,29,17,9,3,62,24,38,60,60.2,30.8,29.4,1.01,"L D W D D",36644,"Lautaro Mart√≠nez - 14","Samir Handanovic",NA
+"Serie A","M","ITA",2022,"Juventus","team",4,30,17,8,5,47,26,21,59,40.3,28.4,11.9,0.4,"D W W W W",16786,"√Ålvaro Morata, Paulo Dybala - 8","Wojciech Szczesny",NA
 "Serie A","M","ITA",2022,"Lazio","team",7,30,14,7,9,58,45,13,49,42.9,37.8,5.1,0.17,"D L W W L",21083,"Ciro Immobile - 21","Thomas Strakosha, Pepe Reina",NA
-"Serie A","M","ITA",2022,"Milan","team",1,30,20,6,4,56,29,27,66,47.8,29.4,18.4,0.61,"D D W W W",35359,"Olivier Giroud, Rafael Le„o... - 8","Mike Maignan",NA
+"Serie A","M","ITA",2022,"Milan","team",1,30,20,6,4,56,29,27,66,47.8,29.4,18.4,0.61,"D D W W W",35359,"Olivier Giroud, Rafael Le√£o... - 8","Mike Maignan",NA
 "Serie A","M","ITA",2022,"Napoli","team",2,30,19,6,5,53,22,31,63,46.9,22.3,24.7,0.82,"D W L W W",22237,"Victor Osimhen - 11","David Ospina",NA
-"Serie A","M","ITA",2022,"Roma","team",5,30,15,6,9,50,35,15,51,52.3,31.8,20.5,0.68,"D W W D W",36566,"Tammy Abraham - 15","Rui PatrÌcio",NA
+"Serie A","M","ITA",2022,"Roma","team",5,30,15,6,9,50,35,15,51,52.3,31.8,20.5,0.68,"D W W D W",36566,"Tammy Abraham - 15","Rui Patr√≠cio",NA
 "Serie A","M","ITA",2022,"Salernitana","team",20,29,3,7,19,22,68,-46,16,24.7,52.5,-27.8,-0.99,"D D L D L",12775,"Federico Bonazzoli - 7","Vid Belec",NA
 "Serie A","M","ITA",2022,"Sampdoria","team",15,30,8,5,17,39,51,-12,29,29.9,45.6,-15.7,-0.52,"W L L L W",5675,"Francesco Caputo - 9","Emil Audero",NA
 "Serie A","M","ITA",2022,"Sassuolo","team",9,30,11,10,9,55,49,6,43,45.6,50.5,-4.9,-0.16,"W W W D W",6686,"Domenico Berardi - 14","Andrea Consigli",NA

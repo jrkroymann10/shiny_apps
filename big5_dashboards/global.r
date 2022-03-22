@@ -27,9 +27,9 @@ showtext_auto()
 colGrid <- rgb(235, 235, 235, 225, maxColorValue = 255)
 
 # [Loading] - Reading in Data ----
-big5 <- read.csv('data/big5.csv')
-big5_table <- read.csv('data/big5_table.csv')
-gkDataCombined <- read.csv('data/big5_GK.csv')
+big5 <- read.csv('data/big5.csv', encoding = "UTF-8")
+big5_table <- read.csv('data/big5_table.csv', encoding = "UTF-8")
+gkDataCombined <- read.csv('data/big5_GK.csv', encoding = "UTF-8")
 # ---------------------------------------------------------------------------------------------------
 # [Table] - Image Helper (unicode workaround) ----
 value_helper <- function(value) {
