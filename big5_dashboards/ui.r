@@ -12,8 +12,8 @@ tagList(tags$head(
                   ))
 ),
 navbarPage(title = "Big 5 Dashboards by Joe", id = "navbarID",
-  # Intro Tab -----
-  tabPanel("Introduction"),
+  # # Intro Tab -----
+  # tabPanel("Introduction"),
   # Standings Tab (regular, bump) ---- 
   navbarMenu("League Table",
              tabPanel("Standard Table",

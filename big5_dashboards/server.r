@@ -102,9 +102,9 @@ function(input, output, session) {
   
   df <- reactive(bump_data() %>% filter(Matchday >= input$md_range[1] & Matchday <= input$md_range[2]))
   
-  output$firstTeam <- renderText({
-    input$navbarID
-  })
+  # output$firstTeam <- renderText({
+  #   is.null(input$gkZonePlayer)
+  # })
 
   # [Bump Plot] - Plot Output ----
   output$bumpPlot <- renderGirafe({

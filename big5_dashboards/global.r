@@ -345,6 +345,16 @@ getGkZonePlot <- function(vizSelected, gkData, playerSel) {
 }
 
 gkZoneModelPlot <- function(data, playerSel) {
+  if (is.null(playerSel)) {
+    label = NULL
+  } else {
+    label = geom_label_repel(data = . %>% 
+                               mutate(label = if_else(Player %in% playerSel, Player, NULL)),
+                             aes(label = label, fill = Comp),
+                             color = "white", fontface = "bold", direction = "both", show.legend = FALSE,
+                             box.padding = 2, max.overlaps = 10, min.segment.length = 0)
+  }
+  
   ggplot(data = data, aes(x = SoTA, y = PSxG_minus_GA, colour = Comp)) +
     geom_vline(xintercept = median(data$SoTA), colour = "white", linetype = "dashed") +
     geom_hline(yintercept = 0, colour = "white", linetype = "dashed") +
@@ -356,11 +366,7 @@ gkZoneModelPlot <- function(data, playerSel) {
                                                          "PSxG/SoTA: ", PSxG_per_SoT_Expected,
                                                          sep = ""),
                                data_id = Player)) +
-    geom_label_repel(data = . %>% 
-                       mutate(label = if_else(Player %in% playerSel, Player, NULL)),
-                     aes(label = label, fill = Comp),
-                     color = "white", fontface = "bold", direction = "both", show.legend = FALSE,
-                     box.padding = 2, max.overlaps = 10, min.segment.length = 0) +
+    label +
     scale_x_continuous(limits = c(min(data$SoTA) - 10, max(data$SoTA) + 10)) +
     scale_y_continuous(limits = c(min(data$PSxG_minus_GA) - 1, max(data$PSxG_minus_GA) + 1)) +
     scale_size_continuous(range = c(2, 5)) +
@@ -392,17 +398,17 @@ gkZoneModelPlot <- function(data, playerSel) {
       ) +
     theme(
       text = element_text(colour = "white", family = "Roboto"),
-      title = element_text(size = 14, margin = margin(2.5, 0, 0, 0), face = "bold"),
+      title = element_text(size = 14, margin = ggplot2::margin(2.5, 0, 0, 0, unit = "pt"), face = "bold"),
 
       plot.background = element_rect(fill = "black"),
-      plot.title = element_text(margin = margin(6.25, 0, 3.75, 0)),
-      plot.subtitle = element_text(face = "plain", margin = margin(0, 0, 10, 0)),
+      plot.title = element_text(margin = ggplot2::margin(6.25, 0, 3.75, 0, unit = "pt")),
+      plot.subtitle = element_text(face = "plain", margin = ggplot2::margin(0, 0, 10, 0, unit = "pt")),
       plot.tag = element_text(face = "plain", size = 10),
       plot.tag.position = c(0.325, 0.00875),
 
       axis.title = element_text(colour = "white", size = 12, hjust = 0.5),
-      axis.title.y = element_text(margin = margin(0, 15, 0, 15)),
-      axis.title.x = element_text(margin = margin(15, 0, 25, 0)),
+      axis.title.y = element_text(margin = ggplot2::margin(0, 15, 0, 15, unit = "pt")),
+      axis.title.x = element_text(margin = ggplot2::margin(15, 0, 25, 0, unit = "pt")),
       axis.text = element_text(colour = "white"),
       axis.ticks = element_line(colour = "white", linetype = "longdash"),
       axis.line = element_line(colour = "white"),
@@ -411,11 +417,21 @@ gkZoneModelPlot <- function(data, playerSel) {
       panel.grid = element_blank(),
 
       legend.background = element_rect(colour = "white", fill = "black"),
-      legend.text = element_text(colour = "white", margin = margin(0, 1, 0, 0)),
+      legend.text = element_text(colour = "white", margin = ggplot2::margin(0, 1, 0, 0, unit = "pt")),
       legend.key = element_rect(fill = "black"),
       legend.title.align = 0.5)
 }
 gkZoneSweeperPlot <- function(data, playerSel) {
+  if (is.null(playerSel)) {
+    label = NULL
+  } else {
+    label = geom_label_repel(data = . %>% 
+                               mutate(label = if_else(Player %in% playerSel, Player, NULL)),
+                             aes(label = label, fill = Comp),
+                             color = "white", fontface = "bold", direction = "both", show.legend = FALSE,
+                             box.padding = 2, max.overlaps = 10, min.segment.length = 0)
+  }
+  
   ggplot(data = data, aes(x = AvgDist_Sweeper, y = OPA_Sweeper_per_90, colour = Comp)) +
     annotate(geom = "text", x = 18, y = 0.25, label = "Edge of Box ->", hjust = 1.075, colour = "white", fontface = "bold", family = "Roboto") +
     annotate(geom = "text", x = 12, y = 1.41, label = "<- Penalty Spot", hjust = -.075, colour = "white", fontface = "bold", family = "Roboto") +
@@ -427,11 +443,7 @@ gkZoneSweeperPlot <- function(data, playerSel) {
                                                          "Def Actions per 90: ", OPA_Sweeper_per_90, "\n",
                                                          sep = ""),
                                data_id = Player)) +
-    geom_label_repel(data = . %>% 
-                       mutate(label = if_else(Player %in% playerSel, Player, NULL)),
-                     aes(label = label, fill = Comp),
-                     color = "white", fontface = "bold", direction = "both", show.legend = FALSE, 
-                     box.padding = 0.5, max.overlaps = 10, min.segment.length = 0) +
+    label +
     scale_y_continuous(expand = c(0,0), limits = c(0, 2), breaks = c(0, 0.5, 1, 1.5, 2)) +
     scale_x_continuous(breaks = c(12, 14, 16, 18, 20)) +
   
@@ -461,8 +473,8 @@ gkZoneSweeperPlot <- function(data, playerSel) {
       panel.background = element_rect(fill = "black"),
 
       plot.background = element_rect(fill = "black", colour = "black"),
-      plot.title = element_text(margin = margin(6.25,0,3.75,0), face = "bold", size = 18),
-      plot.subtitle = element_text(margin = margin(0,0,10,0), face = "plain", size = 14),
+      plot.title = element_text(margin = ggplot2::margin(6.25,0,3.75,0), face = "bold", size = 18),
+      plot.subtitle = element_text(margin = ggplot2::margin(0,0,10,0), face = "plain", size = 14),
       plot.tag = element_text(face = "plain", size = 10),
       plot.tag.position = c(0.325, 0.00875),
       
@@ -475,72 +487,78 @@ gkZoneSweeperPlot <- function(data, playerSel) {
       axis.line = element_line(colour = "white"),
       axis.title = element_text(colour = "white", size = 12, face = "bold"),
       axis.ticks = element_line(colour = "white"),
-      axis.title.y = element_text(margin = margin(0, 16.25, 0, 15)),
-      axis.title.x = element_text(margin = margin(15, 0, 25, 0)),
+      axis.title.y = element_text(margin = ggplot2::margin(0, 16.25, 0, 15)),
+      axis.title.x = element_text(margin = ggplot2::margin(15, 0, 25, 0)),
     )
 }
 gkZonePassingPlot <- function(data, playerSel) {
-    ggplot(data = data, aes(AvgLen_Passes, Cmp_percent_Medium - Cmp_percent_Long, colour = Comp)) +
-    
-    geom_vline(aes(xintercept = mean(AvgLen_Passes)), colour = "white", linetype = "dashed") +
-    geom_hline(aes(yintercept = mean(Cmp_percent_Medium - Cmp_percent_Long)), colour = "white", linetype = "dashed") +
-    geom_point_interactive(aes(data_id = Player, tooltip = paste0(Player, " - ", Squad, "\n",
-                                                                  "Medium: ", Cmp_percent_Medium, "%", "\n",
-                                                                  "Long: ", Cmp_percent_Long, "%", "\n",
-                                                                  "Avg Length: ", round(mean(AvgLen_Passes), 2), " yards")),
-                           size = 3) +
-    geom_label_repel(data = . %>% 
-                       mutate(label = if_else(Player %in% playerSel, Player, NULL)),
-                     aes(label = label, fill = Comp),
-                     color = "white", fontface = "bold", direction = "both", show.legend = FALSE, 
-                     box.padding = 0.5, max.overlaps = 10, min.segment.length = 0) +
-    scale_x_continuous(limits = c(min(data$AvgLen_Passes) - 2.5, max(data$AvgLen_Passes) + 2.5)) +
-    scale_y_continuous(limits = c(min(data$Cmp_percent_Medium - data$Cmp_percent_Long) - 5, max(data$Cmp_percent_Medium - data$Cmp_percent_Long) + 5)) +
-    
-    scale_colour_manual(breaks = c("Bundesliga", "La Liga", "Ligue 1", "Premier League", "Serie A"),
-                        values = c(met.brewer("Isfahan2")[1], met.brewer("Isfahan2")[2], met.brewer("Isfahan2")[3],
-                                   met.brewer("Isfahan2")[4], met.brewer("Isfahan2")[5])) +
-    scale_fill_manual(breaks = c("Bundesliga", "La Liga", "Ligue 1", "Premier League", "Serie A"),
-                                  values = c(met.brewer("Isfahan2")[1], met.brewer("Isfahan2")[2], met.brewer("Isfahan2")[3],
-                                             met.brewer("Isfahan2")[4], met.brewer("Isfahan2")[5])) +
-    
-    guides(colour = guide_legend(
-      title = "Competition",
-      title.theme = element_text(size = 10, colour = 
-                                   "white", hjust = 0.5,
-                                 face = "bold"),
-      override.aes = list(size = 5)
-      )
-    ) +
-    
-    labs(title = "Distribution Drop-off At A Distance",
-         subtitle = "Pass Completion Percentage Drop-off by Average Length of Passes",
-         x = "Average Length of All Passes (yards)", y = "Medium Completion % - Long Completion %",
-         tag = "Data: StatsBomb via fbref.com (GK's with > 900 minutes played in 21/22 season) - Medium = 15-30 yards, Long = 30+ yards") +
-    
-    theme(
-      text = element_text(family = "Roboto", colour = "white"),
-      
-      panel.grid = element_blank(),
-      panel.background = element_rect(fill = "black"),
-      
-      plot.background = element_rect(fill = "black", colour = "black"),
-      plot.title = element_text(margin = margin(6.25,0,3.75,0), face = "bold", size = 18),
-      plot.subtitle = element_text(margin = margin(0,0,10,0), face = "plain", size = 14),
-      plot.tag = element_text(face = "plain", size = 10),
-      plot.tag.position = c(0.5, 0.00875),
-      
-      legend.background = element_rect(colour = "white", fill = "black"),
-      legend.key = element_rect(fill = "black"),
-      legend.title.align = 0.5,
-      
-      axis.line = element_line(colour = "white"),
-      axis.text = element_text(colour = "white"),
-      axis.title = element_text(colour = "white", size = 12, face = "bold"),
-      axis.ticks = element_line(colour = "white"),
-      axis.title.y = element_text(margin = margin(0, 16.25, 0, 15), face = "bold"),
-      axis.title.x = element_text(margin = margin(15, 0, 25, 0), face = "bold"),
+  if (is.null(playerSel)) {
+    label = NULL
+  } else {
+    label = geom_label_repel(data = . %>% 
+                               mutate(label = if_else(Player %in% playerSel, Player, NULL)),
+                             aes(label = label, fill = Comp),
+                             color = "white", fontface = "bold", direction = "both", show.legend = FALSE,
+                             box.padding = 2, max.overlaps = 10, min.segment.length = 0)
+  } 
+  
+  ggplot(data = data, aes(AvgLen_Passes, Cmp_percent_Medium - Cmp_percent_Long, colour = Comp)) +
+  
+  geom_vline(aes(xintercept = mean(AvgLen_Passes)), colour = "white", linetype = "dashed") +
+  geom_hline(aes(yintercept = mean(Cmp_percent_Medium - Cmp_percent_Long)), colour = "white", linetype = "dashed") +
+  geom_point_interactive(aes(data_id = Player, tooltip = paste0(Player, " - ", Squad, "\n",
+                                                                "Medium: ", Cmp_percent_Medium, "%", "\n",
+                                                                "Long: ", Cmp_percent_Long, "%", "\n",
+                                                                "Avg Length: ", round(mean(AvgLen_Passes), 2), " yards")),
+                         size = 3) +
+  label +
+  scale_x_continuous(limits = c(min(data$AvgLen_Passes) - 2.5, max(data$AvgLen_Passes) + 2.5)) +
+  scale_y_continuous(limits = c(min(data$Cmp_percent_Medium - data$Cmp_percent_Long) - 5, max(data$Cmp_percent_Medium - data$Cmp_percent_Long) + 5)) +
+  
+  scale_colour_manual(breaks = c("Bundesliga", "La Liga", "Ligue 1", "Premier League", "Serie A"),
+                      values = c(met.brewer("Isfahan2")[1], met.brewer("Isfahan2")[2], met.brewer("Isfahan2")[3],
+                                 met.brewer("Isfahan2")[4], met.brewer("Isfahan2")[5])) +
+  scale_fill_manual(breaks = c("Bundesliga", "La Liga", "Ligue 1", "Premier League", "Serie A"),
+                                values = c(met.brewer("Isfahan2")[1], met.brewer("Isfahan2")[2], met.brewer("Isfahan2")[3],
+                                           met.brewer("Isfahan2")[4], met.brewer("Isfahan2")[5])) +
+  
+  guides(colour = guide_legend(
+    title = "Competition",
+    title.theme = element_text(size = 10, colour = 
+                                 "white", hjust = 0.5,
+                               face = "bold"),
+    override.aes = list(size = 5)
     )
+  ) +
+  
+  labs(title = "Distribution Drop-off At A Distance",
+       subtitle = "Pass Completion Percentage Drop-off by Average Length of Passes",
+       x = "Average Length of All Passes (yards)", y = "Medium Completion % - Long Completion %",
+       tag = "Data: StatsBomb via fbref.com (GK's with > 900 minutes played in 21/22 season) - Medium = 15-30 yards, Long = 30+ yards") +
+  
+  theme(
+    text = element_text(family = "Roboto", colour = "white"),
+    
+    panel.grid = element_blank(),
+    panel.background = element_rect(fill = "black"),
+    
+    plot.background = element_rect(fill = "black", colour = "black"),
+    plot.title = element_text(margin = ggplot2::margin(6.25,0,3.75,0), face = "bold", size = 18),
+    plot.subtitle = element_text(margin = ggplot2::margin(0,0,10,0), face = "plain", size = 14),
+    plot.tag = element_text(face = "plain", size = 10),
+    plot.tag.position = c(0.5, 0.00875),
+    
+    legend.background = element_rect(colour = "white", fill = "black"),
+    legend.key = element_rect(fill = "black"),
+    legend.title.align = 0.5,
+    
+    axis.line = element_line(colour = "white"),
+    axis.text = element_text(colour = "white"),
+    axis.title = element_text(colour = "white", size = 12, face = "bold"),
+    axis.ticks = element_line(colour = "white"),
+    axis.title.y = element_text(margin = ggplot2::margin(0, 16.25, 0, 15), face = "bold"),
+    axis.title.x = element_text(margin = ggplot2::margin(15, 0, 25, 0), face = "bold"),
+  )
 }
 
 # [GK Zone] - Viz Text(s) ----
@@ -691,16 +709,16 @@ xgRollPlot <- function(df, team, comp, bund, the, pal) {
         text = element_text(family = "Roboto"),
         
         title = element_text(colour = "black"),
-        plot.title = element_text(face = "bold", size = 20, margin = margin(6.25, 0, 3.75, 0)),
+        plot.title = element_text(face = "bold", size = 20, margin = ggplot2::margin(6.25, 0, 3.75, 0, unit = "pt")),
         plot.subtitle = element_markdown(family = "Roboto", face = "plain", size = 16, lineheight = 0.625, ),
-        plot.caption = element_text(hjust = 0, size = 12.5, margin = margin(0,0,0,0)),
+        plot.caption = element_text(hjust = 0, size = 12.5, margin = ggplot2::margin(0,0,0,0, unit = "pt")),
 
         axis.ticks = element_blank(),
         axis.text = element_text(colour = "black", size = 12.5),
-        axis.text.y = element_text(margin = margin(0, 7.5, 0, 0)),
+        axis.text.y = element_text(margin = ggplot2::margin(0, 7.5, 0, 0, unit = "pt")),
         axis.title = element_text(face = "bold", size = 18),
-        axis.title.y = element_text(margin = margin(0, 20, 0, 0)),
-        axis.title.x = element_text(margin = margin(20, 0, 20, 0)),
+        axis.title.y = element_text(margin = ggplot2::margin(0, 20, 0, 0, unit = "pt")),
+        axis.title.x = element_text(margin = ggplot2::margin(20, 0, 20, 0, unit = "pt")),
         
         legend.position = "none"
       )
@@ -764,9 +782,9 @@ gbgXGPlot <- function(df, team, comp, bund, the, pal) {
       panel.grid.minor = element_blank(),
       panel.ontop = FALSE,
       
-      plot.title = element_text(face = "bold", size = 20, margin = margin(6.25, 0, 3.75, 0)),
+      plot.title = element_text(face = "bold", size = 20, margin = ggplot2::margin(6.25, 0, 3.75, 0, unit = "pt")),
       plot.subtitle = element_markdown(size = 16),
-      plot.caption = element_text(hjust = 0, size = 12.5, margin = margin(0,0,0,0)),
+      plot.caption = element_text(hjust = 0, size = 12.5, margin = ggplot2::margin(0,0,0,0, unit = "pt")),
       
       legend.position = c(0.9525, 1.05), 
       legend.direction = "horizontal", 
@@ -776,12 +794,12 @@ gbgXGPlot <- function(df, team, comp, bund, the, pal) {
       legend.text = element_text(size = 12.5),
       
       axis.title = element_text(face = "bold", size = 18),
-      axis.title.y = element_text(margin = margin(0, 20, 0, 0)),
-      axis.title.x = element_text(margin = margin(20, 0, 20, 0)),
+      axis.title.y = element_text(margin = ggplot2::margin(0, 20, 0, 0, unit = "pt")),
+      axis.title.x = element_text(margin = ggplot2::margin(20, 0, 20, 0, unit = "pt")),
       axis.text = element_text(colour = "black", size = 12.5)
     )
 }
-# [XG Time] - Palettes
+# [XG Time] - Palettes ----
 getXGPalette <- function(input) {
   if (input == "Liverpool") {
     c("#D01317", "#009782", "#FFEE46") # lava, paolo veronese green, lemon yellow
