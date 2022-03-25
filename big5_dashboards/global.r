@@ -74,6 +74,7 @@ form_unicode <- function(val) {
     return("\u25EF")
   }
 }
+
 standTable <- function(data) {
   reactable(
     data %>%
@@ -281,7 +282,7 @@ getBumpPlot <- function(df, md_start, md_end, teams, sel_teams, league_palette, 
                   label_params = list(colour = "black", size = 10),
                   unhighlighted_params = list(alpha = 0.25)) +
       scale_y_reverse() +
-      scale_x_continuous(limits = c(md_start - 1.75, md_end + 1.75)) +
+      scale_x_continuous(limits = c(md_start - 2.25, md_end + 2.25)) +
       theme(
         legend.position = "none",
         
@@ -312,7 +313,7 @@ getBumpPlot <- function(df, md_start, md_end, teams, sel_teams, league_palette, 
         values = league_palette
       ) +
       scale_y_reverse() +
-      scale_x_continuous(limits = c(md_start - 1.75, md_end + 1.75), expand = c(0.01, 1)) +
+      scale_x_continuous(limits = c(md_start - 2.25, md_end + 2.25), expand = c(0.01, 1)) +
       theme(
         legend.position = "none",
         
