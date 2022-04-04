@@ -1,31 +1,31 @@
-# [Loading] - Libraries -----------------------------------------------------------------
-library(shinyWidgets)
-library(readr)
-library(shiny)
-library(devtools)
-library(tidyverse)
-library(ggbump)
-library(readr)
-library(gghighlight)
-library(ggplot2)
-library(ggiraph)
-library(MetBrewer)
-library(worldfootballR)
-library(zoo)
-library(stringr)
-library(DescTools)
-library(ggtext)
-library(glue)
-library(showtext)
-library(ggrepel)
-library(reactable)
-library(reactablefmtr)
-
-font_add_google("Roboto Mono", "Roboto")
-showtext_auto()
-
-colGrid <- rgb(235, 235, 235, 225, maxColorValue = 255)
-
+# # [Loading] - Libraries -----------------------------------------------------------------
+# library(shinyWidgets)
+# library(readr)
+# library(shiny)
+# library(devtools)
+# library(tidyverse)
+# library(ggbump)
+# library(readr)
+# library(gghighlight)
+# library(ggplot2)
+# library(ggiraph)
+# library(MetBrewer)
+# library(worldfootballR)
+# library(zoo)
+# library(stringr)
+# library(DescTools)
+# library(ggtext)
+# library(glue)
+# library(showtext)
+# library(ggrepel)
+# library(reactable)
+# library(reactablefmtr)
+# 
+# font_add_google("Roboto Mono", "Roboto")
+# showtext_auto()
+# 
+# colGrid <- rgb(235, 235, 235, 225, maxColorValue = 255)
+# 
 # [Loading] - Reading in Data ----
 big5 <- read.csv('data/big5.csv', encoding = "UTF-8")
 big5_table <- read.csv('data/big5_table.csv', encoding = "UTF-8")
@@ -220,7 +220,8 @@ add_rank <- function(df, team_count) {
   df <- df %>%
     group_by(Matchday) %>%
     arrange(Total_Points, Total_GD, .by_group = TRUE) %>%
-    mutate(Rank = row_number(Matchday)) %>%
+    mutate(Rank = row_number(Matchday),
+           Norm_Rank = (Total_Points - min(Total_Points)) / (max(Total_Points) - min(Total_Points))) %>%
     mutate(Rank = -(Rank - (team_count + 1))) %>%
     ungroup()
 
@@ -260,8 +261,8 @@ get_leaguePalette <- function(comp) {
 }
 
 # [Bump Plot] - Plot Output ----
-getBumpPlot <- function(df, md_start, md_end, teams, sel_teams, league_palette, bump_rank, background) {
-  if (length(sel_teams) >= 1) {
+getBumpPlot <- function(df, md_start, md_end, teams, sel_teams, league_palette, bump_rank, background, plotType) {
+  if (plotType == "Bump Plot") {
     df %>%
       ggplot(aes(x = Matchday, y = Rank, colour = Team)) +
       geom_bump(smooth = 5, size = 3, lineend = "round") +
@@ -276,7 +277,7 @@ getBumpPlot <- function(df, md_start, md_end, teams, sel_teams, league_palette, 
       geom_text(data = df %>%
                   dplyr::filter(Matchday == md_end), aes(label = Team, x = md_end + .4),
                 fontface = "bold", size = 11, hjust = 0, family = "Roboto") +
-      gghighlight(any(Team == sel_teams),
+      gghighlight(ifelse(length(sel_teams >= 1), any(Team == sel_teams), Rank <= 20),
                   use_direct_label = bump_rank,
                   label_key = Rank,
                   label_params = list(colour = "black", size = 10),
@@ -296,8 +297,42 @@ getBumpPlot <- function(df, md_start, md_end, teams, sel_teams, league_palette, 
         axis.title.x = element_blank(),
         axis.text.x = element_blank()
       )
-  }
-  else {
+  } else if (plotType == "Bump Plot w/ Point Difference") {
+  
+    df %>%
+      ggplot(aes(x = Matchday, y = Norm_Rank, colour = Team)) +
+      geom_bump(smooth = 5, size = 3, lineend = "round") +
+      geom_point(size = 5) +
+      scale_colour_manual(
+        breaks = teams,
+        values = league_palette
+      ) +
+      geom_text(data = df %>%
+                  dplyr::filter(Matchday == md_end), aes(label = Team, x = md_end + .4),
+                fontface = "bold", size = 11, hjust = 0, family = "Roboto") +
+      gghighlight(ifelse(length(sel_teams >= 1), any(Team == sel_teams), Rank <= 20),
+                  use_direct_label = bump_rank,
+                  label_key = Rank,
+                  label_params = list(colour = "black", size = 10),
+                  unhighlighted_params = list(alpha = 0.25)) +
+      scale_x_continuous(limits = c(md_start, md_end + 2.25)) +
+      theme(
+        legend.position = "none",
+        
+        panel.grid = element_blank(),
+        panel.background = element_rect(fill = substring(background, 1, 7), colour = "black",
+                                        size = 5),        
+        plot.title = element_text(size = 45, face = "bold", hjust = 0.5),
+        
+        axis.title.y = element_blank(),
+        axis.text.y = element_blank(),
+        axis.title.x = element_blank(),
+        axis.text.x = element_blank()
+      )
+    
+    
+  } else {
+    
     df %>%
       ggplot(aes(x = Matchday, y = Rank, colour = Team)) +
       geom_path_interactive(size = 3, lineend = "round", aes(data_id = Team)) + 

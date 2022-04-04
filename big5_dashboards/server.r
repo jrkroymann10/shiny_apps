@@ -37,7 +37,14 @@ function(input, output, session) {
     find_lastWeek(matches())
   })
   bump_data <- reactive({
-    get_bumpData(matches(), last_wk()) 
+    get_bumpData(matches(), last_wk())
+  })
+  # [Bump Plot] - UI (Plot Selection) ----
+  output$bumpPlotType <- renderUI({
+    selectizeInput(inputId = "bumpPlotType",
+                   label = "Vizualization",
+                   choices = sort(c("Bump Plot", "Bump Plot w/ Point Difference", "Interactive Line Plot")),
+                   selected = "Bump Plot")
   })
   # [Bump Plot] - UI (Competition) ----
   output$competition <- renderUI({
@@ -67,7 +74,7 @@ function(input, output, session) {
   output$teams <- renderUI({
     req(input$competition)
     selectizeInput(inputId = "teams",
-                   label = "Teams",
+                   label = "Teams (Bump Only)",
                    choices = sort(unique(bump_data()$Team)),
                    multiple = TRUE,
                    options = list(
@@ -79,7 +86,7 @@ function(input, output, session) {
   output$back_color <- renderUI({
     selectizeInput(
         "back_color",
-        "Plot Background Color",
+        "Background Color",
         choices = c("#D3D3D3 (Gray)",
                     "#000000 (Black)",
                     "#FFFFFF (White)"),
@@ -117,7 +124,7 @@ function(input, output, session) {
     
     girafe(
       ggobj = getBumpPlot(df(), input$md_range[1], input$md_range[2], teams(), input$teams, league_palette(),
-                          input$bump_rank, input$back_color),
+                          input$bump_rank, input$back_color, input$bumpPlotType),
       width_svg = 40, height_svg = 16,
       options = list(
         opts_hover_inv(css = "opacity:0.1;"),

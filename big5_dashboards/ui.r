@@ -29,10 +29,11 @@ navbarPage(title = "Big 5 Dashboards by Joe", id = "navbarID",
                ),
              tabPanel("Interactive Bump Plot",
                 # h1("View your team's journey up and down the table!", align = "center"),
-                h3("Hover over a team's path to highlight it, or select team(s) in the sidebar for a smoother view", align = "center"),
+                h3("Select team(s) in the sidebar (Bump), or hover over a team's path (Line) to highlight them in the plot!", align = "center"),
                 br(),
                 sidebarLayout(
                   sidebarPanel(
+                    uiOutput(outputId = "bumpPlotType"),
                     uiOutput(outputId = "competition"),
                     uiOutput(outputId = "teams"),
                     uiOutput(outputId = "md_range"),
