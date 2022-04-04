@@ -1,9 +1,9 @@
 navbarPage(title = "Reading Tracker",
            tabPanel(title = "Database Tables",
-                    column(3,
+                    column(2,
                            wellPanel(uiOutput(outputId = "table_input"))
                            ),
-                    column(9,
+                    column(10,
                            reactableOutput(outputId = "table_output")
                            )
                     )

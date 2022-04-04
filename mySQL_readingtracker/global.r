@@ -4,8 +4,12 @@ library(tidyverse)
 library(reactable)
 library(shiny)
 
+# ALWAYS DELETE BEFORE SENDING TO GITHUB!!! ----
+Sys.setenv(DB_USER = "jryan")
+Sys.setenv(DB_PASS = "Uncompaghre445!")
+
 # [Database] - Connection ----
-db <- dbConnect(RMariaDB::MariaDB(), user = "jryan", password = "Hawkeye5026!",
+db <- dbConnect(RMariaDB::MariaDB(), user = Sys.getenv("DB_USER"), password = Sys.getenv("DB_PASS"),
                        dbname = "reading_tracker", host = "localhost")
 
 # [Database] - Query Collection + Selection ----

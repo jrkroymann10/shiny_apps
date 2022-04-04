@@ -8,7 +8,7 @@ function(input, output, session) {
       multiple = FALSE,
       options = list(
         placeholder = 'Select a Table to View',
-        onInitialize = I('function() { this.setValue(""); }')
+        onInitialize = I('function() { this.setValue("session"); }')
         )
     )
   })
