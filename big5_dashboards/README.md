@@ -4,6 +4,6 @@
 
 
 ## R Skill Highlights
-- Unique, Informative, and Aesthically Pleasing Visualizations using [{ggplot2}](https://ggplot2.tidyverse.org/), [{ggbump}](https://github.com/davidsjoberg/ggbump), [{gghighlight}](https://github.com/yutannihilation/gghighlight), [{ggiraph}](https://davidgohel.github.io/ggiraph/index.html) and more!
+- Unique, Informative, and Aesthically Pleasing Visualizations using [{ggplot2}](https://ggplot2.tidyverse.org/), [{reactable}](https://glin.github.io/reactable/), [{gghighlight}](https://github.com/yutannihilation/gghighlight), [{ggiraph}](https://davidgohel.github.io/ggiraph/index.html) and more!
 - Data Manipulation with [{dplyr}](https://dplyr.tidyverse.org/)
 - Interactive Content (Dashboards, Visualizations) through [{shiny}](https://shiny.rstudio.com/)
