@@ -5,10 +5,10 @@ account: jrkroymann10
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 5508340
-bundleId: 5763896
+bundleId: 5787604
 url: https://jrkroymann10.shinyapps.io/big5_dashboards/
-when: 1649098291.02265
-lastSyncTime: 1649098291.02265
+when: 1649699692.02323
+lastSyncTime: 1649699692.02323
 asMultiple: FALSE
 asStatic: FALSE
-ignoredFiles: .httr-oauth|README.md|update_data.r
+ignoredFiles: README.md|update_data.r

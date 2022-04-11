@@ -20,7 +20,8 @@ function(input, output, session) {
     selectizeInput(inputId = "standTableComp",
                    label = HTML("<p style = 'color: white'>Competition</p>"),
                    choices = sort(unique(big5_table$Competition_Name)),
-                   selected = "Premier League")
+                   multiple = FALSE,
+                   selected = sample(unique(big5_table$Competition_Name), 1))
   })
   # [Table + Bump Plot] - Reactive Data ----
   table_data <- reactive({
@@ -52,9 +53,7 @@ function(input, output, session) {
                    label = "Competition",
                    choices = sort(unique(big5$Competition_Name)),
                    multiple = FALSE,
-                   options = list(
-                     placeholder = 'Select a Competition',
-                     onInitialize = I('function() { this.setValue("Premier League"); }'))
+                   selected = sample(unique(big5$Competition_Name), 1)
     )
   })
   # [Bump Plot] - UI Slider (MD Range) ----
@@ -164,7 +163,7 @@ function(input, output, session) {
       gkDataCombined %>% dplyr::filter(Min_Playing >= 900)
     }
     else {
-      gkDataCombined %>% dplyr::filter(Comp %in% input$gkZoneComp & Min_Playing >= 900)
+      gkDataCombined %>% dplyr::filter(Comp %in% input$team_gkZoneComp & Min_Playing >= 900)
     }
   })
   
@@ -251,59 +250,73 @@ function(input, output, session) {
   # ------------------------------------------------------------------------
   # [XG Time] - Reactive Data ----
   xgData <- reactive({
-    req(input$xgTeam)
+    req(input$team_xgTeam)
     
-    big5ToXG(big5[big5$Home == input$xgTeam | big5$Away == input$xgTeam,], input$xgTeam)
+    big5ToXG(big5[big5$Home == input$team_xgTeam | big5$Away == input$team_xgTeam,], input$team_xgTeam)
   })
   
   xgDataInt <- reactive({
-    req(input$xgTeam)
+    req(input$team_xgTeam)
     
-    XGDataInterp(tidyXGData(big5ToXG(big5[big5$Home == input$xgTeam | big5$Away == input$xgTeam,], input$xgTeam)))
+    XGDataInterp(tidyXGData(big5ToXG(big5[big5$Home == input$team_xgTeam | big5$Away == input$team_xgTeam,], input$team_xgTeam)))
   })
-  # [XG Time] - UI (Viz Selection) ----
-  output$xgViz <- renderUI({
-    selectizeInput(inputId = "xgViz",
+  
+  comp_shotData <- reactive({
+    req(input$player_xgComp)
+    
+    big5_shots %>% 
+      filter(league == input$player_xgComp)
+  })
+  
+  player_shotData <- reactive({
+    req(input$player_xgPlayer)
+    
+    comp_shotData() %>%
+      filter(player == input$player_xgPlayer)
+  })
+  # [XG Time (Team)] - UI (Viz Selection) ----
+  output$team_xgViz <- renderUI({
+    selectizeInput(inputId = "team_xgViz",
                    label = "Visualization",
                    choices = c("6 Game Rolling Avg", "Game By Game"),
                    selected = "6 Game Rolling Average"
                    )
   })
-  # [XG Time] - UI (Competition Selection) ----
-  output$xgComp <- renderUI({
-    selectizeInput(inputId = "xgComp",
+  # [XG Time (Team)] - UI (Competition Selection) ----
+  output$team_xgComp <- renderUI({
+    selectizeInput(inputId = "team_xgComp",
                    label = "Competition",
                    choices = sort(unique(big5$Competition_Name)),
-                   selected = "Premier League")
+                   selected = sample(big5$Competition_Name))
   })
-  # [XG Time] - UI (Team Selection) ----
-  output$xgTeam <- renderUI({
-    req(input$xgComp)
+  # [XG Time (Team)] - UI (Team Selection) ----
+  output$team_xgTeam <- renderUI({
+    req(input$team_xgComp)
     
-    selectizeInput(inputId = "xgTeam",
+    selectizeInput(inputId = "team_xgTeam",
                    label = "Team",
-                   choices = sort(unique(big5[big5$Competition_Name == input$xgComp,]$Home)),
-                   selected = "Liverpool")
+                   choices = sort(unique(big5[big5$Competition_Name == input$team_xgComp,]$Home)),
+                   selected = sample(unique(big5[big5$Competition_Name == input$team_xgComp,]$Home), 1))
   })
-  # [XG Time] - UI (Palette Selection) ----
-  output$xgPalette <- renderUI({
-    selectizeInput(inputId = "xgPalette",
+  # [XG Time (Team)] - UI (Palette Selection) ----
+  output$team_xgPalette <- renderUI({
+    selectizeInput(inputId = "team_xgPalette",
                    label = "Palette",
                    choices = sort(c("Liverpool", "Venezia", "Real Betis")),
-                   selected = "Liverpool")
+                   selected = sample(c("Liverpool", "Venezia", "Real Betis"), 1))
   })
-  # [XG Time] - UI (Text Output) ----
-  # [XG Time] - Plot Output ----
-  output$xgPlot <- renderUI(
+  # [XG Time (Team)] - UI (Text Output) ----
+  # [XG Time (Team)] - Plot Output ----
+  output$team_xgPlot <- renderUI(
     renderGirafe({
-      req(input$xgTeam)
-      req(input$xgComp)
+      req(input$team_xgTeam)
+      req(input$team_xgComp)
       
       girafe(
-        ggobj = getXGPlot(viz = input$xgViz, df_int = xgDataInt(), df = xgData(), team = input$xgTeam, comp = input$xgComp,
-                          bund = if_else(input$xgComp == "Bundesliga", TRUE, FALSE), 
-                          the = if_else(input$xgComp == "Bundesliga" | input$xgComp == "Premier League", TRUE, FALSE),
-                          getXGPalette(input$xgPalette)),
+        ggobj = getXGPlot(viz = input$team_xgViz, df_int = xgDataInt(), df = xgData(), team = input$team_xgTeam, comp = input$team_xgComp,
+                          bund = if_else(input$team_xgComp == "Bundesliga", TRUE, FALSE), 
+                          the = if_else(input$team_xgComp == "Bundesliga" | input$team_xgComp == "Premier League", TRUE, FALSE),
+                          getXGPalette(input$team_xgPalette)),
         
         width_svg = 20,
         height_svg = 6,
@@ -315,4 +328,68 @@ function(input, output, session) {
       )
     })
     )
+  # [XG Time (Player)] - UI (Viz Selection) ----
+  output$player_xgViz <- renderUI({
+    selectizeInput(inputId = "player_xgViz",
+                   label = "Visualization",
+                   choices = c("10 Shot Rolling Avg", "Expected vs. Actual"),
+                   selected = "Shot by Shot"
+                   )
+    })
+  # [XG Time (Player)] - UI (Competition Selection) ----
+  output$player_xgComp <- renderUI({
+    selectizeInput(inputId = "player_xgComp",
+                   label = "Competition",
+                   choices = sort(unique(big5_shots$league)),
+                   selected = sample(big5_shots$league, 1))
+  })
+  # [XG Time (Player)] - UI (Team Selection) ----
+  output$player_xgTeam <- renderUI({
+    req(input$player_xgComp)
+    
+    selectizeInput(inputId = "player_xgTeam",
+                   label = "Team",
+                   choices = sort(unique(big5_shots[big5_shots$league == input$player_xgComp,]$team)),
+                   selected = sample(unique(big5_shots[big5_shots$league == input$player_xgComp,]$team), 1))
+  })
+  # [XG Time (Player)] - UI (Player Selection) ----
+  output$player_xgPlayer <- renderUI({
+    req(input$player_xgTeam)
+    
+    selectizeInput(inputId = "player_xgPlayer",
+                   label = "Player",
+                   choices = sort(unique(big5_shots[big5_shots$team == input$player_xgTeam,]$player)),
+                   multiple = FALSE,
+                   selected = sample(unique(big5_shots[big5_shots$team == input$player_xgTeam,]$player), 1))
+  })
+  
+  # [XG Time (Player)] - UI (Palette Selection) ----
+  output$player_xgPalette <- renderUI({
+    selectizeInput(inputId = "player_xgPalette",
+                   label = "Palette",
+                   choices = sort(c("Hokusai1", "Egypt", "Archambault", "Tsimshian")),
+                   multiple = FALSE,
+                   selected = sample(c("Hokusai1", "Egypt", "Archambault", "Tsimshian"), 1))
+  })
+  # [XG Time (Player)] - Plot Output ----
+  output$player_shotMap <- renderUI(
+    renderGirafe({
+      req(input$player_xgPlayer)
+      
+      validate(
+        need(length(input$player_xgPlayer) > 0 , "wait a second!")
+      )
+      
+      girafe(
+        ggobj = get_shotMap(player_shotData(), input$player_xgPalette),
+        
+        options = list(
+          opts_selection(css = NULL,
+                         type = "none"),
+          opts_tooltip(use_fill = TRUE),
+          opts_hover_inv(css = "opacity:0.5;")
+        )
+      )
+    })
+  )
 }

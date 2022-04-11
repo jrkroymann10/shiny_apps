@@ -27,7 +27,7 @@ navbarPage(title = "Big 5 Dashboards by Joe", id = "navbarID",
                  reactableOutput(outputId = "standTable", width = "78.15%")
                 )
                ),
-             tabPanel("Interactive Bump Plot",
+             tabPanel("Rank Display",
                 # h1("View your team's journey up and down the table!", align = "center"),
                 h3("Select team(s) in the sidebar (Bump), or hover over a team's path (Line) to highlight them in the plot!", align = "center"),
                 br(),
@@ -84,14 +84,27 @@ navbarPage(title = "Big 5 Dashboards by Joe", id = "navbarID",
   tabPanel("xG Timelines",
            wellPanel(
              fluidRow(
-               column(2, uiOutput(outputId = "xgViz")),
-               column(2, uiOutput(outputId = "xgComp")),
-               column(2, uiOutput(outputId = "xgTeam")),
-               column(2, uiOutput(outputId = "xgPalette")),
-               column(3, uiOutput(outputId = "xgVizText"))
+               column(2, uiOutput(outputId = "team_xgViz")),
+               column(2, uiOutput(outputId = "team_xgComp")),
+               column(2, uiOutput(outputId = "team_xgTeam")),
+               column(2, uiOutput(outputId = "team_xgPalette")),
+               column(3, uiOutput(outputId = "team_xgVizText"))
                )
              ),
-           uiOutput("xgPlot"),
+           uiOutput("team_xgPlot"),
+           ),    
+  # Shot Maps Tab ----
+  tabPanel("Shot Maps",
+           sidebarLayout(
+             position = "right",
+             sidebarPanel(
+               uiOutput(outputId = "player_xgComp"),
+               uiOutput(outputId = "player_xgTeam"),
+               uiOutput(outputId = "player_xgPlayer"),
+               uiOutput(outputId = "player_xgPalette")
+             ),
+             mainPanel(uiOutput("player_shotMap"))
+             )
            )
   )
 )

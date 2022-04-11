@@ -1,35 +1,143 @@
-# [Loading] - Libraries -----------------------------------------------------------------
-library(shinyWidgets)
-library(readr)
-library(shiny)
-library(devtools)
-library(tidyverse)
-library(ggbump)
-library(readr)
-library(gghighlight)
-library(ggplot2)
-library(ggiraph)
-library(MetBrewer)
-library(worldfootballR)
-library(zoo)
-library(stringr)
-library(DescTools)
-library(ggtext)
-library(glue)
-library(showtext)
-library(ggrepel)
-library(reactable)
-library(reactablefmtr)
-
-font_add_google("Roboto Mono", "Roboto")
-showtext_auto()
-
-colGrid <- rgb(235, 235, 235, 225, maxColorValue = 255)
-
+# # [Loading] - Libraries, Pitches -----------------------------------------------------------------
+# library(shinyWidgets)
+# library(readr)
+# library(shiny)
+# library(devtools)
+# library(tidyverse)
+# library(ggbump)
+# library(readr)
+# library(gghighlight)
+# library(ggplot2)
+# library(ggiraph)
+# library(MetBrewer)
+# library(worldfootballR)
+# library(zoo)
+# library(stringr)
+# library(DescTools)
+# library(ggtext)
+# library(glue)
+# library(showtext)
+# library(ggrepel)
+# library(reactable)
+# library(reactablefmtr)
+# 
+# font_add_google("Roboto Mono", "Roboto")
+# showtext_auto()
+# 
+# colGrid <- rgb(235, 235, 235, 225, maxColorValue = 255)
+# 
+# t_col <- function(color, percent, name = NULL) {
+#   rgb(color[1], color[2], color[3],
+#       max = 255,
+#       alpha = (100 - percent) * 255/100,
+#       names = name)
+# }
+# 
+# statsBomb_halfPitch <- function(grass_colour, line_colour, background_colour, goal_colour) {
+# 
+#   shotmapxgcolors <- c("#192780", "#2a5d9f", "#40a7d0", "#87cdcf", "#e7f8e6", "#f4ef95", "#FDE960",
+#                        "#FCDC5F", "#F5B94D", "#F0983E", "#ED8A37", "#E66424", "#D54F1B", "#DC2608",
+#                        "#BF0000", "#7F0000", "#5F0000")
+# 
+#   theme_blankPitch <- function(size=12) {
+#     theme(axis.text.x = element_blank(),
+#           axis.text.y = element_blank(),
+#           axis.ticks.length = unit(0, "lines"),
+#           axis.title.x = element_blank(),
+#           axis.title.y = element_blank(),
+#           legend.background = element_rect(fill = background_colour, colour = NA),
+#           legend.key = element_rect(colour = background_colour, fill = background_colour),
+#           legend.key.size = unit(1.2, "lines"),
+#           legend.text = element_text(size = size),
+#           legend.title = element_text(size = size, face = "bold", hjust = 0),
+#           strip.background = element_rect(colour = background_colour, fill = background_colour, size = .5),
+#           panel.background = element_rect(fill = background_colour, colour = background_colour),
+#           panel.grid.major = element_blank(),
+#           panel.grid.minor = element_blank(),
+#           panel.spacing = element_blank(),
+#           plot.background = element_blank(),
+#           plot.margin = unit(c(0,0,0,0), "lines"),
+#           plot.title = element_text(size = size*1.2),
+#           strip.text.y = element_text(colour = background_colour, size = size, angle = 270),
+#           strip.text.x = element_text(size = size*1))}
+# 
+#   ## defining variables related to dimensions of a statsbomb pitch
+#   ymin <- 0
+#   ymax <- 80
+#   xmin <- 60
+#   xmax <- 120
+# 
+#   ## Defining features along the length
+#   boxEdgeOff <- 102
+#   sixYardOff <- 114
+#   penSpotOff <- 108
+#   halfwayline <- 60
+# 
+#   ## Defining features along the width
+#   boxEdgeLeft <- 18
+#   boxEdgeRight <- 62
+#   sixYardLeft <- 30
+#   sixYardRight <- 50
+#   goalPostLeft <- 36
+#   goalPostRight <- 44
+#   CentreSpot <- 40
+# 
+#   ## other dimensions
+#   centreCirle_d <- 20
+# 
+#   ## creating circle function for arc at the top of the box
+#   circle_fun <- function(center = c(0,0), diameter = 1, npoints = 100) {
+#     r <- diameter/2
+#     tt <- seq(0,2*pi,length.out = npoints)
+#     xx <- center[1] + r * cos(tt)
+#     yy <- center[2] + r * sin(tt)
+#     return(data.frame(x = xx, y = yy))
+#   }
+# 
+#   ## create leftD arc
+#   dArc <- circle_fun(c((40),(penSpotOff)),centreCirle_d,npoints = 1000)
+# 
+#   ## remove part in box
+#   dArc <- dArc[which(dArc$y <= (boxEdgeOff)),]
+# 
+#   p <- ## mix matched limits due to rotating og dimensions to half plot
+#     ggplot() + xlim(c(ymin, ymax)) + ylim(c(xmin, xmax)) +
+# 
+#     ## adding the theme
+#     theme_blankPitch() +
+# 
+#     ## adding base rectangle of the pitch
+#     geom_rect(aes(xmin = ymin, xmax = ymax, ymin = xmin, ymax = xmax), fill = grass_colour, colour = line_colour) +
+# 
+#     ## adding 18 yard box offensive
+#     geom_rect(aes(xmin = boxEdgeLeft, xmax = boxEdgeRight, ymin = boxEdgeOff, ymax = xmax), fill = grass_colour,
+#               colour = line_colour) +
+# 
+#     ## adding goal offensive
+#     geom_segment(aes(x = goalPostLeft, y = xmax, xend = goalPostRight, yend = xmax), colour = goal_colour, size = 1) +
+# 
+#     ## adding six yard box offensive
+#     geom_rect(aes(xmin = sixYardLeft, xmax = sixYardRight, ymin = sixYardOff, ymax = xmax), fill = grass_colour,
+#               colour = line_colour) +
+# 
+#     ## adding the arc circle
+#     geom_path(data = dArc, aes(x = x, y = y), colour = line_colour) +
+# 
+#     ## adding penalty spot
+#     geom_point(aes(x = CentreSpot, y = penSpotOff), colour = line_colour) +
+# 
+#     ## adding goal
+#     geom_segment(aes(x = goalPostLeft, y = xmax, xend = goalPostRight, yend = xmax),colour = goal_colour, size = 1)
+# 
+#   return(p)
+# }
+# 
 # [Loading] - Reading in Data ----
 big5 <- read.csv('data/big5.csv', encoding = "UTF-8")
 big5_table <- read.csv('data/big5_table.csv', encoding = "UTF-8")
 gkDataCombined <- read.csv('data/big5_GK.csv', encoding = "UTF-8")
+big5_shots <- read.csv('data/big5_shots.csv', encoding = "UTF-8") %>%
+  filter(result != "OwnGoal")
 # ---------------------------------------------------------------------------------------------------
 # [Table] - Image Helper (unicode workaround) ----
 value_helper <- function(value) {
@@ -646,7 +754,7 @@ gkLandingText <- HTML("<p>Welcome to the Goalkeeper Zone! This panel is comprise
                        analyis necessary to deliver that story in an accurate and convincing manner. Cheers!</p>")
 
 # ----------------------------------------------------------------
-# [XG Time] - Data Transformation ----
+# [XG Time (Team)] - Data Transformation ----
 # transforming big 5 data (calculating rolling xG averages for and against + adding gameNum column)
 big5ToXG <- function(df, team, rollN = 6) {
   df_trans <- df %>%
@@ -698,7 +806,7 @@ XGDataInterp <- function(df) {
                        team = .x$selOpp[1]))
 }
 
-# [XG Time] - Plot Output(s) ----
+# [XG Time (Team)] - Plot Output(s) ----
 getXGPlot <- function(viz, df_int, df, team, comp, bund, the, pal) {
   if (viz == "6 Game Rolling Avg") {
     xgRollPlot(df_int, team, comp, bund, the, pal)
@@ -727,8 +835,8 @@ xgRollPlot <- function(df, team, comp, bund, the, pal) {
         breaks = seq(5, 35, by = 5)) +
       scale_y_continuous(
         expand = c(0,0),
-        limits = c((min(df$selRoll.y, df$oppRoll.y) - 0.25), (max(df$selRoll.y, df$oppRoll.y) + 0.25)), 
-        breaks = seq(0, (max(df$selRoll.y, df$oppRoll.y) + 1), by = 0.2)) +
+        limits = c(0, 3.45), 
+        breaks = seq(0, 3, by = 0.5)) +
       
       labs(title = paste(team, "'s Underlying Expected Performance", sep = ""),
            subtitle = glue("<span>6 game rolling average of {team}'s
@@ -798,9 +906,9 @@ gbgXGPlot <- function(df, team, comp, bund, the, pal) {
       breaks = seq(5, 35, by = 5)
     ) +
     scale_y_continuous(
-      limits = c(-max(abs(min(df$xgFor - df$xgAgainst)), max(df$xgFor - df$xgAgainst)) - 0.5, max(abs(min(df$xgFor - df$xgAgainst)), max(df$xgFor - df$xgAgainst)) + 0.5),
+      limits = c(-5.75, 5.75),
       expand = c(0,0),
-      breaks = seq(-5, 5, by = 0.5)
+      breaks = seq(-5, 5, by = 1)
     ) +
     scale_fill_manual(
       values = c(pal[2],pal[3],pal[1])
@@ -835,7 +943,7 @@ gbgXGPlot <- function(df, team, comp, bund, the, pal) {
       axis.text = element_text(colour = "black", size = 12.5)
     )
 }
-# [XG Time] - Palettes ----
+# [XG Time (Team)] - Palettes ----
 getXGPalette <- function(input) {
   if (input == "Liverpool") {
     c("#D01317", "#009782", "#FFEE46") # lava, paolo veronese green, lemon yellow
@@ -846,4 +954,112 @@ getXGPalette <- function(input) {
   else if (input == "Real Betis") {
     c("#0BB363", "#E7A614", "#D62550")
   }
+}
+# [XG Time (Player)] - Shot Map Output ----
+get_shotMap <- function(df, palette) {
+  statsBomb_halfPitch("#202124", "#ffffff", "#202124", "#131313") +
+    geom_point_interactive(data = df, aes(x = Y * 80, y = X * 120, fill = result,
+                              size = xG, colour = result, data_id = id,
+                              tooltip = paste0("xG: ", round(xG, 3))), shape = 21) +
+    scale_fill_manual(values = c(t_col(col2rgb(met.brewer(palette, 5)[1]), 10),
+                                 t_col(col2rgb(met.brewer(palette, 5)[2]), 10),
+                                 t_col(col2rgb(met.brewer(palette, 5)[3]), 10),
+                                 t_col(col2rgb(met.brewer(palette, 5)[4]), 10),
+                                 t_col(col2rgb(met.brewer(palette, 5)[5]), 10)),
+                      labels = c(" Goal", " Missed", " Saved", " On Post", " Blocked"),
+                      breaks = c("Goal", "MissedShots", "SavedShot", "ShotOnPost", "BlockedShot")
+    ) +
+    scale_colour_manual(values = c(t_col(col2rgb(met.brewer(palette, 5)[1]), 10),
+                                   t_col(col2rgb(met.brewer(palette, 5)[2]), 10),
+                                   t_col(col2rgb(met.brewer(palette, 5)[3]), 10),
+                                   t_col(col2rgb(met.brewer(palette, 5)[4]), 10),
+                                   t_col(col2rgb(met.brewer(palette, 5)[5]), 10)),
+                        breaks = c("Goal", "MissedShots", "SavedShot", "ShotOnPost", "BlockedShot")
+    ) +
+    scale_x_reverse() +
+    guides(
+      colour = "none",
+      size = "none",
+      fill = guide_legend(
+        title = NULL,
+        label.theme = element_text(family = "Roboto", colour = "white", hjust = 0),
+        override.aes = list(
+          size = 5, colour = "white"
+        )
+      )
+    ) +
+    
+    geom_text(aes(x = 78, y = 73, label = paste0(unique(df$player), " (21-22)")),
+              colour = "white", size = 6, family = "Roboto", fontface = "bold", hjust = 0) +
+    
+    geom_text(aes(x = 78, y = 69, label = paste0("Non-Penalty xG: ", round(sum(df$xG), 2))),
+              colour = "white", size = 5, family = "Roboto", hjust = 0) +
+    
+    geom_text(aes(x = 78, y = 66, label = paste0("Non-Penalty Goals: ", round(sum(df$goal), 2))),
+              colour = "white", size = 5, family = "Roboto", hjust = 0) +
+    
+    geom_text(aes(x = 78, y = 62, label = "Data: Understat (Penalties + Own Goals Not Included)"),
+              colour = "white", size = 3, family = "Roboto", hjust = 0) +
+    
+    theme(
+      legend.position = c(0.8375, 0.2075),
+      legend.background = element_rect(colour = "#ffffff", linetype = "dashed"),
+      legend.title = element_blank(),
+      legend.spacing.x = unit(0, "mm"),
+      legend.spacing.y = unit(0, "mm")
+    )
+}
+# {XG Time (Player)} - XG Diff Output ----
+get_xgDiff <- function(df, palette = "Egypt") {
+  
+  df <- df %>%
+    mutate(shot = 1:nrow(df),
+           cum_xg = cumsum(xG),
+           cum_goals = cumsum(goal)) %>%
+    mutate(diff = cum_goals - cum_xg,
+           roll_diff = round(rollmean(diff, k = 10, fill = NA, align = "right"), 2))
+  
+  for (i in 1:9) {
+    df[i,]$roll_diff <- round(mean(df[1:i,]$diff), 2)
+  }
+  
+  ggplot(df, aes(x = shot, y = roll_diff)) +
+    geom_hline(aes(yintercept = 0), colour = "white", size = 0.25) +
+    geom_line(colour = "white", size = 1.5) +
+    geom_line(linetype = "dashed", colour = "white", size = 1.5) +
+    
+    scale_x_continuous(
+      expand = c(0, 0),
+      limits = c(1,max(df$shot) + 3),
+      breaks = seq(0, max(df$shot), by = 10)) +
+    
+    scale_y_continuous(
+      limits = c(-5.25, 5.25),
+      breaks = seq(-5, 5, 1)
+    ) +
+    
+    labs(
+      title = paste0(df$player, "'s Underlying Expected Goal-Scoring Performance"),
+      subtitle = paste0("10 Shot Rolling Average of ", df$player, "'s Expected Goal Difference in the Premier League for 2021/2022"),
+      x = "Shot", y = "Rolling xG Difference"
+    ) +
+    
+    theme(
+      panel.background = element_rect(fill = "#202124", colour = "white"),
+      panel.grid = element_blank(),
+      
+      plot.background = element_rect(fill = "#202124", colour = "#202124"),
+      plot.title = element_text(face = "bold", size = 18),
+      plot.subtitle = element_text(size = 14),
+      plot.margin = unit(c(2.5, 5, 2.5, 3.75), "mm"),
+      
+      text = element_text(colour = "white", family = "Roboto"),
+      
+      axis.title = element_text(face = "bold", size = 14),
+      axis.title.y = element_text(margin = unit(c(0,2.5,0,0), "mm")),
+      axis.title.x = element_text(margin = unit(c(2.5, 0, 0, 0), "mm")),
+      axis.text = element_text(colour = "white", family = "Roboto", size = 12),
+      axis.ticks.x = element_line(colour = "white"),
+      axis.ticks.y = element_blank()
+    )
 }

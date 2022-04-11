@@ -74,7 +74,86 @@ gkDataCombined <- data.frame(merge(merge(gkData,
 colnames(gkDataCombined)[colnames(gkDataCombined) == "X_per_90_Expected"] <- "per_90"
 colnames(gkDataCombined)[colnames(gkDataCombined) == "PSxG._per__minus__Expected"] <- "PSxG_minus_GA"
 
+# Big 5 Shots ----
+bund_shots <- understat_league_season_shots("Bundesliga", 2021) %>%
+  filter(situation != "Penalty") %>%
+  select(-c(player_id, season)) %>%
+  mutate(goal = if_else(result == "Goal", 1, 0))
+
+laliga_shots <- understat_league_season_shots("La liga", 2021)  %>%
+  filter(situation != "Penalty") %>%
+  select(-c(player_id, season)) %>%
+  mutate(goal = if_else(result == "Goal", 1, 0))
+
+ligue1_shots <- understat_league_season_shots("Ligue 1", 2021)  %>%
+  filter(situation != "Penalty") %>%
+  select(-c(player_id, season)) %>%
+  mutate(goal = if_else(result == "Goal", 1, 0))
+
+pl_shots <- understat_league_season_shots("EPL", 2021)  %>%
+  filter(situation != "Penalty") %>%
+  select(-c(player_id, season)) %>%
+  mutate(goal = if_else(result == "Goal", 1, 0))
+
+serieA_shots <- understat_league_season_shots("Serie A", 2021)  %>%
+  filter(situation != "Penalty") %>%
+  select(-c(player_id, season)) %>%
+  mutate(goal = if_else(result == "Goal", 1, 0))
+
+big5_shots <- rbind(bund_shots,
+                    rbind(laliga_shots,
+                          rbind(ligue1_shots,
+                                rbind(pl_shots, serieA_shots))))
+
+big5_shots <- big5_shots %>%
+  mutate(
+    team = if_else(h_a == "h", home_team, away_team),
+    player = case_when(
+      player == "Danilo D&#039;Ambrosio" ~ "Danilo D'Ambrosio",
+      player == "N&#039;Golo Kanté" ~ "N'Golo Kanté",
+      TRUE ~ player
+    ),
+    league = case_when(
+      league == "EPL" ~ "Premier League",
+      league == "La_liga"  ~ "La Liga",
+      league == "Ligue_1" ~ "Ligue 1",
+      league == "Serie_A" ~ "Serie A",
+      TRUE ~ league
+    ),
+    team = case_when(
+      team == "Alaves" ~ "Alavés",
+      team == "Arminia Bielefeld" ~ "Arminia",
+      team == "Athletic Club" ~ "Athletic",
+      team == "Atletico Madrid" ~ "Atleti",
+      team == "Bayern Munich" ~ "Bayern",
+      team == "Borussia Dortmund" ~ "Dortmund",
+      team == "Borussia M.Gladbach" ~ "Gladbach",
+      team == "Clermont Foot" ~ "Clermont",
+      team == "Crystal Palace" ~ "Palace",
+      team == "Eintracht Frankfurt" ~ "Frankfurt",
+      team == "FC Cologne" ~ "Köln",
+      team == "Greuther Fuerth" ~ "Furth",
+      team == "Hertha Berlin" ~ "Hertha BSC",
+      team == "Bayer Leverkusen" ~ "Leverkusen",
+      team == "Manchester City" ~ "Man City",
+      team == "Manchester United" ~ "Man Utd",
+      team == "AC Milan" ~ "Milan",
+      team == "Newcastle United" ~ "Newcastle",
+      team == "Paris Saint Germain" ~ "Paris S-G",
+      team == "RasenBallsport Leipzig" ~ "RB Leipzig",
+      team == "Rayo Vallecaon" ~ "Rayp",
+      team == "Real Betis" ~ "Betis",
+      team == "Real Sociedad" ~ "La Real",
+      team == "Saint-Etienne" ~ "Étienne",
+      team == "VfB Stuttgart" ~ "Stuttgart",
+      team == "Union Berlin" ~ "Berlin",
+      team == "Wolverhampton Wanderers" ~ "Wolves",
+      TRUE ~ team
+    )
+    )
+
 # Writing Dataframes to data/ ----
 write.csv(big5, "~/R/shiny_applications/big5_dashboards/data/big5.csv", row.names = FALSE, fileEncoding = "UTF-8")
 write.csv(big5_table, "~/R/shiny_applications/big5_dashboards/data/big5_table.csv", row.names = FALSE, fileEncoding = "UTF-8")
 write.csv(gkDataCombined, "~/R/shiny_applications/big5_dashboards/data/big5_GK.csv", row.names = FALSE, fileEncoding = "UTF-8")
+write.csv(big5_shots, "~/R/shiny_applications/big5_dashboards/data/big5_shots.csv", row.names = FALSE, fileEncoding = "UTF-8")
