@@ -1,15 +1,6 @@
 # shinyServer ----
 # ----
 function(input, output, session) {
-  # [Message Handler] - Background Color of Tab Panels ----
-  observeEvent(input$navbarID, {
-    if (input$navbarID == "Standard Table") {
-      session$sendCustomMessage("background-color", "#303134")
-    }
-    else {
-      session$sendCustomMessage("background-color", "white")
-    }
-  })
   # [Table] - Plot Output ----
   output$standTable <- renderReactable({
     req(input$standTableComp)
@@ -21,7 +12,10 @@ function(input, output, session) {
                    label = HTML("<p style = 'color: white'>Competition</p>"),
                    choices = sort(unique(big5_table$Competition_Name)),
                    multiple = FALSE,
-                   selected = sample(unique(big5_table$Competition_Name), 1))
+                   selected = sample(unique(big5_table$Competition_Name), 1),
+                   options = list(
+                     
+                   ))
   })
   # [Table + Bump Plot] - Reactive Data ----
   table_data <- reactive({
@@ -87,11 +81,11 @@ function(input, output, session) {
         "back_color",
         "Background Color",
         choices = c("#D3D3D3 (Gray)",
-                    "#000000 (Black)",
+                    "#202124 (Black)",
                     "#FFFFFF (White)"),
         options = list(
           placeholder = 'Select a Background Color',
-          onInitialize = I('function() { this.setValue("#D3D3D3 (Gray)"); }')
+          onInitialize = I('function() { this.setValue("#202124 (Black)"); }')
         )
     )
   })
@@ -261,18 +255,13 @@ function(input, output, session) {
     XGDataInterp(tidyXGData(big5ToXG(big5[big5$Home == input$team_xgTeam | big5$Away == input$team_xgTeam,], input$team_xgTeam)))
   })
   
-  comp_shotData <- reactive({
+  shot_data <- reactive({
     req(input$player_xgComp)
     
     big5_shots %>% 
-      filter(league == input$player_xgComp)
-  })
-  
-  player_shotData <- reactive({
-    req(input$player_xgPlayer)
-    
-    comp_shotData() %>%
-      filter(player == input$player_xgPlayer)
+      filter(league == input$player_xgComp,
+             team == input$player_xgTeam,
+             player == input$player_xgPlayer)
   })
   # [XG Time (Team)] - UI (Viz Selection) ----
   output$team_xgViz <- renderUI({
@@ -377,11 +366,11 @@ function(input, output, session) {
       req(input$player_xgPlayer)
       
       validate(
-        need(length(input$player_xgPlayer) > 0 , "wait a second!")
+        need(unique(shot_data()$player == input$player_xgPlayer) > 0 , "wait a second!")
       )
       
       girafe(
-        ggobj = get_shotMap(player_shotData(), input$player_xgPalette),
+        ggobj = get_shotMap(shot_data(), input$player_xgPalette),
         
         options = list(
           opts_selection(css = NULL,

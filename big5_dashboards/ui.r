@@ -1,12 +1,18 @@
 tagList(tags$head(
-  tags$script("
-    Shiny.addCustomMessageHandler('background-color', function(color) {
-      document.body.style.backgroundColor = color;
-    });
-    "),
   tags$style(HTML("
                   * {
                     font-family: Roboto Mono;
+                  }
+                  
+                  .navbar-default {
+                    background-color: #202124;
+                    font-weight: bold;
+                    color: #ffffff;
+                  }
+                  
+                  body {
+                    background-color: #303134;
+                    color: #ffffff;
                   }
                   "
                   ))
@@ -60,7 +66,8 @@ navbarPage(title = "Big 5 Dashboards by Joe", id = "navbarID",
                         align = "center",
                         actionButton(inputId = "resetBumpRange", "Reset MD Range", width = 150))
                       ),                              
-                    width = 3),
+                    width = 3,
+                    style = "background-color:#202124;"),
                   mainPanel(girafeOutput(outputId = "bumpPlot"), width = 9)
                   )
                 )
@@ -75,7 +82,9 @@ navbarPage(title = "Big 5 Dashboards by Joe", id = "navbarID",
                uiOutput(outputId = "gkZoneComp"),
                uiOutput(outputId = "gkZonePlayer"),
                h4("Background"),
-               uiOutput(outputId = "gkZoneText"), width = 4),
+               uiOutput(outputId = "gkZoneText"), width = 4,
+               style = "background-color:#202124;"
+               ),
              mainPanel(uiOutput("gkZonePlot"), width = 8
                        )                 
              )
@@ -89,7 +98,8 @@ navbarPage(title = "Big 5 Dashboards by Joe", id = "navbarID",
                column(2, uiOutput(outputId = "team_xgTeam")),
                column(2, uiOutput(outputId = "team_xgPalette")),
                column(3, uiOutput(outputId = "team_xgVizText"))
-               )
+               ),
+             style = "background-color:#202124;"
              ),
            uiOutput("team_xgPlot"),
            ),    
@@ -101,7 +111,8 @@ navbarPage(title = "Big 5 Dashboards by Joe", id = "navbarID",
                uiOutput(outputId = "player_xgComp"),
                uiOutput(outputId = "player_xgTeam"),
                uiOutput(outputId = "player_xgPlayer"),
-               uiOutput(outputId = "player_xgPalette")
+               uiOutput(outputId = "player_xgPalette"),
+               style = "background-color:#202124;"
              ),
              mainPanel(uiOutput("player_shotMap"))
              )
