@@ -30,7 +30,7 @@ navbarPage(title = "Big 5 Dashboards by Joe", id = "navbarID",
                  )
                ),
                column(9,
-                 reactableOutput(outputId = "standTable", width = "78.15%")
+                 reactableOutput(outputId = "standTable", width = "79.80%")
                 )
                ),
              tabPanel("Rank Display",
@@ -106,13 +106,14 @@ navbarPage(title = "Big 5 Dashboards by Joe", id = "navbarID",
   # Shot Maps Tab ----
   tabPanel("Shot Maps",
            sidebarLayout(
-             position = "right",
+             position = "left",
              sidebarPanel(
                uiOutput(outputId = "player_xgComp"),
                uiOutput(outputId = "player_xgTeam"),
                uiOutput(outputId = "player_xgPlayer"),
                uiOutput(outputId = "player_xgPalette"),
-               style = "background-color:#202124;"
+               style = "background-color:#202124;",
+               width = 3
              ),
              mainPanel(uiOutput("player_shotMap"))
              )

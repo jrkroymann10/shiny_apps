@@ -4,7 +4,7 @@ function(input, output, session) {
   # [Table] - Plot Output ----
   output$standTable <- renderReactable({
     req(input$standTableComp)
-    standTable(table_data() %>% filter(Competition_Name == input$standTableComp))
+    standTable(table_data() %>% filter(Competition_Name == input$standTableComp), input$standTableComp)
   })
   # [Table] - UI (Competition) ----
   output$standTableComp <- renderUI({
@@ -157,7 +157,7 @@ function(input, output, session) {
       gkDataCombined %>% dplyr::filter(Min_Playing >= 900)
     }
     else {
-      gkDataCombined %>% dplyr::filter(Comp %in% input$team_gkZoneComp & Min_Playing >= 900)
+      gkDataCombined %>% dplyr::filter(Comp %in% input$gkZoneComp & Min_Playing >= 900)
     }
   })
   
@@ -291,8 +291,8 @@ function(input, output, session) {
   output$team_xgPalette <- renderUI({
     selectizeInput(inputId = "team_xgPalette",
                    label = "Palette",
-                   choices = sort(c("Liverpool", "Venezia", "Real Betis")),
-                   selected = sample(c("Liverpool", "Venezia", "Real Betis"), 1))
+                   choices = sort(c("Liverpool", "Venezia", "Real Betis", "Olympique de Marseille")),
+                   selected = sample(c("Liverpool", "Venezia", "Real Betis", "Olympique de Marseille"), 1))
   })
   # [XG Time (Team)] - UI (Text Output) ----
   # [XG Time (Team)] - Plot Output ----
@@ -312,7 +312,8 @@ function(input, output, session) {
         options = list(
           opts_hover_inv(css = "opacity:0.25;"),
           opts_hover(css = "stroke-width:2;"),
-          opts_selection(type = "none")
+          opts_selection(type = "none"),
+          opts_tooltip(use_fill = TRUE)
         )
       )
     })

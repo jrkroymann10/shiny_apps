@@ -1,54 +1,63 @@
 # Big 5 Match Data ----
-big5 <- data.frame(get_match_results(country = c("ENG", "ESP", "ITA", "GER", "FRA"), gender = "M", season_end_year = "2022", tier = "1st") %>%
-                     mutate(Home = ifelse(Home == "M'Gladbach", "Gladbach",
-                                          ifelse(Home == "Union Berlin", "Berlin",
-                                                 ifelse(Home == "Bayern Munich", "Bayern",
-                                                        ifelse(Home == "Greuther Fürth", "Fürth",
-                                                               ifelse(Home == "Eint Frankfurt", "Frankfurt",
-                                                                      ifelse(Home == "Atlético Madrid", "Atleti",
-                                                                             ifelse(Home == "Athletic Club", "Athletic",
-                                                                                    ifelse(Home == "Rayo Vallecano", "Rayo",
-                                                                                           ifelse(Home == "Real Sociedad", "La Real",
-                                                                                                  ifelse(Home == "Clermont Foot", "Clermont",
-                                                                                                         ifelse(Home == "Saint-Étienne", "Étienne",
-                                                                                                                ifelse(Home == "Manchester Utd", "Man Utd",
-                                                                                                                       ifelse(Home == "Manchester City", "Man City",
-                                                                                                                              ifelse(Home == "Leicester City", "Leicester",
-                                                                                                                                     ifelse(Home == "Leeds United", "Leeds",
-                                                                                                                                            ifelse(Home == "Norwich City", "Norwich",
-                                                                                                                                                   ifelse(Home == "Crystal Palace", "Palace",
-                                                                                                                                                          ifelse(Home == "Newcastle Utd", "Newcastle",
-                                                                                                                                                                 ifelse(Home == "Hellas Verona", "Verona",
-                                                                                                                                                                        Home))))))))))))))))))),
-                            Away = ifelse(Away == "M'Gladbach", "Gladbach",
-                                          ifelse(Away == "Union Berlin", "Berlin",
-                                                 ifelse(Away == "Bayern Munich", "Bayern",
-                                                        ifelse(Away == "Greuther Fürth", "Fürth",
-                                                               ifelse(Away == "Eint Frankfurt", "Frankfurt",
-                                                                      ifelse(Away == "Atlético Madrid", "Atleti",
-                                                                             ifelse(Away == "Athletic Club", "Athletic",
-                                                                                    ifelse(Away == "Rayo Vallecano", "Rayo",
-                                                                                           ifelse(Away == "Real Sociedad", "La Real",
-                                                                                                  ifelse(Away == "Clermont Foot", "Clermont",
-                                                                                                         ifelse(Away == "Saint-Étienne", "Étienne",
-                                                                                                                ifelse(Away == "Manchester Utd", "Man Utd",
-                                                                                                                       ifelse(Away == "Manchester City", "Man City",
-                                                                                                                              ifelse(Away == "Leicester City", "Leicester",
-                                                                                                                                     ifelse(Away == "Leeds United", "Leeds",
-                                                                                                                                            ifelse(Away == "Norwich City", "Norwich",
-                                                                                                                                                   ifelse(Away == "Crystal Palace", "Palace",
-                                                                                                                                                          ifelse(Away == "Newcastle Utd", "Newcastle",
-                                                                                                                                                                 ifelse(Away == "Hellas Verona", "Verona",
-                                                                                                                                                                        Away))))))))))))))))))),
-                            Competition_Name = ifelse(Competition_Name != "Premier League" & Competition_Name != "La Liga" & Competition_Name != "Ligue 1" & Competition_Name != "Serie A", "Bundesliga", Competition_Name))) # weird work around for unicode reading on shiny apps
+big5 <- data.frame(get_match_results(country = c("ENG", "ESP", "ITA", "GER", "FRA"), gender = "M", season_end_year = "2022", tier = "1st")) %>%
+                     mutate(
+                       Home = case_when(
+                         Home == "M'Gladbach" ~ "Gladbach",
+                         Home == "Union Berlin" ~ "Berlin",
+                         Home == "Bayern Munich" ~ "Bayern",
+                         Home == "Greuther Fürth" ~ "Fürth",
+                         Home == "Eint Frankfurt" ~ "Frankfurt",
+                         Home == "Atlético Madrid" ~ "Atleti",
+                         Home == "Athletic Club" ~ "Athletic",
+                         Home == "Rayo Vallecano" ~ "Rayo",
+                         Home == "Real Sociedad" ~ "La Real",
+                         Home == "Clermont Foot" ~ "Clermont",
+                         Home == "Saint-Étienne" ~ "Étienne",
+                         Home == "Manchester Utd" ~ "Man Utd",
+                         Home == "Manchester City" ~ "Man City",
+                         Home == "Leicester City" ~ "Leicester",
+                         Home == "Leeds United" ~ "Leeds",
+                         Home == "Norwich City" ~ "Norwich",
+                         Home == "Crystal Palace" ~ "Palace",
+                         Home == "Newcastle Utd" ~ "Newcastle",
+                         Home == "Hellas Verona" ~ "Verona",
+                         TRUE ~ Home
+                         ),
+                       Away = case_when(
+                         Away == "M'Gladbach" ~ "Gladbach",
+                         Away == "Union Berlin" ~ "Berlin",
+                         Away == "Bayern Munich" ~ "Bayern",
+                         Away == "Greuther Fürth" ~ "Fürth",
+                         Away == "Eint Frankfurt" ~ "Frankfurt",
+                         Away == "Atlético Madrid" ~ "Atleti",
+                         Away == "Athletic Club" ~ "Athletic",
+                         Away == "Rayo Vallecano" ~ "Rayo",
+                         Away == "Real Sociedad" ~ "La Real",
+                         Away == "Clermont Foot" ~ "Clermont",
+                         Away == "Saint-Étienne" ~ "Étienne",
+                         Away == "Manchester Utd" ~ "Man Utd",
+                         Away == "Manchester City" ~ "Man City",
+                         Away == "Leicester City" ~ "Leicester",
+                         Away == "Leeds United" ~ "Leeds",
+                         Away == "Norwich City" ~ "Norwich",
+                         Away == "Crystal Palace" ~ "Palace",
+                         Away == "Newcastle Utd" ~ "Newcastle",
+                         Away == "Hellas Verona" ~ "Verona",
+                         TRUE ~ Away
+                       ),
+                       Competition_Name = case_when(
+                        Competition_Name == "Fußball-Bundesliga" ~ "Bundesliga" 
+                       )
+                     )
 
 # Big 5 Table Data ----
 big5_table <- get_season_team_stats(country = c("ENG", "ESP", "ITA", "GER", "FRA"), gender = "M", season_end_year = "2022",
                                     tier = "1st", stat_type = "league_table") %>%
-  mutate(Competition_Name = ifelse(Competition_Name != "Premier League" & Competition_Name != "La Liga" &
-                                     Competition_Name != "Ligue 1" & Competition_Name != "Serie A",
-                                   "Bundesliga", Competition_Name),
-         Last.5 = trimws(Last.5))
+  mutate(
+    Competition_Name = case_when(
+      Competition_Name == "Fußball-Bundesliga" ~ "Bundesliga" 
+      ),
+    Last.5 = trimws(Last.5))
 
 # Big 5 GK Data ----
 gkData <- fb_big5_advanced_season_stats(season_end_year = 2022,
@@ -111,6 +120,13 @@ big5_shots <- big5_shots %>%
     player = case_when(
       player == "Danilo D&#039;Ambrosio" ~ "Danilo D'Ambrosio",
       player == "N&#039;Golo Kanté" ~ "N'Golo Kanté",
+      player == "Yannis M&#039;Bemba" ~ "Yannis M'Bemba",
+      player == "Vital N&#039;Simba" ~ "Vital N'Simba",
+      player == "Hianga&#039;a M&#039;Bock" ~ "Hianga'a Mbock",
+      player == "N&#039;Dri Koffi" ~ "N'Dri Koffi",
+      player == "Kevin N&#039;Doram" ~ "Kévin N'Doram",
+      player == "M&#039;Baye Niang" ~ "M'Baye Niang",
+      player == "M&#039;Bala Nzola" ~ "M'Bala Nzola",
       TRUE ~ player
     ),
     league = case_when(

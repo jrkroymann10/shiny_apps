@@ -183,7 +183,104 @@ form_unicode <- function(val) {
   }
 }
 
-standTable <- function(data) {
+get_rk_color <- function(value, comp) {
+  if (comp == "Bundesliga") {
+    if (value %in% 1:4) {
+      return("7px solid rgba(4,33,224,255)")
+    }
+    else if (value == 5) {
+      return("7px solid rgba(253,104,4,255)")
+    }
+    else if (value == 6) {
+      return("7px solid rgba(1,203,89,255)")
+    }
+    else if (value == 16) {
+      return("7px solid rgba(234, 67, 53, .5)")
+    }
+    else if (value %in% 17:18) {
+      return("7px solid rgba(234, 67, 53, 255)")
+    }
+    else {
+      return("7px solid rgba(32, 33, 36)")
+    }
+  }
+  else if (comp == "La Liga") {
+    if (value %in% 1:4) {
+      return("7px solid rgba(4,33,224,255)")
+    } 
+    else if (value == 5) {
+      return("7px solid rgba(253,104,4,255)")
+    }
+    else if (value == 6) {
+      return("7px solid rgba(1,203,89, 255)")
+    }
+    else if (value %in% 18:20) {
+      return("7px solid rgba(234, 67, 53, 255)")
+    }
+    else {
+      return("7px solid rgba(32, 33, 36)")
+    }
+  }
+  else if (comp == "Ligue 1") {
+    if (value %in% 1:2) {
+      return("7px solid rgba(4,33,224,255)")
+    } 
+    else if (value == 3) {
+      return("7px solid rgba(4,33,224,0.5)")
+    }
+    else if (value == 4) {
+      return("7px solid rgba(253,104,4,255)")
+    }
+    else if (value == 5) {
+      return("7px solid rgba(1,203,89, 255)")
+    }
+    else if (value == 18) {
+      return("7px solid rgba(234, 67, 53, 0.5)")
+    }
+    else if (value %in% 19:20) {
+      return("7px solid rgba(234, 67, 53, 255)")
+    }
+    else {
+      return("7px solid rgba(32, 33, 36)")
+    }
+  }
+  else if (comp == "Premier League") {
+    if (value %in% 1:4) {
+      return("7px solid rgba(4,33,224,255)")
+    } 
+    else if (value == 5) {
+      return("7px solid rgba(253,104,4,255)")
+    }
+    else if (value == 6) {
+      return("7px solid rgba(1,203,89, 255)")
+    }
+    else if (value %in% 18:20) {
+      return("7px solid rgba(234, 67, 53, 255)")
+    }
+    else {
+      return("7px solid rgba(32, 33, 36)")
+    }
+  }
+  else if (comp == "Serie A") {
+    if (value %in% 1:4) {
+      return("7px solid rgba(4,33,224,255)")
+    } 
+    else if (value == 5) {
+      return("7px solid rgba(253,104,4,255)")
+    }
+    else if (value == 6) {
+      return("7px solid rgba(1,203,89, 255)")
+    }
+    else if (value %in% 18:20) {
+      return("7px solid rgba(234, 67, 53, 255)")
+    }
+    else {
+      return("7px solid rgba(32, 33, 36)")
+    }
+  }
+}
+
+standTable <- function(data, comp) {
   reactable(
     data %>%
       mutate(squad_copy = Squad) %>%
@@ -210,11 +307,15 @@ standTable <- function(data) {
                      }),
       squad_copy = colDef(name = "Club", width = 197.5, align = "left",
                           style = list(borderRight = "1px solid rgba(255, 255, 255, 1)"),),
-      Rk = colDef(name = "RK", width = 50, align = "center"),
+      Rk = colDef(name = "RK", width = 60, align = "center",
+                  style = function(value) {
+                    color = get_rk_color(value, comp)
+                    list(borderLeft = color)
+                  }),
       Last.5 = colDef(name = "Form", width = 175, align = "center", sortable = FALSE,
                       style = list(borderLeft = "1px solid rgba(255, 255, 255, 1)"),
                       cell = function(value) {
-                        paste(form_unicode(substr(value, 1, 1)), form_unicode(substr(value, 3, 3)), form_unicode(substr(value, 5, 5)), form_unicode(substr(value, 7, 7)), form_unicode(substr(value, 9, 9)))
+                        paste(form_unicode(substr(value, 9, 9)), form_unicode(substr(value, 7, 7)), form_unicode(substr(value, 5, 5)), form_unicode(substr(value, 3, 3)), form_unicode(substr(value, 1, 1)))
                       }),
       Pts = colDef(width = 60),
 
@@ -251,7 +352,7 @@ ligue1_hex <- c("#006eb2", "#d87043", "#FFFFFF", "#009fe3", "#e51b22",
                 "#b59a54", "#ee2223", "#008d3f", "#f58113", "#6e0f12",
                 "#e01e13", "#004170", "#2faee0", "#c50c46", "#c50c46")
 
-pl_hex <- c("#FDB913", "#630F33", "#670E36", "#6CABDD", "#9C824A",
+pl_hex <- c("#FDB913", "#97D9F5", "#670E36", "#6CABDD", "#9C824A",
             "#D71920", "#F9423A", "#A7A5A6", "#00A650", "#AC944D",
             "#0053A0", "#0057B8", "#fbee23", "#FFFFFF", "#e30613",
             "#274488", "#7A263A", "#034694", "#D01317", "#B80102")
@@ -964,6 +1065,8 @@ getXGPalette <- function(input) {
   }
   else if (input == "Real Betis") {
     c("#0BB363", "#E7A614", "#D62550")
+  } else if (input == "Olympique de Marseille") {
+    c("#2faee0", "#bea064", "#fc4219")
   }
 }
 # [XG Time (Player)] - Shot Map Output ----
@@ -1000,13 +1103,13 @@ get_shotMap <- function(df, palette) {
       )
     ) +
     
-    geom_text(aes(x = 78, y = 73, label = paste0(unique(df$player), " (21-22)")),
+    geom_text(aes(x = 78, y = 72, label = unique(df$player)),
               colour = "white", size = 6, family = "Roboto", fontface = "bold", hjust = 0) +
     
-    geom_text(aes(x = 78, y = 69, label = paste0("Non-Penalty xG: ", round(sum(df$xG), 2))),
+    geom_text(aes(x = 78, y = 68, label = paste0("Non-Penalty xG: ", round(sum(df$xG), 2))),
               colour = "white", size = 5, family = "Roboto", hjust = 0) +
     
-    geom_text(aes(x = 78, y = 66, label = paste0("Non-Penalty Goals: ", round(sum(df$goal), 2))),
+    geom_text(aes(x = 78, y = 65, label = paste0("Non-Penalty Goals: ", round(sum(df$goal), 2))),
               colour = "white", size = 5, family = "Roboto", hjust = 0) +
     
     geom_text(aes(x = 78, y = 62, label = "Data: Understat (Penalties + Own Goals Not Included)"),
